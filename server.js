@@ -57,10 +57,9 @@ app.use(cookieSession({
 const DB = process.env.USER;
 
 // Use these constants and mispellings become errors
-const WMDB = "wmdb";
-const PEOPLE = "people";
-const STAFF = "staff";
-const MOVIES = "movies";
+const CRITTERQUEST = "critterquest";
+const POSTS = "posts";
+const USERS = "users"
 
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
@@ -115,26 +114,29 @@ app.post('/form/', (req, res) => {
 });
 
 app.get('/profile/:userID', async (req, res) => {
-    const db = await Connection.open(mongoUri, critterquest); //open the connection to the db critterquest
+    const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
     const idString = req.params.userID;
+    const idNumber = parseInt(idString); //need to parse the string as an integer
+
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been implemented yet so we don't have user sessions
 
     //get the user information stored in the DB
-
-    var allBadges = [];
-    var getInfoDocument = {};
+    var person = await people.findOne({ UID: idNumber}); //find profile
+    var allBadges = person.badges; //list of images, its just words for now 
+    var personDescription = person.aboutme;
 
     //get all the posts which are tagged with the userID 
-    var allPosts = [];
+    const posts = db.collection(POSTS); //go to the Users collection
+    var allPosts = await posts.find({UID: idNumber});
 
     return res.render('profile.ejs', 
                             {
                                 postlist: allPosts, 
                                 badges: allBadges,
                                 isOwnProfile: isOwnProfile,
-                                userInformation: getInfoDocument
+                                personDescription: personDescription
                              });
 });
 
