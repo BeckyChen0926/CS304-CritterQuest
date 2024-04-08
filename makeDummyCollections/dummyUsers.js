@@ -71,7 +71,8 @@ async function insertUsers(db) {
                 username: "Lily",
                 password: 'catdogbirdfox',
                 pfp: 'a picture of lily',
-                badges: ['cow','bird','fish'] // these will be the badge imgs
+                badges: ['cow','bird','fish'], // these will be the badge imgs
+                aboutme: 'Just a girl'
             },
             {
                 // potentially short ID
@@ -79,7 +80,8 @@ async function insertUsers(db) {
                 username: "Harry",
                 password: 'birdfoxdogcat',
                 pfp:'a picture of harry',
-                badges: ['pig'] // these will be the badge imgs
+                badges: ['pig'], // these will be the badge imgs
+                aboutme: 'Just some dude'
             }
         ]);
     return result.acknowledged; //returns true if item successfully inserted

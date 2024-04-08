@@ -68,6 +68,7 @@ async function insertPosts(db) {
             {
                 // potentially short ID
                 PID: 1,
+                UID: 1,
                 user: "Lily",
                 time: new Date(),
                 img: 'a picture of a cow',
