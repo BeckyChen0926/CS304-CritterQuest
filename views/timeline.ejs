@@ -38,7 +38,7 @@
                                 <h2>Likes: <%= post['likes'] %> </h2>
                             </div>
                             <div class="comments">
-                                <h2>Comments: <%= post['comments.length'] %> </h2>
+                                <h2>Comments: <%= post['comments'].length %> </h2>
                             </div>
                         </div>
                         
@@ -51,15 +51,6 @@
 
     <!-- load local js -->
     <script src="/main.js"></script>
-    <script>
-        var uid = "<%= uid %>";
-        if(uid !== 'unknown') {
-            $("#logged-in").show();
-            $("#not-logged-in").hide();
-        } else {
-            $("#logged-in").hide();
-            $("#not-logged-in").show();
-        }
-    </script>
+    
 </body>
 </html>

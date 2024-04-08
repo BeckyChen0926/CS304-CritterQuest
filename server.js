@@ -62,17 +62,17 @@ const POSTS = "posts";
 const USERS = "users"
 
 app.get('/', (req, res) => {
-    // let uid = req.session.uid || 'unknown';
+    let uid = req.session.uid || 'unknown';
     // console.log('uid', uid);
     // return res.render('index.ejs', {uid});
     return res.render('login.ejs', {uid});
 });
 
 // main page. This shows the use of session cookies
-app.get('/timeline/', (req, res) => {
-    let uid = req.session.uid || 'unknown';
-    console.log('uid', uid);
-    return res.render('homePage.ejs', {uid});
+app.get('/timeline/', async (req, res) => {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const postList = await db.collection(POSTS).find().toArray();
+    return res.render('timeline.ejs', {userPosts: postList});
 });
 
 // shows how logins might work by setting a value in the session
