@@ -63,11 +63,11 @@ const STAFF = "staff";
 const MOVIES = "movies";
 
 // main page. This shows the use of session cookies
-app.get('/timeline/', (req, res) => {
-    let uid = req.session.uid || 'unknown';
-    console.log('uid', uid);
+app.get('/timeline/', async (req, res) => {
+    const db = await Connection.open(mongoUri, critterquest);
+    const postList = await db.collection(MOVIES).find({tt: parseInt(mid)}).toArray();
 
-    return res.render('homePage.ejs', {uid});
+    return res.render('timeline.ejs', {uid});
 });
 
 // shows how logins might work by setting a value in the session
