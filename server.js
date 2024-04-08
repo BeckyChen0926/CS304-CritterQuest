@@ -61,12 +61,16 @@ const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
 const USERS = "users"
 
-
+app.get('/', (req, res) => {
+    // let uid = req.session.uid || 'unknown';
+    // console.log('uid', uid);
+    // return res.render('index.ejs', {uid});
+    return res.render('index.ejs', {uid});
+});
 // main page. This shows the use of session cookies
 app.get('/timeline/', (req, res) => {
     let uid = req.session.uid || 'unknown';
     console.log('uid', uid);
-
     return res.render('homePage.ejs', {uid});
 });
 
