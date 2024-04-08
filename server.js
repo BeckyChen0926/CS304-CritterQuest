@@ -55,8 +55,12 @@ app.use(cookieSession({
 // custom routes here
 
 const DB = process.env.USER;
-const WMDB = 'wmdb';
-const STAFF = 'staff';
+
+// Use these constants and mispellings become errors
+const WMDB = "wmdb";
+const PEOPLE = "people";
+const STAFF = "staff";
+const MOVIES = "movies";
 
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
@@ -111,6 +115,30 @@ app.get('/form/', (req, res) => {
 app.post('/form/', (req, res) => {
     console.log('post form');
     return res.render('form.ejs', {action: '/form/', data: req.body });
+});
+
+app.get('/profile/:userID', async (req, res) => {
+    const db = await Connection.open(mongoUri, critterquest); //open the connection to the db critterquest
+    const people = db.collection(USERS); //go to the Users collection
+    const idString = req.params.userID;
+    //check whether you are viewing your own profile or if you are looking at someone else's 
+    var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been implemented yet so we don't have user sessions
+
+    //get the user information stored in the DB
+
+    var allBadges = [];
+    var getInfoDocument = {};
+
+    //get all the posts which are tagged with the userID 
+    var allPosts = [];
+
+    return res.render('profile.ejs', 
+                            {
+                                postlist: allPosts, 
+                                badges: allBadges,
+                                isOwnProfile: isOwnProfile,
+                                userInformation: getInfoDocument
+                             });
 });
 
 app.get('/staffList/', async (req, res) => {
