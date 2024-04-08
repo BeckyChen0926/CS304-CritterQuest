@@ -66,7 +66,7 @@ const MOVIES = "movies";
 app.get('/', (req, res) => {
     let uid = req.session.uid || 'unknown';
     console.log('uid', uid);
-    return res.render('homePage.ejs', {uid});
+    return res.render('index.ejs', {uid});
 });
 
 // shows how logins might work by setting a value in the session
