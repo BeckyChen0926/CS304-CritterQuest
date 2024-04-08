@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Node Starter</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <%- include("partials/navbar.ejs") %>
+    
+    <ul>
+        <% userPosts.forEach( (post) => {  %>
+            <div class="post">
+                <li>
+                    <div class="image">
+                        <img src="<%= post['img'] %>">
+                    </div>
+                    <div class="info">
+                        <div class="top">
+                            <div class="username"> 
+                                <h1><%= post['user'] %></h1> 
+                            </div>
+                            <div class="location">
+                                <h2><%= post['location'] %></h2>
+                            </div>
+                            <div class="time">
+                                <h2><%= post['time'] %></h2>
+                            </div>
+                        </div>
+                        <div class="middle">
+                            <p> <%= post['caption'] %></p>
+                        </div>
+                        <div class="bottom">
+                            <div class="likes">
+                                <h2>Likes: <%= post['likes'] %> </h2>
+                            </div>
+                            <div class="comments">
+                                <h2>Comments: <%= post['comments.length'] %> </h2>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </li>
+            </div>
+        <% }); %>
+    </ul>
+
+    <!-- load local js -->
+    <script src="/main.js"></script>
+    <script>
+        var uid = "<%= uid %>";
+        if(uid !== 'unknown') {
+            $("#logged-in").show();
+            $("#not-logged-in").hide();
+        } else {
+            $("#logged-in").hide();
+            $("#not-logged-in").show();
+        }
+    </script>
+</body>
+</html>

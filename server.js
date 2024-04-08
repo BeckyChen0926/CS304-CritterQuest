@@ -61,11 +61,8 @@ const STAFF = 'staff';
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
     let uid = req.session.uid || 'unknown';
-    let visits = req.session.visits || 0;
-    visits++;
-    req.session.visits = visits;
     console.log('uid', uid);
-    return res.render('index.ejs', {uid, visits});
+    return res.render('homePage.ejs', {uid});
 });
 
 // shows how logins might work by setting a value in the session
