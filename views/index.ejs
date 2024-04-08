@@ -9,8 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Welcome!</h1>
-    <p>Everything is fine.</p>
+    <h1>Welcome to CritterQuest!</h1>
+    <p></p>
 
     <div id="logged-in">
     <p>You are logged in as <span id="login-uid"><%= uid %></span>
@@ -19,8 +19,16 @@
     <div id="not-logged-in">
     <p>You are not logged in.</p>
     <form id="login_form" method="post" action="/set-uid/">
-        <p><label>uid <input name="uid"></label></p>
-        <input type="button" id="login-ajax" value="ajax">
+        <p><label>User Name: <input name="user-name"></label></p>
+        <p><label>Password: <input name="user-name"></label></p>
+        <input type="button" id="login-ajax" value="Log in">
+    </form>
+    <p>New User? Create an Account!</p>
+    <form id="register_form" method="post" action="/set-uid/">
+        <p><label>User Name: <input name="user-name"></label></p>
+        <p><label>Password: <input name="user-name"></label></p>
+        <p><label>Confirm Password: <input name="user-name"></label></p>
+        <input type="button" id="login-ajax" value="Create">
     </form>
     </div>
 
