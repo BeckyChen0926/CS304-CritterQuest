@@ -21,8 +21,8 @@ const multer = require('multer');
 
 // our modules loaded from cwd
 
-const { Connection } = require('./connection');
-const cs304 = require('./cs304');
+const { Connection } = require('../connection');
+const cs304 = require('../cs304');
 
 // Create and configure the app
 
@@ -57,30 +57,41 @@ app.use(cookieSession({
 
 
 async function deleteAll(db) {
-    const result = await db.collection('users').deleteMany({});
+    const result = await db.collection('questions').deleteMany({});
     return result.acknowledged; //returns true if item successfully deleted
 }
 
-
-async function insertUser(db) {
-    const result = await db.collection('users')
-        .insertOne(
+// just to insert a few users
+async function insertQuestions(db) {
+    const result = await db.collection('questions')
+        .insertMany([
             {
-                name: "Aaa",
-                weight: 50,
-                color: "Pink",
-
+                // potentially short ID
+                PID: 1,
+                user: "Harry",
+                time: new Date(),
+                img: 'a picture of a butterfly',
+                animal: '',
+                location: 'Science Center',
+                caption: 'Is this a pigeon?',
+                likes: 4,
+                comments: [
+                    {
+                        UID: 1,
+                        user: 'Lily',
+                        comment: "No."
+                    }
+                ]
             }
-        );
+        ]);
     return result.acknowledged; //returns true if item successfully inserted
 }
 
-
-async function main(){
-    const users = await Connection.open(mongoUri,'critterquest');
-    // deleteAll(users);
-    insertUser(users)
-
+async function main() {
+    const questions = await Connection.open(mongoUri, 'critterquest');
+    deleteAll(questions);
+    let insert = await insertQuestions(questions);
+    console.log(insert);
 }
 
-main().catch(console.error);
+main()
