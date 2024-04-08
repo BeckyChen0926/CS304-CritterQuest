@@ -62,8 +62,9 @@ const PEOPLE = "people";
 const STAFF = "staff";
 const MOVIES = "movies";
 
+
 // main page. This shows the use of session cookies
-app.get('/', (req, res) => {
+app.get('/timeline/', (req, res) => {
     let uid = req.session.uid || 'unknown';
     console.log('uid', uid);
     return res.render('index.ejs', {uid});
