@@ -1,3 +1,45 @@
-h1 {
-  color: purple;
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #4F772D;
+}
+
+nav li {
+  float: left;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+nav li a:hover {
+  background-color: #6DA33E;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.post {
+  display: grid;
+  grid-template-areas:
+    'image info';
+  column-gap: 50px;
+}
+
+.image {
+  grid-area: image;
+  background-color: pink;
+}
+
+.info {
+  grid-area: info;
+  background-color: red;
 }
