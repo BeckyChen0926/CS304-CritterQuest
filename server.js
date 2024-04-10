@@ -71,7 +71,7 @@ app.get('/', (req, res) => {
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find().toArray();
+    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 }}).toArray();
     return res.render('timeline.ejs', {userPosts: postList});
 });
 

@@ -70,7 +70,7 @@ async function insertPosts(db) {
                 PID: 1,
                 UID: 1,
                 user: "Lily",
-                time: new Date(),
+                time: new Date('04/07/2024 1:39'),
                 img: 'a picture of a cow',
                 animal: 'cow',
                 location: 'tower court',
@@ -81,6 +81,25 @@ async function insertPosts(db) {
                         UID: 2,
                         user: 'Harry',
                         comment: "You're kidding"
+                    }
+                ]
+            },
+            {
+                // potentially short ID
+                PID: 2,
+                UID: 1,
+                user: "Lily",
+                time: new Date('04/07/2024 6:39'),
+                img: 'a picture of a cat',
+                animal: 'cat',
+                location: 'Science Center',
+                caption: 'kitty!!!!!!!!!!!!!!',
+                likes: 100,
+                comments: [
+                    {
+                        UID: 2,
+                        user: 'Harry',
+                        comment: "letmepet letmepet letmepet"
                     }
                 ]
             }
