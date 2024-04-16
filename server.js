@@ -111,6 +111,61 @@ app.get('/', (req, res) => {
     return res.render('login.ejs', {uid});
 });
 
+app.post("/join", async (req, res) => {
+    try {
+      const username = req.body.username;
+      const password = req.body.password;
+      const db = await Connection.open(mongoUri, CRITTERQUEST);
+      var existingUser = await db.collection(USERS).findOne({username: username});
+      if (existingUser) {
+        req.flash('error', "Login already exists - please try logging in instead.");
+        return res.redirect('/')
+      }
+      const hash = await bcrypt.hash(password, ROUNDS);
+      await db.collection(USERS).insertOne({
+          username: username,
+          hash: hash
+      });
+      console.log('successfully joined', username, password, hash);
+      req.flash('info', 'successfully joined and logged in as ' + username);
+      req.session.username = username;
+      req.session.loggedIn = true;
+      return res.redirect('/profile');
+    } catch (error) {
+      req.flash('error', `Form submission error: ${error}`);
+      return res.redirect('/')
+    }
+  });
+  
+  app.post("/login", async (req, res) => {
+    try {
+      const username = req.body.username;
+      const password = req.body.password;
+      const db = await Connection.open(mongoUri, CRITTERQUEST);
+      var existingUser = await db.collection(USERS).findOne({username: username});
+      console.log('user', existingUser);
+      if (!existingUser) {
+        req.flash('error', "Username does not exist - try again.");
+       return res.redirect('/')
+      }
+      const match = await bcrypt.compare(password, existingUser.hash); 
+      console.log('match', match);
+      if (!match) {
+          req.flash('error', "Username or password incorrect - try again.");
+          return res.redirect('/')
+      }
+      req.flash('info', 'successfully logged in as ' + username);
+      req.session.username = username;
+      req.session.loggedIn = true;
+      console.log('login as', username);
+      return res.redirect('/profile');
+    } catch (error) {
+      req.flash('error', `Form submission error: ${error}`);
+      return res.redirect('/')
+    }
+  });
+
+
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
