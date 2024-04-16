@@ -115,6 +115,13 @@ app.get('/', (req, res) => {
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 }}).toArray();
+
+    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
+    /*
+    if(!req.session.logged_in){
+        return res.render('login.ejs');
+    }
+    */
     return res.render('timeline.ejs', {userPosts: postList});
 });
 
@@ -147,7 +154,7 @@ app.post('/logout/', (req, res) => {
     console.log('in logout');
     req.session.uid = false;
     req.session.logged_in = false;
-    res.redirect('/login');
+    res.redirect('/');
 });
 
 // conventional non-Ajax logout, so redirects
