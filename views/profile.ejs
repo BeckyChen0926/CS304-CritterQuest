@@ -22,13 +22,15 @@
     </div>
     <div class="badges">
         <h3>Badges:</h3>
-        <ul>
-            <% badges.forEach( (badge) => {%>
+        <% if (badges != null){%>
+            <ul>
+                <% badges.forEach( (badge) => {%>
 
-            <li><%= badge %></li>
+                <li><%= badge %></li>
 
-            <% }) %>
-        </ul> 
+                <% }) %>
+            </ul> 
+        <% }%> 
     </div>
     <div class="posts">
         <ul>
@@ -50,7 +52,9 @@
                         </div>
                         <div class="likeComment">
                             <h2 class="likes">Likes: <%= post['likes'] %> </h2>
-                            <h2 class="comments">Comments: <%= post['comments'].length %> </h2>       
+                            <% if (post['comments']){%>
+                                <h2 class="comments">Comments: <%= post['comments'].length %> </h2>
+                            <% }%>       
                         </div>
                     </li>
                 </div>
