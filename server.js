@@ -15,6 +15,9 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const flash = require('express-flash');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
+const ROUNDS = 19;
+
 
 // our modules loaded from cwd
 
