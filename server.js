@@ -147,9 +147,13 @@ app.post('/logout/', (req, res) => {
     console.log('in logout');
     req.session.uid = false;
     req.session.logged_in = false;
-    res.redirect('/');
+    res.redirect('/login');
 });
 
+// conventional non-Ajax logout, so redirects
+app.get('/logout/', (req, res) => {
+    res.render("logout.ejs");
+});
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
