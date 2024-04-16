@@ -23,6 +23,7 @@ const ROUNDS = 19;
 
 const { Connection } = require('./connection');
 const cs304 = require('./cs304');
+const { time } = require('console');
 
 // Create and configure the app
 
@@ -172,7 +173,7 @@ app.post("/join", async (req, res) => {
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 }}).toArray();
+    const postList = await db.collection(POSTS).find({}, { sort: { time: -1 }}).toArray();
     console.log(postList);
 
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
