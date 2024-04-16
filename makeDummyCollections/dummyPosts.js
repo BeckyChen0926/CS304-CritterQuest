@@ -66,12 +66,12 @@ async function insertPosts(db) {
     const result = await db.collection('posts')
         .insertMany([
             {
-                // potentially short ID
+                // global counter?
                 PID: 1,
                 UID: 1,
                 user: "Lily",
                 time: new Date('04/07/2024 1:39'),
-                img: 'a picture of a cow',
+                path: 'a picture of a cow',
                 animal: 'cow',
                 location: 'tower court',
                 caption: 'I saw a cow in tower court today!',

@@ -51,6 +51,48 @@ app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
+function timeString(dateObj) {
+    if (!dateObj) {
+        dateObj = new Date();
+    }
+    // convert val to two-digit string
+    d2 = (val) => val < 10 ? '0' + val : '' + val;
+    let hh = d2(dateObj.getHours())
+    let mm = d2(dateObj.getMinutes())
+    let ss = d2(dateObj.getSeconds())
+    return hh + mm + ss
+}
+
+app.use('/uploads', express.static('uploads'));
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        let parts = file.originalname.split('.');
+        let ext = parts[parts.length - 1];
+        let hhmmss = timeString();
+        cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
+    }
+})
+var upload = multer({
+    storage: storage,
+    // max fileSize in bytes, causes an ugly error
+    limits: { fileSize: 1_000 }
+});
+
+app.use((err, req, res, next) => {
+    console.log('error', err);
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        console.log('file too big')
+        req.flash('error', 'file too big')
+        res.redirect('/')
+    } else {
+        console.error(err.stack)
+        res.status(500).send('Something broke!')
+    }
+})
+
 // ================================================================
 // custom routes here
 
@@ -60,6 +102,7 @@ const DB = process.env.USER;
 const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
 const USERS = "users"
+// const UPLOADS = 'uploads';
 
 app.get('/', (req, res) => {
     let uid = req.session.uid || 'unknown';
@@ -104,20 +147,54 @@ app.post('/logout/', (req, res) => {
     console.log('in logout');
     req.session.uid = false;
     req.session.logged_in = false;
-    res.redirect('/');
+    res.redirect('/login');
+});
+
+// conventional non-Ajax logout, so redirects
+app.get('/logout/', (req, res) => {
+    res.render("logout.ejs");
 });
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
 
-app.get('/form/', (req, res) => {
+app.get('/posting/', async (req, res) => {
     console.log('get form');
-    return res.render('form.ejs', {action: '/form/', data: req.query });
+    return res.render('form.ejs', {action: '/posting/', location:''});
 });
 
-app.post('/form/', (req, res) => {
+// limited but not private
+app.post('/posting/', upload.single('photo'), async (req, res) => {
+    console.log('uploaded data', req.body);
+    console.log('file', req.file);
     console.log('post form');
-    return res.render('form.ejs', {action: '/form/', data: req.body });
+    const username = req.session.user;
+    // if (!username) {
+    //     req.flash('info', "You are not logged in");
+    //     return res.redirect('/login');
+    // }
+    // if (!req.file) {
+    //     req.flash('error', "No file uploaded");
+    //     return res.redirect('/posting/');
+    // }
+
+    const db = await Connection.open(mongoUri, DB);
+    const result = await db.collection(POSTS)
+        .insertOne({
+            PID: 3,
+            UID: req.session.UID,
+            user: username,
+            time: new Date(),
+            // path: '/uploads/' + 'whatever',
+            path: '/uploads/' + 'req.file.filename',
+
+            animal: req.body.animal.value,
+            location: req.body.location,
+            caption: req.body.caption
+        });
+    console.log('insertOne result', result);
+    req.flash('info','file uploaded');
+    return res.redirect('/timeline/');
 });
 
 app.get('/profile/:userID', async (req, res) => {
