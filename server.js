@@ -115,6 +115,7 @@ app.get('/', (req, res) => {
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 }}).toArray();
+    console.log(postList);
     return res.render('timeline.ejs', {userPosts: postList});
 });
 
@@ -178,23 +179,25 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     //     return res.redirect('/posting/');
     // }
 
-    const db = await Connection.open(mongoUri, DB);
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
     const result = await db.collection(POSTS)
         .insertOne({
             PID: 3,
-            UID: req.session.UID,
-            user: username,
+            // UID: req.session.UID,
+            UID: 1,
+            // user: username,
+            user: 'Lily',
             time: new Date(),
-            // path: '/uploads/' + 'whatever',
             path: '/uploads/' + req.file.filename,
-
             animal: req.body.animal.value,
             location: req.body.location,
-            caption: req.body.caption
+            caption: req.body.caption,
+            likes:null,
+            comments:null
         });
     console.log('insertOne result', result);
-    req.flash('info','file uploaded');
-    return res.redirect('/timeline/');
+    // req.flash('info','file uploaded');
+    res.redirect('/timeline');
 });
 
 app.get('/profile/:userID', async (req, res) => {
