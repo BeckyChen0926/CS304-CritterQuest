@@ -273,8 +273,8 @@ app.get('/profile/:userID', async (req, res) => {
 
     //get the user information stored in the DB
     var person = await people.findOne({ UID: idNumber}); //find profile
-    var allBadges = person.badges; //list of images, its just words for now 
-    var personDescription = person.aboutme;
+    var allBadges = person.badges || null; //list of images, its just words for now 
+    var personDescription = person.aboutme || null;
     var pfp = person.pfp;
     var username = person.username;
 
