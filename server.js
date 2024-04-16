@@ -15,6 +15,9 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const flash = require('express-flash');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
+const ROUNDS = 19;
+
 
 // our modules loaded from cwd
 
@@ -130,7 +133,7 @@ app.post("/join", async (req, res) => {
       req.flash('info', 'successfully joined and logged in as ' + username);
       req.session.username = username;
       req.session.loggedIn = true;
-      return res.redirect('/profile');
+      return res.redirect('/timeline');
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
       return res.redirect('/')
@@ -158,7 +161,7 @@ app.post("/join", async (req, res) => {
       req.session.username = username;
       req.session.loggedIn = true;
       console.log('login as', username);
-      return res.redirect('/profile');
+      return res.redirect('/timeline');
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
       return res.redirect('/')
@@ -183,40 +186,18 @@ app.get('/timeline/', async (req, res) => {
 
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
-app.post('/set-uid/', (req, res) => {
-    console.log('in set-uid');
-    req.session.uid = req.body.uid;
-    req.session.logged_in = true;
-    res.redirect('/');
-});
 
-// shows how logins might work via Ajax
-app.post('/set-uid-ajax/', (req, res) => {
-    console.log(Object.keys(req.body));
-    console.log(req.body);
-    let uid = req.body.uid;
-    if(!uid) {
-        res.send({error: 'no uid'}, 400);
-        return;
+app.post('/logout', (req,res) => {
+    if (req.session.username) {
+      req.session.username = null;
+      req.session.loggedIn = false;
+      req.flash('info', 'You are logged out');
+      return res.redirect('/');
+    } else {
+      req.flash('error', 'You are not logged in - please do so.');
+      return res.redirect('/');
     }
-    req.session.uid = req.body.uid;
-    req.session.logged_in = true;
-    console.log('logged in via ajax as ', req.body.uid);
-    res.send({error: false});
-});
-
-// conventional non-Ajax logout, so redirects
-app.post('/logout/', (req, res) => {
-    console.log('in logout');
-    req.session.uid = false;
-    req.session.logged_in = false;
-    res.redirect('/');
-});
-
-// conventional non-Ajax logout, so redirects
-app.get('/logout/', (req, res) => {
-    res.render("logout.ejs");
-});
+  });
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
