@@ -210,6 +210,8 @@ app.get('/profile/:userID', async (req, res) => {
     var person = await people.findOne({ UID: idNumber}); //find profile
     var allBadges = person.badges; //list of images, its just words for now 
     var personDescription = person.aboutme;
+    var pfp = person.pfp;
+    var username = person.username;
 
     //get all the posts which are tagged with the userID 
     const posts = db.collection(POSTS); //go to the Users collection
@@ -217,10 +219,12 @@ app.get('/profile/:userID', async (req, res) => {
 
     return res.render('profile.ejs', 
                             {
-                                postlist: allPosts, 
+                                posts: allPosts, 
                                 badges: allBadges,
                                 isOwnProfile: isOwnProfile,
-                                personDescription: personDescription
+                                aboutme: personDescription,
+                                username: username,
+                                pfp: pfp
                              });
 });
 
