@@ -78,7 +78,7 @@ var storage = multer.diskStorage({
 var upload = multer({
     storage: storage,
     // max fileSize in bytes, causes an ugly error
-    limits: { fileSize: 1_000 }
+    limits: { fileSize: 1_000_000 }
 });
 
 app.use((err, req, res, next) => {
@@ -182,7 +182,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             user: username,
             time: new Date(),
             // path: '/uploads/' + 'whatever',
-            path: '/uploads/' + 'req.file.filename',
+            path: '/uploads/' + req.file.filename,
 
             animal: req.body.animal.value,
             location: req.body.location,
