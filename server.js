@@ -133,7 +133,7 @@ app.post("/join", async (req, res) => {
       req.flash('info', 'successfully joined and logged in as ' + username);
       req.session.username = username;
       req.session.loggedIn = true;
-      return res.redirect('/profile');
+      return res.redirect('/timeline');
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
       return res.redirect('/')
@@ -161,7 +161,7 @@ app.post("/join", async (req, res) => {
       req.session.username = username;
       req.session.loggedIn = true;
       console.log('login as', username);
-      return res.redirect('/profile');
+      return res.redirect('/timeline');
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
       return res.redirect('/')
