@@ -12,13 +12,13 @@
     <%- include("partials/navbar.ejs") %>
     
     <div class="pfp">
-        <img src="<%= users['pfp'] %>">
+        <img src="<%= pfp %>">
     </div>
     <div class="username">
-        <h1><%= users['username'] %></h1>
+        <h1><%= username %></h1>
     </div>
     <div class="about">
-        <h2><%= users['aboutme'] %></h2>
+        <h2><%= aboutme %></h2>
     </div>
     <div class="badges">
         <h3>Badges:</h3>
@@ -57,7 +57,7 @@
             <% }); %>
         </ul>
     </div>
-    <% if( users['isOwnProfile'] ) { %>
+    <% if( isOwnProfile ) { %>
         <div class="button">
             <button>Edit Profile</button>
         </div>
