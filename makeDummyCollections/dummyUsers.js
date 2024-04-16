@@ -69,7 +69,7 @@ async function insertUsers(db) {
                 // potentially short ID
                 UID: 1,
                 username: "Lily",
-                password: 'catdogbirdfox',
+                hash: 'catdogbirdfox',
                 pfp: 'a picture of lily',
                 badges: ['cow','bird','fish'], // these will be the badge imgs
                 aboutme: 'Just a girl'
@@ -78,7 +78,7 @@ async function insertUsers(db) {
                 // potentially short ID
                 UID: 2,
                 username: "Harry",
-                password: 'birdfoxdogcat',
+                hash: 'birdfoxdogcat',
                 pfp:'a picture of harry',
                 badges: ['pig'], // these will be the badge imgs
                 aboutme: 'Just some dude'

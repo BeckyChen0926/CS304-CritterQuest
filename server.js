@@ -67,10 +67,15 @@ function timeString(dateObj) {
     return hh + mm + ss
 }
 
-app.use('/uploads', express.static('uploads'));
+// app.use('/uploads', express.static('uploads'));
+// var storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'uploads')
+//     },
+app.use('/uploads', express.static('/students/critterquest/uploads'));
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads')
+        cb(null, '/students/critterquest/uploads')
     },
     filename: function (req, file, cb) {
         let parts = file.originalname.split('.');
@@ -233,10 +238,10 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             user: 'Lily',
             time: new Date(),
             path: '/uploads/' + req.file.filename,
-            animal: req.body.animal.value,
+            animal: req.body.animal,
             location: req.body.location,
             caption: req.body.caption,
-            likes:null,
+            likes:0,
             comments:null
         });
     console.log('insertOne result', result);
