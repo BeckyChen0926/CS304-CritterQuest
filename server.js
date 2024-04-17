@@ -244,12 +244,17 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             likes:0,
             comments:null
         });
+    const upload = await db.collection(USERS)
+        .insertOne({
+            fileName: req.file.filename
+        });
     console.log('insertOne result', result);
     // req.flash('info','file uploaded');
     res.redirect('/timeline');
 });
 
 app.get('/profile/:userID', async (req, res) => {
+    console.log("in profile end point");
     console.log(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
@@ -266,7 +271,7 @@ app.get('/profile/:userID', async (req, res) => {
     console.log(person);
     var allBadges = person.badges || null; //list of images, its just words for now 
     var personDescription = person.aboutme || null;
-    var pfp = person.pfp;
+    var profilePic = person.pfp;
     var username = person.username;
 
     //get all the posts which are tagged with the userID 
@@ -280,7 +285,7 @@ app.get('/profile/:userID', async (req, res) => {
                                 isOwnProfile: isOwnProfile,
                                 aboutme: personDescription,
                                 username: username,
-                                pfp: pfp
+                                pfp: profilePic
                              });
 });
 
