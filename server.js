@@ -184,6 +184,7 @@ app.get('/', (req, res) => {
   });
 
 
+
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -202,18 +203,23 @@ app.get('/timeline/', async (req, res) => {
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
 
-app.post('/logout', (req,res) => {
-    if (req.session.username) {
-      req.session.username = null;
-      req.session.loggedIn = false;
-      req.flash('info', 'You are logged out');
-      return res.redirect('/');
-    } else {
-      req.flash('error', 'You are not logged in - please do so.');
-      return res.redirect('/');
-    }
-  });
+// app.post('/logout', (req,res) => {
+//     if (req.session.username) {
+//       req.session.username = null;
+//       req.session.loggedIn = false;
+//       req.flash('info', 'You are logged out');
+//       return res.redirect('/');
+//     } else {
+//       req.flash('error', 'You are not logged in - please do so.');
+//       return res.redirect('/');
+//     }
+//   });
 
+
+app.post('/logout', (req,res) => {
+    req.session = null;
+    return res.redirect('/');
+});
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
 
@@ -264,6 +270,7 @@ app.get('/profile/:userID', async (req, res) => {
     console.log(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
+    console.log("people: ", people)
     const idString = req.params.userID;
     console.log("idString: ", idString);
     const idNumber = parseInt(idString); //need to parse the string as an integer
