@@ -244,11 +244,13 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             likes:0,
             comments:null
         });
+    console.log('insertOne result', result);
     const upload = await db.collection(UPLOADS)
         .insertOne({
             fileName: req.file.filename
         });
-    console.log('insertOne result', result);
+    console.log('insertOne upload', upload);
+
     // req.flash('info','file uploaded');
     res.redirect('/timeline');
 });
