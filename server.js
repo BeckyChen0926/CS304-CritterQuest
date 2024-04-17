@@ -244,7 +244,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             user: 'Lily',
             time: new Date(),
             path: '/uploads/' + req.file.filename,
-            animal: req.body.animal,
+            animal: req.body.animal.value,
             location: req.body.location,
             caption: req.body.caption,
             likes:0,
