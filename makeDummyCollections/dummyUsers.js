@@ -61,13 +61,19 @@ async function deleteAll(db) {
     return result.acknowledged; //returns true if item successfully deleted
 }
 
+async function deleteAllCounters(db) {
+    const result = await db.collection('counters').deleteMany({});
+    const insert = await db.collection('counters').insertOne({collection: "users", count: 2});
+    return result.acknowledged; //returns true if item successfully deleted
+}
+
 // just to insert a few users
 async function insertUsers(db) {
     const result = await db.collection('users')
         .insertMany([
             {
                 // potentially short ID
-                UID: 1,
+                UID: 2,
                 username: "Lily",
                 hash: 'catdogbirdfox',
                 pfp: 'a picture of lily',
@@ -76,7 +82,7 @@ async function insertUsers(db) {
             },
             {
                 // potentially short ID
-                UID: 2,
+                UID: 1,
                 username: "Harry",
                 hash: 'birdfoxdogcat',
                 pfp:'a picture of harry',
@@ -88,9 +94,10 @@ async function insertUsers(db) {
 }
 
 async function main(){
-    const users = await Connection.open(mongoUri,'critterquest');
-    deleteAll(users);
-    let insert = await insertUsers(users);
+    const critterquest = await Connection.open(mongoUri,'critterquest');
+    deleteAll(critterquest);
+    deleteAllCounters(critterquest);
+    let insert = await insertUsers(critterquest);
     console.log(insert);
 }
 
