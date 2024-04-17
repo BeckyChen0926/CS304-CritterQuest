@@ -255,6 +255,7 @@ app.get('/profile/:userID', async (req, res) => {
     console.log(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
+    console.log("people: ", people)
     const idString = req.params.userID;
     console.log("idString: ", idString);
     const idNumber = parseInt(idString); //need to parse the string as an integer
