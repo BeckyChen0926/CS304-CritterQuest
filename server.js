@@ -111,7 +111,7 @@ const DB = process.env.USER;
 const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
 const USERS = "users"
-const UPLOADS = 'uploads';
+// const UPLOADS = 'uploads';
 
 app.get('/', (req, res) => {
     let uid = req.session.uid || 'unknown';
@@ -245,11 +245,6 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             comments:null
         });
     console.log('insertOne result', result);
-    const upload = await db.collection(UPLOADS)
-        .insertOne({
-            fileName: req.file.filename
-        });
-    console.log('insertOne upload', upload);
 
     // req.flash('info','file uploaded');
     res.redirect('/timeline');
