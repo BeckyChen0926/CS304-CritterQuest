@@ -245,16 +245,20 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 });
 
 app.get('/profile/:userID', async (req, res) => {
+    console.log(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
     const idString = req.params.userID;
+    console.log("idString: ", idString);
     const idNumber = parseInt(idString); //need to parse the string as an integer
+    console.log("idNumber: ", idNumber);
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been implemented yet so we don't have user sessions
 
     //get the user information stored in the DB
     var person = await people.findOne({ UID: idNumber}); //find profile
+    console.log(person);
     var allBadges = person.badges || null; //list of images, its just words for now 
     var personDescription = person.aboutme || null;
     var pfp = person.pfp;
