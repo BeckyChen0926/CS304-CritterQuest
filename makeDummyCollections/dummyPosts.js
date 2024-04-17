@@ -71,7 +71,7 @@ async function insertPosts(db) {
                 UID: 1,
                 user: "Lily",
                 time: new Date('04/07/2024 1:39'),
-                path: 'uploads/photo-213950.png',
+                path: '/students/critterquest/uploads/photo-103836.jpg',
                 animal: 'cow',
                 location: 'tower court',
                 caption: 'I saw a cow in tower court today!',
@@ -90,7 +90,7 @@ async function insertPosts(db) {
                 UID: 1,
                 user: "Lily",
                 time: new Date('04/07/2024 6:39'),
-                path: 'uploads/photo-213950.png',
+                path: '/students/critterquest/uploads/photo-103836.jpg',
                 animal: 'cat',
                 location: 'Science Center',
                 caption: 'kitty!!!!!!!!!!!!!!',
@@ -110,8 +110,8 @@ async function insertPosts(db) {
 async function main() {
     const posts = await Connection.open(mongoUri, 'critterquest');
     deleteAll(posts);
-    let insert = await insertPosts(posts);
-    console.log(insert);
+    // let insert = await insertPosts(posts);
+    // console.log(insert);
 }
 
 main()
