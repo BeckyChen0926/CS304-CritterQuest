@@ -17,6 +17,7 @@ const flash = require('express-flash');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const ROUNDS = 19;
+const counter = require('./counter-utils.js')
 
 
 // our modules loaded from cwd
@@ -111,6 +112,7 @@ const DB = process.env.USER;
 const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
 const USERS = "users"
+const COUNTERS = "counters"
 // const UPLOADS = 'uploads';
 
 app.get('/', (req, res) => {
@@ -120,7 +122,7 @@ app.get('/', (req, res) => {
     return res.render('login.ejs');
 });
 
-app.post("/join", async (req, res) => {
+  app.post("/join", async (req, res) => {
     try {
       const username = req.body.username;
       const password = req.body.password;
@@ -130,10 +132,17 @@ app.post("/join", async (req, res) => {
         req.flash('error', "Login already exists - please try logging in instead.");
         return res.redirect('/')
       }
+      
+      let counters = db.collection(COUNTERS);
+      counter.incr(counters, "users");
+      var countObj = await counters.findOne({collection: 'users'});
+      var uid = countObj["counter"];
+
       const hash = await bcrypt.hash(password, ROUNDS);
       await db.collection(USERS).insertOne({
           username: username,
-          hash: hash
+          hash: hash,
+          UID: uid
       });
       console.log('successfully joined', username, password, hash);
       req.flash('info', 'successfully joined and logged in as ' + username);
@@ -245,7 +254,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             user: 'Lily',
             time: new Date(),
             path: '/uploads/' + req.file.filename,
-            animal: req.body.animal,
+            animal: req.body.animal.value,
             location: req.body.location,
             caption: req.body.caption,
             likes:0,

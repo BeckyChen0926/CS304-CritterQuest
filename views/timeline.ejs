@@ -29,7 +29,7 @@
                         <p> <%= post['caption'] %></p>
                     </div>
                     <div class="likeComment">
-                        <h2 class="likes">Likes: <%= post['likes'] %> </h2>
+                        <button><h2 class="likes">Likes: <%= post['likes'] %> </h2></button>
                         <% if (post['comments']){%>
                             <h2 class="comments">Comments: <%= post['comments'].length %> </h2> 
                         <% }%>
