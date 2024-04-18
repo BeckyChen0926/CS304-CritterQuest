@@ -321,12 +321,7 @@ app.get('/profile/:userID', async (req, res) => {
                              });
 });
 
-app.get('/staffList/', async (req, res) => {
-    const db = await Connection.open(mongoUri, WMDB);
-    let all = await db.collection(STAFF).find({}).sort({name: 1}).toArray();
-    console.log('len', all.length, 'first', all[0]);
-    return res.render('list.ejs', {listDescription: 'all staff', list: all});
-});
+
 
 // ================================================================
 // postlude
