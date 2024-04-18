@@ -124,38 +124,6 @@ app.get('/', (req, res) => {
     return res.render('login.ejs');
 });
 
-  app.post("/join", async (req, res) => {
-    try {
-      const username = req.body.username;
-      const password = req.body.password;
-      const db = await Connection.open(mongoUri, CRITTERQUEST);
-      var existingUser = await db.collection(USERS).findOne({username: username});
-      if (existingUser) {
-        req.flash('error', "Login already exists - please try logging in instead.");
-        return res.redirect('/')
-      }
-      
-      let counters = db.collection(COUNTERS);
-      counter.incr(counters, "users");
-      var countObj = await counters.findOne({collection: 'users'});
-      var uid = countObj["counter"];
-
-      const hash = await bcrypt.hash(password, ROUNDS);
-      await db.collection(USERS).insertOne({
-          username: username,
-          hash: hash,
-          UID: uid
-      });
-      console.log('successfully joined', username, password, hash);
-      req.flash('info', 'successfully joined and logged in as ' + username);
-      req.session.username = username;
-      req.session.loggedIn = true;
-      return res.redirect('/timeline');
-    } catch (error) {
-      req.flash('error', `Form submission error: ${error}`);
-      return res.redirect('/')
-    }
-  });
   
   app.post("/login", async (req, res) => {
     try {
