@@ -9,17 +9,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <%- include("partials/navbar.ejs") %>
-    
-    
+    <%- include("partials/navbar.ejs", { uid: uid }) %>
     <div class="username">
         <h1><%= username %></h1>
     </div>
     <div class="about">
-        <h2><%= aboutme %></h2>
+        <h2>About me:<%= aboutme %></h2>
     </div>
     <div class="badges">
-        <h3>Badges:</h3>
+        <h2>Badges:</h2>
         <% if (badges != null){%>
             <ul>
                 <% badges.forEach( (badge) => {%>

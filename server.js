@@ -124,7 +124,7 @@ app.get('/', (req, res) => {
     return res.render('login.ejs');
 });
 
-  app.post("/join", async (req, res) => {
+app.post("/join", async (req, res) => {
     try {
       const username = req.body.username;
       const password = req.body.password;
@@ -144,25 +144,28 @@ app.get('/', (req, res) => {
       await db.collection(USERS).insertOne({
           username: username,
           hash: hash,
-          UID: uid
+          UID: uid,
+          aboutme:"",
+          badges: ['Welcome!'],
       });
       console.log('successfully joined', username, password, hash);
       req.flash('info', 'successfully joined and logged in as ' + username);
       req.session.username = username;
       req.session.loggedIn = true;
-      return res.redirect('/timeline');
+      return res.redirect('/profile/'+uid);
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
       return res.redirect('/')
     }
   });
-  
+
   app.post("/login", async (req, res) => {
     try {
       const username = req.body.username;
       const password = req.body.password;
       const db = await Connection.open(mongoUri, CRITTERQUEST);
       var existingUser = await db.collection(USERS).findOne({username: username});
+      var uid = existingUser.UID;
       console.log('user', existingUser);
       if (!existingUser) {
         req.flash('error', "Username does not exist - try again.");
@@ -174,11 +177,11 @@ app.get('/', (req, res) => {
           req.flash('error', "Username or password incorrect - try again.");
           return res.redirect('/')
       }
-      req.flash('info', 'successfully logged in as ' + username);
+    //   req.flash('info', 'successfully logged in as ' + username);
       req.session.username = username;
       req.session.loggedIn = true;
       console.log('login as', username);
-      return res.redirect('/timeline');
+      return res.redirect('/profile/'+ uid);
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
       return res.redirect('/')
@@ -278,6 +281,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('file', req.file);
     console.log('post form');
     const username = req.session.user;
+    var postTime = new Date();
+    console.log('post time: ', postTime);
     // if (!username) {
     //     req.flash('info', "You are not logged in");
     //     return res.redirect('/login');
@@ -302,7 +307,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             UID: 1,
             // user: username,
             user: 'Lily',
-            time: new Date(),
+            time: postTime.toLocaleString(),
             path: '/uploads/' + req.file.filename,
             animal: req.body.animal,
             location: req.body.location,
@@ -343,7 +348,7 @@ app.get('/profile/:userID', async (req, res) => {
     var allPosts = await posts.find({UID: idNumber});
 
     return res.render('profile.ejs', 
-                            {
+                            {   uid:person.uid,
                                 posts: allPosts, 
                                 badges: allBadges,
                                 isOwnProfile: isOwnProfile,
