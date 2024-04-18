@@ -17,6 +17,7 @@ const flash = require('express-flash');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const ROUNDS = 19;
+const counter = require('./counter-utils.js')
 
 
 // our modules loaded from cwd
@@ -113,16 +114,17 @@ const DB = process.env.USER;
 const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
 const USERS = "users"
+const COUNTERS = "counters"
 // const UPLOADS = 'uploads';
 
 app.get('/', (req, res) => {
-    let uid = req.session.uid || 'unknown';
+    //let uid = req.session.uid || 'unknown';
     // console.log('uid', uid);
     // return res.render('index.ejs', {uid});
-    return res.render('login.ejs', {uid});
+    return res.render('login.ejs');
 });
 
-app.post("/join", async (req, res) => {
+  app.post("/join", async (req, res) => {
     try {
       const username = req.body.username;
       const password = req.body.password;
@@ -132,10 +134,17 @@ app.post("/join", async (req, res) => {
         req.flash('error', "Login already exists - please try logging in instead.");
         return res.redirect('/')
       }
+      
+      let counters = db.collection(COUNTERS);
+      counter.incr(counters, "users");
+      var countObj = await counters.findOne({collection: 'users'});
+      var uid = countObj["counter"];
+
       const hash = await bcrypt.hash(password, ROUNDS);
       await db.collection(USERS).insertOne({
           username: username,
-          hash: hash
+          hash: hash,
+          UID: uid
       });
       console.log('successfully joined', username, password, hash);
       req.flash('info', 'successfully joined and logged in as ' + username);
@@ -177,6 +186,7 @@ app.post("/join", async (req, res) => {
   });
 
 
+
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -195,17 +205,23 @@ app.get('/timeline/', async (req, res) => {
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
 
+// app.post('/logout', (req,res) => {
+//     if (req.session.username) {
+//       req.session.username = null;
+//       req.session.loggedIn = false;
+//       req.flash('info', 'You are logged out');
+//       return res.redirect('/');
+//     } else {
+//       req.flash('error', 'You are not logged in - please do so.');
+//       return res.redirect('/');
+//     }
+//   });
+
+
 app.post('/logout', (req,res) => {
-    if (req.session.username) {
-      req.session.username = null;
-      req.session.loggedIn = false;
-      req.flash('info', 'You are logged out');
-      return res.redirect('/');
-    } else {
-      req.flash('error', 'You are not logged in - please do so.');
-      return res.redirect('/');
-    }
-  });
+    req.session = null;
+    return res.redirect('/login');
+});
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
@@ -247,7 +263,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             user: 'Lily',
             time: new Date(),
             path: '/uploads/' + req.file.filename,
-            animal: req.body.animal,
+            animal: req.body.animal.value,
             location: req.body.location,
             caption: req.body.caption,
             likes:0,
@@ -264,6 +280,7 @@ app.get('/profile/:userID', async (req, res) => {
     console.log(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
+    console.log("people: ", people)
     const idString = req.params.userID;
     console.log("idString: ", idString);
     const idNumber = parseInt(idString); //need to parse the string as an integer
