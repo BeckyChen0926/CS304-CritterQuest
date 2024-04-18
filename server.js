@@ -242,6 +242,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('file', req.file);
     console.log('post form');
     const username = req.session.user;
+    var postTime = new Date();
+    console.log('post time: ', postTime);
     // if (!username) {
     //     req.flash('info', "You are not logged in");
     //     return res.redirect('/login');
@@ -266,7 +268,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             UID: 1,
             // user: username,
             user: 'Lily',
-            time: new Date(),
+            time: postTime.toLocaleString(),
             path: '/uploads/' + req.file.filename,
             animal: req.body.animal,
             location: req.body.location,
