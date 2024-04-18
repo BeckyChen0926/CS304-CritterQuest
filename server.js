@@ -145,6 +145,7 @@ app.post("/join", async (req, res) => {
           username: username,
           hash: hash,
           UID: uid,
+          aboutme:"",
           badges: ['Welcome!'],
       });
       console.log('successfully joined', username, password, hash);
@@ -203,6 +204,42 @@ app.get('/timeline/', async (req, res) => {
     */
     return res.render('timeline.ejs', {userPosts: postList});
 });
+
+async function incrementLikes(time) {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+
+    const postsCollection = db.collection(POSTS);
+
+    // Update the 'likes' field of the post and return the updated document
+    const updatedPost = await postsCollection.findOneAndUpdate(
+        { time: time },
+        { $inc: { likes: 1 } },
+        { returnDocument: "after" }
+    );
+
+    // Return the updated number of likes
+    return updatedPost.likes;
+}
+
+// Handle the like button click
+app.post('/like', async (req, res) => {
+    // const postId = req.body.postId;
+    const postDate = req.body.postTime;
+
+    try {
+        // Increment likes for the post
+        const updatedLikes = await incrementLikes(postDate);
+        console.log(updatedLikes);
+        return res.redirect('/timeline');
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+    return res.redirect('/timeline');
+});
+
+
+
 
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
