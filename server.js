@@ -68,6 +68,8 @@ function timeString(dateObj) {
     return hh + mm + ss
 }
 
+const fs = require('node:fs/promises');
+
 // app.use('/uploads', express.static('uploads'));
 // var storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
@@ -116,10 +118,10 @@ const COUNTERS = "counters"
 // const UPLOADS = 'uploads';
 
 app.get('/', (req, res) => {
-    let uid = req.session.uid || 'unknown';
+    //let uid = req.session.uid || 'unknown';
     // console.log('uid', uid);
     // return res.render('index.ejs', {uid});
-    return res.render('login.ejs', {uid});
+    return res.render('login.ejs');
 });
 
   app.post("/join", async (req, res) => {
@@ -203,6 +205,11 @@ app.get('/timeline/', async (req, res) => {
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
 
+app.get('/logout', (req,res) => {
+    req.session = null;
+    return res.redirect('/');
+});
+
 // app.post('/logout', (req,res) => {
 //     if (req.session.username) {
 //       req.session.username = null;
@@ -218,8 +225,9 @@ app.get('/timeline/', async (req, res) => {
 
 app.post('/logout', (req,res) => {
     req.session = null;
-    return res.redirect('/');
+    return res.redirect('/login');
 });
+
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
 
@@ -242,6 +250,13 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     //     req.flash('error', "No file uploaded");
     //     return res.redirect('/posting/');
     // }
+
+    // change the permissions of the file to be world-readable
+    // this can be a relative or absolute pathname. 
+    // Here, I used a relative pathname
+    let val = await fs.chmod('/students/critterquest/uploads/'
+                             +req.file.filename, 0o664);
+    console.log('chmod val', val);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const result = await db.collection(POSTS)
