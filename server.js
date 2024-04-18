@@ -67,6 +67,8 @@ function timeString(dateObj) {
     return hh + mm + ss
 }
 
+const fs = require('node:fs/promises');
+
 // app.use('/uploads', express.static('uploads'));
 // var storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
@@ -227,6 +229,13 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     //     req.flash('error', "No file uploaded");
     //     return res.redirect('/posting/');
     // }
+
+    // change the permissions of the file to be world-readable
+    // this can be a relative or absolute pathname. 
+    // Here, I used a relative pathname
+    let val = await fs.chmod('/students/critterquest/uploads/'
+                             +req.file.filename, 0o664);
+    console.log('chmod val', val);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const result = await db.collection(POSTS)
