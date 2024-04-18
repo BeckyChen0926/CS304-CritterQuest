@@ -196,13 +196,16 @@ app.get('/timeline/', async (req, res) => {
     const postList = await db.collection(POSTS).find({}, { sort: { time: -1 }}).toArray();
     console.log(postList);
 
+    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    // var uid = existingUser.UID;
+
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
     /*
-    if(!req.session.logged_in){
+    if(!req.session.logged_in){ 
         return res.render('login.ejs');
     }
     */
-    return res.render('timeline.ejs', {userPosts: postList});
+    return res.render('timeline.ejs', { userPosts: postList, uid: req.session.UID });
 });
 
 async function incrementLikes(time) {
@@ -272,7 +275,10 @@ app.post('/logout', (req,res) => {
 
 app.get('/posting/', async (req, res) => {
     console.log('get form');
-    return res.render('form.ejs', {action: '/posting/', location:''});
+    // const db = await Connection.open(mongoUri, CRITTERQUEST);
+    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    // var uid = existingUser.UID;
+    return res.render('form.ejs', {action: '/posting/', location:'',uid:req.session.UID});
 });
 
 // limited but not private
@@ -303,8 +309,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     const result = await db.collection(POSTS)
         .insertOne({
             PID: 3,
-            // UID: req.session.UID,
-            UID: 1,
+            UID: req.session.UID,
+            // UID: 1,
             // user: username,
             user: 'Lily',
             time: postTime.toLocaleString(),
