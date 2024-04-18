@@ -18,22 +18,23 @@
                     <div class="image">
                         <img src="<%= post['path'] %>">
                     </div>
-                    <div class="info">
-                        <h1 class="username"><%= post['user'] %></h1> 
-                        <h2 class="location"><%= post['location'] %></h2>
-                    </div>
-                    <div class="time">
-                        <h2><%= post['time'] %></h2>
-                    </div>    
-                    <div class="caption">
-                        <p> <%= post['caption'] %></p>
-                    </div>
-                    <div class="likeComment">
-                        <button><h2 class="likes">Likes: <%= post['likes'] %> </h2></button>
-                        <% if (post['comments']){%>
-                            <h2 class="comments">Comments: <%= post['comments'].length %> </h2> 
-                        <% }%>
-      
+                    <div class="about">
+                        <div class="info">
+                            <h1 class="username"><%= post['user'] %></h1> 
+                            <h2 class="location"><%= post['location'] %></h2>
+                        </div>
+                        <div class="time">
+                            <h2><%= post['time'] %></h2>
+                        </div>    
+                        <div class="caption">
+                            <p> <%= post['caption'] %></p>
+                        </div>
+                        <div class="likeComment">
+                            <button><h2 class="likes">Likes: <%= post['likes'] %> </h2></button>
+                            <% if (post['comments']){%>
+                                <h2 class="comments">Comments: <%= post['comments'].length %> </h2> 
+                            <% }%>
+                        </div>
                     </div>
                 </li>
             </div>
