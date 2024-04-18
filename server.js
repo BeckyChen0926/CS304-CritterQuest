@@ -203,6 +203,11 @@ app.get('/timeline/', async (req, res) => {
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
 
+app.get('/logout', (req,res) => {
+    req.session = null;
+    return res.redirect('/');
+});
+
 // app.post('/logout', (req,res) => {
 //     if (req.session.username) {
 //       req.session.username = null;
