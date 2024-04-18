@@ -114,10 +114,10 @@ const USERS = "users"
 // const UPLOADS = 'uploads';
 
 app.get('/', (req, res) => {
-    let uid = req.session.uid || 'unknown';
+    //let uid = req.session.uid || 'unknown';
     // console.log('uid', uid);
     // return res.render('index.ejs', {uid});
-    return res.render('login.ejs', {uid});
+    return res.render('login.ejs');
 });
 
 app.post("/join", async (req, res) => {
@@ -209,8 +209,9 @@ app.get('/timeline/', async (req, res) => {
 
 app.post('/logout', (req,res) => {
     req.session = null;
-    return res.redirect('/');
+    return res.redirect('/login');
 });
+
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
 
