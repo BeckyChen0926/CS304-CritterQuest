@@ -145,6 +145,7 @@ app.post("/join", async (req, res) => {
           username: username,
           hash: hash,
           UID: uid,
+          aboutme:"",
           badges: ['Welcome!'],
       });
       console.log('successfully joined', username, password, hash);
