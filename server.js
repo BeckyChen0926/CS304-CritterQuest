@@ -284,7 +284,7 @@ app.get('/profile/:userID', async (req, res) => {
     console.log(person);
     var allBadges = person.badges || null; //list of images, its just words for now 
     var personDescription = person.aboutme || null;
-    var profilePic = person.pfp;
+    // var profilePic = person.pfp;
     var username = person.username;
 
     //get all the posts which are tagged with the userID 
@@ -298,7 +298,7 @@ app.get('/profile/:userID', async (req, res) => {
                                 isOwnProfile: isOwnProfile,
                                 aboutme: personDescription,
                                 username: username,
-                                pfp: profilePic
+                                // pfp: profilePic
                              });
 });
 
