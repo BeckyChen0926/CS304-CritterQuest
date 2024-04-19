@@ -3,6 +3,7 @@ body {
   background-image: url("critquestbg.png");
   background-size: cover;
 }
+
 /*Start Main *********************************************************/
 
 
@@ -48,7 +49,7 @@ nav li a:hover {
 /*End Nav Bar *********************************************************/
 
 
-/*Start Timeline *********************************************************/  
+/*Start Timeline *********************************************************/
 ul {
   list-style-type: none;
   padding-top: 30px;
@@ -84,7 +85,7 @@ ul {
   flex-direction: column;
 }
 
-.about div{
+.about div {
   flex: 1;
 }
 
@@ -99,6 +100,16 @@ ul {
 
 .username {
   padding-top: 20px;
+}
+
+.myInfo {
+  float: left;
+  width: 30%;
+}
+
+.myPosts {
+  float: right;
+  width: 70%;
 }
 
 /*End Profile *********************************************************/

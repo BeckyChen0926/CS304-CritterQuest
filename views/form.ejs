@@ -12,62 +12,43 @@
 
 <body>
   <%- include("partials/navbar.ejs", { uid: uid }) %>
-  <br><br>
+    <br><br>
+<center>
+    <h1>Posting an animal sighting!</h1>
+    <h2>What did you see?</h2>
+    <form class="posting" id="posting" method="POST" action="/posting" enctype="multipart/form-data">
+      <p><label>Animal
+          <select name="animal">
+            <!-- should iterate through a list of animals and make the dropdown -->
+            <option value="">choose animal</option>
+            <option value="">I will enter a new animal</option>
+            <% animalList.forEach((a) => {%>
+                <option value="<%= a.animal%>"><%= a.animal%></option>
+            <% })%>
+          </select>
+          <input type="text" name="custom_animal" id="custom-animal" placeholder="Or add your own animal">
 
-  <h1>Posting an animal sighting!</h1>
-  <h2>What did you see?</h2>
-  <form class="posting" id="posting" method="POST" action="/posting" enctype="multipart/form-data">
-    <p><label>Animal
-        <select name="animal">
-          <!-- should iterate through a list of animals and make the dropdown -->
-          <option value="">choose animal</option>
-          <option value="cat">Cat</option>
-          <option value="dog">Dog</option>
-          <option value="goose">Goose</option>
-          <option value="raccoon">Raccoon</option>
-          <option value="deer">Deer</option>
-          <option value="squirrel">Squirrel</option>
-          <option value="bear">Bear</option>
-          <option value="wolf">Wolf</option>
-          <option value="cayote">Cayote</option>
-          <option value="turtle">Turtle</option>
-          <option value="duck">Duck</option>
-          <option value="fish">Fish</option>
-          <option value="owl">Owl</option>
-          <option value="hawk">Hawk</option>
-          <option value="rabbit">Rabbit</option>
-          <option value="hawk">Hawk</option>
-          <option value="hedgehog">Hedgehog</option>
-          <option value="possum">Possum</option>
-          <option value="chipmunk">Chipmunk</option>
-          <option value="frog">Frog</option>
+        </label></p>
+      <p><label>Location <input name="location" value="<%= location %>"></label></p>
 
+      <p>
+        <label>Upload image
+          <input type="file" accept="image/*" name="photo">
+        </label>
+      </p>
 
-        </select>
-      </label></p>
-    <p><label>Location <input name="location" value="<%= location %>"></label></p>
-    <p>
-      <label for="title">title
-        <input type="text" name="title" placeholder="photo title">
-      </label>
-    </p>
-    <p>
-      <label>Upload image
-        <input type="file" accept="image/*" name="photo">
-      </label>
-    </p>
+      <p><label>Description
+          <textarea rows="3" cols="30" name="caption"></textarea>
+        </label></p>
+      <p>
+        <input type="submit" value="Post my animal sighting!">
+        <input type="reset" value="Reset">
+      </p>
 
-    <p><label>Description
-        <textarea rows="3" cols="30" name="caption"></textarea>
-      </label></p>
-    <p>
-      <input type="submit" value="Post my animal sighting!">
-      <input type="reset" value="Reset">
-    </p>
-
-  </form>
-  <!-- load local js -->
-  <script src="/main.js"></script>
+    </form>
+    </center>
+    <!-- load local js -->
+    <script src="/main.js"></script>
 </body>
 
 </html>

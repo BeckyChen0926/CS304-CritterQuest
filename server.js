@@ -113,9 +113,10 @@ const DB = process.env.USER;
 // Use these constants and mispellings become errors
 const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
-const USERS = "users"
-const COUNTERS = "counters"
+const USERS = "users";
+const COUNTERS = "counters";
 // const UPLOADS = 'uploads';
+const ANIMALS = 'animals';
 
 app.get('/', (req, res) => {
     //let uid = req.session.uid || 'unknown';
@@ -167,13 +168,14 @@ app.post("/login", async (req, res) => {
         const db = await Connection.open(mongoUri, CRITTERQUEST);
         var existingUser = await db.collection(USERS).findOne({ username: username });
         var uid = existingUser.UID;
-        console.log('user', existingUser);
+        console.log('user', new Date() + existingUser);
         if (!existingUser) {
             req.flash('error', "Username does not exist - try again.");
             return res.redirect('/')
         }
+        // user came pretty fast... the progress gets stuck at bcrpt for a while
         const match = await bcrypt.compare(password, existingUser.hash);
-        console.log('match', match);
+        console.log('match', new Date() + match);
         if (!match) {
             req.flash('error', "Username or password incorrect - try again.");
             return res.redirect('/')
@@ -181,7 +183,7 @@ app.post("/login", async (req, res) => {
         //   req.flash('info', 'successfully logged in as ' + username);
         req.session.username = username;
         req.session.loggedIn = true;
-        console.log('login as', username);
+        console.log('login as', new Date() + username);
         return res.redirect('/profile/' + uid);
     } catch (error) {
         // req.flash('error', `Invalid loginerror: ${error}`);
@@ -280,7 +282,8 @@ app.get('/posting/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
     var uid = existingUser.UID;
-    return res.render('form.ejs', { action: '/posting/', location: '', uid: uid });
+    var animalList = await db.collection(ANIMALS).find({}).toArray();
+    return res.render('form.ejs', { action: '/posting/', location: '', uid: uid,animalList });
 });
 
 // limited but not private
@@ -311,6 +314,14 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     var existingUser = await db.collection(USERS).findOne({ username: username });
     var uid = existingUser.UID;
     console.log('user', existingUser);
+    const customAnimal = req.body.custom_animal;
+    if (customAnimal) {
+        // Insert the custom animal into the database
+        await db.collection(ANIMALS).insertOne({ 'animal': customAnimal });
+
+        // Use the custom animal as the selected animal
+        req.body.animal = customAnimal;
+    }
     const result = await db.collection(POSTS)
         .insertOne({
             PID: 3,
@@ -354,6 +365,9 @@ app.get('/profile/:userID', async (req, res) => {
     // var profilePic = person.pfp;
     var username = person.username;
 
+    var myPosts = await db.collection(POSTS).find({ UID: idNumber },{ sort: { time: -1 } }).toArray();
+    console.log(myPosts);
+
     //get all the posts which are tagged with the userID 
     const posts = db.collection(POSTS); //go to the Users collection
     var allPosts = await posts.find({ UID: idNumber });
@@ -367,6 +381,7 @@ app.get('/profile/:userID', async (req, res) => {
             aboutme: personDescription,
             username: username,
             // pfp: profilePic
+            myPosts:myPosts
         });
 });
 

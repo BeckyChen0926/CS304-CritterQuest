@@ -73,7 +73,7 @@ async function insertUsers(db) {
         .insertMany([
             {
                 // potentially short ID
-                UID: 2,
+                UID: 0,
                 username: "Lily",
                 hash: 'catdogbirdfox',
                 pfp: 'a picture of lily',
