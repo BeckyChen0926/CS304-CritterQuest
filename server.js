@@ -7,7 +7,7 @@
 
 // standard modules, loaded from node_modules
 const path = require('path');
-require("dotenv").config({ path: path.join(process.env.HOME, '.cs304env')});
+require("dotenv").config({ path: path.join(process.env.HOME, '.cs304env') });
 const express = require('express');
 const morgan = require('morgan');
 const serveStatic = require('serve-static');
@@ -126,78 +126,78 @@ app.get('/', (req, res) => {
 
 app.post("/join", async (req, res) => {
     try {
-      const username = req.body.username;
-      const password = req.body.password;
-      const db = await Connection.open(mongoUri, CRITTERQUEST);
-      var existingUser = await db.collection(USERS).findOne({username: username});
-      if (existingUser) {
-        req.flash('error', "Login already exists - please try logging in instead.");
+        const username = req.body.username;
+        const password = req.body.password;
+        const db = await Connection.open(mongoUri, CRITTERQUEST);
+        var existingUser = await db.collection(USERS).findOne({ username: username });
+        if (existingUser) {
+            req.flash('error', "Login already exists - please try logging in instead.");
+            return res.redirect('/')
+        }
+
+        let counters = db.collection(COUNTERS);
+        counter.incr(counters, "users");
+        var countObj = await counters.findOne({ collection: 'users' });
+        var uid = countObj["counter"];
+
+        const hash = await bcrypt.hash(password, ROUNDS);
+        await db.collection(USERS).insertOne({
+            username: username,
+            hash: hash,
+            UID: uid,
+            aboutme: "",
+            badges: ['Welcome!'],
+        });
+        console.log('successfully joined', username, password, hash);
+        req.flash('info', 'successfully joined and logged in as ' + username);
+        req.session.username = username;
+        req.session.loggedIn = true;
+        return res.redirect('/profile/' + uid);
+    } catch (error) {
+        req.flash('error', `Form submission error: ${error}`);
         return res.redirect('/')
-      }
-      
-      let counters = db.collection(COUNTERS);
-      counter.incr(counters, "users");
-      var countObj = await counters.findOne({collection: 'users'});
-      var uid = countObj["counter"];
-
-      const hash = await bcrypt.hash(password, ROUNDS);
-      await db.collection(USERS).insertOne({
-          username: username,
-          hash: hash,
-          UID: uid,
-          aboutme:"",
-          badges: ['Welcome!'],
-      });
-      console.log('successfully joined', username, password, hash);
-      req.flash('info', 'successfully joined and logged in as ' + username);
-      req.session.username = username;
-      req.session.loggedIn = true;
-      return res.redirect('/profile/'+uid);
-    } catch (error) {
-      req.flash('error', `Form submission error: ${error}`);
-      return res.redirect('/')
     }
-  });
+});
 
-  app.post("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
     try {
-      const username = req.body.username;
-      const password = req.body.password;
-      const db = await Connection.open(mongoUri, CRITTERQUEST);
-      var existingUser = await db.collection(USERS).findOne({username: username});
-      var uid = existingUser.UID;
-      console.log('user', existingUser);
-      if (!existingUser) {
-        req.flash('error', "Username does not exist - try again.");
-       return res.redirect('/')
-      }
-      const match = await bcrypt.compare(password, existingUser.hash); 
-      console.log('match', match);
-      if (!match) {
-          req.flash('error', "Username or password incorrect - try again.");
-          return res.redirect('/')
-      }
-    //   req.flash('info', 'successfully logged in as ' + username);
-      req.session.username = username;
-      req.session.loggedIn = true;
-      console.log('login as', username);
-      return res.redirect('/profile/'+ uid);
+        const username = req.body.username;
+        const password = req.body.password;
+        const db = await Connection.open(mongoUri, CRITTERQUEST);
+        var existingUser = await db.collection(USERS).findOne({ username: username });
+        var uid = existingUser.UID;
+        console.log('user', existingUser);
+        if (!existingUser) {
+            req.flash('error', "Username does not exist - try again.");
+            return res.redirect('/')
+        }
+        const match = await bcrypt.compare(password, existingUser.hash);
+        console.log('match', match);
+        if (!match) {
+            req.flash('error', "Username or password incorrect - try again.");
+            return res.redirect('/')
+        }
+        //   req.flash('info', 'successfully logged in as ' + username);
+        req.session.username = username;
+        req.session.loggedIn = true;
+        console.log('login as', username);
+        return res.redirect('/profile/' + uid);
     } catch (error) {
-      req.flash('error', `Form submission error: ${error}`);
-      return res.redirect('/')
+        req.flash('error', `Form submission error: ${error}`);
+        return res.redirect('/')
     }
-  });
+});
 
 
 
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { time: -1 }}).toArray();
+    const postList = await db.collection(POSTS).find({}, { sort: { time: -1 } }).toArray();
     console.log(postList);
 
-    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    // var uid = existingUser.UID;
+    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    var uid = existingUser.UID;
 
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
     /*
@@ -205,7 +205,7 @@ app.get('/timeline/', async (req, res) => {
         return res.render('login.ejs');
     }
     */
-    return res.render('timeline.ejs', { userPosts: postList, uid: req.session.UID });
+    return res.render('timeline.ejs', { userPosts: postList, uid: uid });
 });
 
 async function incrementLikes(time) {
@@ -247,7 +247,7 @@ app.post('/like', async (req, res) => {
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
 
-app.get('/logout', (req,res) => {
+app.get('/logout', (req, res) => {
     req.session = null;
     return res.redirect('/');
 });
@@ -265,7 +265,7 @@ app.get('/logout', (req,res) => {
 //   });
 
 
-app.post('/logout', (req,res) => {
+app.post('/logout', (req, res) => {
     req.session = null;
     return res.redirect('/login');
 });
@@ -275,10 +275,10 @@ app.post('/logout', (req,res) => {
 
 app.get('/posting/', async (req, res) => {
     console.log('get form');
-    // const db = await Connection.open(mongoUri, CRITTERQUEST);
-    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    // var uid = existingUser.UID;
-    return res.render('form.ejs', {action: '/posting/', location:'',uid:req.session.UID});
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    var uid = existingUser.UID;
+    return res.render('form.ejs', { action: '/posting/', location: '', uid: uid });
 });
 
 // limited but not private
@@ -286,7 +286,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
-    const username = req.session.user;
+    const username = req.session.username;
     var postTime = new Date();
     console.log('post time: ', postTime);
     // if (!username) {
@@ -302,14 +302,17 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     // this can be a relative or absolute pathname. 
     // Here, I used a relative pathname
     let val = await fs.chmod('/students/critterquest/uploads/'
-                             +req.file.filename, 0o664);
+        + req.file.filename, 0o664);
     console.log('chmod val', val);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
+    var existingUser = await db.collection(USERS).findOne({ username: username });
+    var uid = existingUser.UID;
+    console.log('user', existingUser);
     const result = await db.collection(POSTS)
         .insertOne({
             PID: 3,
-            UID: req.session.UID,
+            UID: uid,
             // UID: 1,
             // user: username,
             user: req.session.username,
@@ -318,8 +321,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             animal: req.body.animal,
             location: req.body.location,
             caption: req.body.caption,
-            likes:0,
-            comments:null
+            likes: 0,
+            comments: null
         });
     console.log('insertOne result', result);
 
@@ -342,7 +345,7 @@ app.get('/profile/:userID', async (req, res) => {
     var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been implemented yet so we don't have user sessions
 
     //get the user information stored in the DB
-    var person = await people.findOne({ UID: idNumber}); //find profile
+    var person = await people.findOne({ UID: idNumber }); //find profile
     console.log(person);
     var allBadges = person.badges || null; //list of images, its just words for now 
     var personDescription = person.aboutme || null;
@@ -351,17 +354,18 @@ app.get('/profile/:userID', async (req, res) => {
 
     //get all the posts which are tagged with the userID 
     const posts = db.collection(POSTS); //go to the Users collection
-    var allPosts = await posts.find({UID: idNumber});
+    var allPosts = await posts.find({ UID: idNumber });
 
-    return res.render('profile.ejs', 
-                            {   uid:idNumber,
-                                posts: allPosts, 
-                                badges: allBadges,
-                                isOwnProfile: isOwnProfile,
-                                aboutme: personDescription,
-                                username: username,
-                                // pfp: profilePic
-                             });
+    return res.render('profile.ejs',
+        {
+            uid: idNumber,
+            posts: allPosts,
+            badges: allBadges,
+            isOwnProfile: isOwnProfile,
+            aboutme: personDescription,
+            username: username,
+            // pfp: profilePic
+        });
 });
 
 
@@ -374,9 +378,9 @@ app.get("/edit/:userID", async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
     // console.log("users", users);
-    
+
     // Fetch users details using uid
-    const user = await users.findOne({ UID:uid });
+    const user = await users.findOne({ UID: uid });
 
     console.log("user", user);
 
@@ -384,31 +388,28 @@ app.get("/edit/:userID", async (req, res) => {
 
     let aboutMe = "Empty";
 
-    if (user.aboutme!=null) {
+    if (user.aboutme != null) {
         aboutMe = user.aboutme;
     }
 
-    res.render("editProfile.ejs", {user,username,aboutMe,uid:uid});
+    res.render("editProfile.ejs", { user, username, aboutMe, uid: uid });
 });
 
-/**
- * Submit the edits from the edit form
- */
 app.post('/edit/:userID', async (req, res) => {
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
     const { username, aboutMe } = req.body;
-    
+
     // Fetch user details using uid
-    const user = await users.findOne({ UID:uid });
+    const user = await users.findOne({ UID: uid });
 
     // Update user info.
     user.username = username;
     user.aboutme = aboutMe;
 
-    // Save the updated user
-    const result= await users.updateOne({ UID: uid}, { $set: user});
+    // Save the updated movie
+    const result = await users.updateOne({ UID: uid }, { $set: user });
     console.log(result);
 
     // Redirect to the profile page for the updated profile
@@ -421,6 +422,6 @@ app.post('/edit/:userID', async (req, res) => {
 const serverPort = cs304.getPort(8080);
 
 // this is last, because it never returns
-app.listen(serverPort, function() {
+app.listen(serverPort, function () {
     console.log(`open http://localhost:${serverPort}`);
 });
