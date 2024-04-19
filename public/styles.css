@@ -110,6 +110,7 @@ form {
   border: 2px solid black;
   padding: 2ex;
   border-radius: 2ex;
+  background-color: #A6BB77;
 }
 
 [type=submit] {
