@@ -391,6 +391,9 @@ app.get("/edit/:userID", async (req, res) => {
     res.render("editProfile.ejs", {user,username,aboutMe,uid:uid});
 });
 
+/**
+ * Submit the edits from the edit form
+ */
 app.post('/edit/:userID', async (req, res) => {
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -404,7 +407,7 @@ app.post('/edit/:userID', async (req, res) => {
     user.username = username;
     user.aboutme = aboutMe;
 
-    // Save the updated movie
+    // Save the updated user
     const result= await users.updateOne({ UID: uid}, { $set: user});
     console.log(result);
 
