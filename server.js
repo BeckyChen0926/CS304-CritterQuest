@@ -312,7 +312,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             UID: req.session.UID,
             // UID: 1,
             // user: username,
-            user: 'Lily',
+            user: req.session.username,
             time: postTime.toLocaleString(),
             path: '/uploads/' + req.file.filename,
             animal: req.body.animal,

@@ -101,3 +101,21 @@ ul {
 }
 
 /*End Profile *********************************************************/
+
+
+/*Login *********************************************************/
+form {
+  display: inline-block;
+  border: 2px solid black;
+  padding: 2ex;
+  border-radius: 2ex;
+}
+
+[type=submit] {
+  font-size: 1em;
+  font-weight: normal;
+  border: 1px solid #4F772D;
+  border-radius: 0.5em;
+  background-color: #4F772D;
+  color: white;
+}
