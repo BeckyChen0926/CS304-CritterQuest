@@ -59,7 +59,7 @@
     </div>
     <% if( isOwnProfile ) { %>
         <div class="button">
-            <button><a href="/edit/:<%= uid %>/">Edit Profile</a></button>
+            <button><a action='GET' href="/edit/<%= uid %>/">Edit Profile</a></button>
         </div>
     <% } %>
 </body>

@@ -354,7 +354,7 @@ app.get('/profile/:userID', async (req, res) => {
     var allPosts = await posts.find({UID: idNumber});
 
     return res.render('profile.ejs', 
-                            {   uid:person.uid,
+                            {   uid:idNumber,
                                 posts: allPosts, 
                                 badges: allBadges,
                                 isOwnProfile: isOwnProfile,
@@ -373,7 +373,7 @@ app.get("/edit/:userID", async (req, res) => {
     console.log("uid", uid);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
-    console.log("users", users);
+    // console.log("users", users);
     
     // Fetch users details using uid
     const user = await users.findOne({ UID:uid });
@@ -388,7 +388,7 @@ app.get("/edit/:userID", async (req, res) => {
         aboutMe = user.aboutme;
     }
 
-    res.render("editProfile.ejs", {username,aboutMe});
+    res.render("editProfile.ejs", {user,username,aboutMe,uid:uid});
 });
 
 app.post('/edit/:userID', async (req, res) => {
