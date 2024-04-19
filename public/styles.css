@@ -92,6 +92,25 @@ ul {
   flex-direction: column;
 }
 
+.likeButton {
+  border: none;
+  background-color: white;
+}
+
+.likeForm {
+  all: revert;
+  
+}
+
+.buttonDiv {
+  float: left;
+  margin-right: 10px;
+}
+
+.likeDiv {
+  float: left;
+}
+
 
 /*End Timeline *********************************************************/
 
