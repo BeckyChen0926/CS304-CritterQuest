@@ -154,7 +154,7 @@ app.post("/join", async (req, res) => {
         req.session.loggedIn = true;
         return res.redirect('/profile/' + uid);
     } catch (error) {
-        req.flash('error', `Form submission error: ${error}`);
+        // req.flash('error', `Form submission error: ${error}`);
         return res.redirect('/')
     }
 });
@@ -405,7 +405,7 @@ app.post('/edit/:userID', async (req, res) => {
     const user = await users.findOne({ UID: uid });
 
     // Update user info.
-    user.username = username;
+    // user.username = username;
     user.aboutme = aboutMe;
 
     // Save the updated user
