@@ -35,11 +35,17 @@
                             <p> <%= post['caption'] %></p>
                         </div>
                         <div class="likeComment">
-                                    
-                            <form action="/like" method="post">
-                                <input type="hidden" name="postTime" value="<%= post['time'] %>">
-                                <button><h2 class="likes">Likes: <%= post['likes'] %> </h2></button>
-                            </form>
+                            <nobr>        
+                                <form class="likeForm" action="/like" method="post">
+                                    <input type="hidden" name="postTime" value="<%= post['time'] %>">
+                                    <div class="buttonDiv">
+                                        <button type="image" class="likeButton"><img src="like.png" alt="Like" width="50px"></button>
+                                    </div>
+                                    <div class="likeDiv">
+                                        <h2 class="likes"><%= post['likes'] %> </h2>
+                                    </div>
+                                </form>
+                            </nobr>
 
                             <% if (post['comments']){%>
                                 <h2 class="comments">Comments: <%= post['comments'].length %> </h2> 
