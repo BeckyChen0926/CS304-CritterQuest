@@ -154,7 +154,8 @@ app.post("/join", async (req, res) => {
         req.session.loggedIn = true;
         return res.redirect('/profile/' + uid);
     } catch (error) {
-        // req.flash('error', `Form submission error: ${error}`);
+        // req.flash('error', `Register error: ${error}`);
+        req.flash('error', `Register error}`);
         return res.redirect('/')
     }
 });
@@ -183,7 +184,8 @@ app.post("/login", async (req, res) => {
         console.log('login as', username);
         return res.redirect('/profile/' + uid);
     } catch (error) {
-        req.flash('error', `Form submission error: ${error}`);
+        // req.flash('error', `Invalid loginerror: ${error}`);
+        req.flash('error', "Username or password incorrect - try again.");
         return res.redirect('/')
     }
 });
