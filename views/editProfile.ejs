@@ -37,15 +37,12 @@
         <form method="POST" action="/edit/<%= uid %>/">
           <table>
               <tr><td>UID</td><td><%= uid %></td></tr>
-            <tr>
-              <td><label for="username">Username</label></td>
-              <td>
-                  
-                  <input id="username"
-                         name="username"
-                         value="<%= user.username %>">
-              </td>
-            </tr>
+              <tr>
+                <td>Username</td>
+                <td>
+                  <%= username %>
+                </td>
+              </tr>
             <tr>
               <td><label for="aboutMe">About Me</label></td>
               <td>
