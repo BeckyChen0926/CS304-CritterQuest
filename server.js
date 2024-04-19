@@ -408,7 +408,7 @@ app.post('/edit/:userID', async (req, res) => {
     user.username = username;
     user.aboutme = aboutMe;
 
-    // Save the updated movie
+    // Save the updated user
     const result = await users.updateOne({ UID: uid }, { $set: user });
     console.log(result);
 
