@@ -328,7 +328,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 });
 
 app.get('/profile/:userID', async (req, res) => {
-    console.log("in profile end point");
+    // console.log("in profile end point");
     console.log(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
@@ -365,6 +365,52 @@ app.get('/profile/:userID', async (req, res) => {
 });
 
 
+/**
+ * Render the edit form
+ */
+app.get("/edit/:userID", async (req, res) => {
+    const uid = parseInt(req.params.userID);
+    console.log("uid", uid);
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const users = db.collection(USERS);
+    console.log("users", users);
+    
+    // Fetch users details using uid
+    const user = await users.findOne({ UID:uid });
+
+    console.log("user", user);
+
+    let username = user.username;
+
+    let aboutMe = "Empty";
+
+    if (user.aboutme!=null) {
+        aboutMe = user.aboutme;
+    }
+
+    res.render("editProfile.ejs", {username,aboutMe});
+});
+
+app.post('/edit/:userID', async (req, res) => {
+    const uid = parseInt(req.params.userID);
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const users = db.collection(USERS);
+    const { username, aboutMe } = req.body;
+    
+    // Fetch user details using uid
+    const user = await users.findOne({ UID:uid });
+
+    // Update user info.
+    user.username = username;
+    user.aboutme = aboutMe;
+
+    // Save the updated movie
+    const result= await users.updateOne({ UID: uid}, { $set: user});
+    console.log(result);
+
+    // Redirect to the profile page for the updated profile
+    res.redirect(`/profile/${uid}`);
+});
 
 // ================================================================
 // postlude
