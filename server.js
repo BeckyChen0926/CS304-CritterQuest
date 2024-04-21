@@ -118,30 +118,37 @@ const COUNTERS = "counters";
 // const UPLOADS = 'uploads';
 const ANIMALS = 'animals';
 
+// Route to render the login page
 app.get('/', (req, res) => {
-    //let uid = req.session.uid || 'unknown';
-    // console.log('uid', uid);
-    // return res.render('index.ejs', {uid});
+    // Renders the login page when accessing the root URL
     return res.render('login.ejs');
 });
 
+// Route to handle user registration
 app.post("/join", async (req, res) => {
     try {
         const username = req.body.username;
         const password = req.body.password;
         const db = await Connection.open(mongoUri, CRITTERQUEST);
+
+        // Check if the username already exists
         var existingUser = await db.collection(USERS).findOne({ username: username });
         if (existingUser) {
+            // If the username already exists, redirect with an error message
             req.flash('error', "Login already exists - please try logging in instead.");
             return res.redirect('/')
         }
 
+        // Increment user counter and get the UID
         let counters = db.collection(COUNTERS);
         counter.incr(counters, "users");
         var countObj = await counters.findOne({ collection: 'users' });
         var uid = countObj["counter"];
 
+        // Hash the password before storing it
         const hash = await bcrypt.hash(password, ROUNDS);
+
+        // Insert the new user into the database
         await db.collection(USERS).insertOne({
             username: username,
             hash: hash,
@@ -149,49 +156,72 @@ app.post("/join", async (req, res) => {
             aboutme: "",
             badges: ['Welcome!'],
         });
+
+        // Log successful registration
         console.log('successfully joined', username, password, hash);
+
+        // Flash success message and set session variables
         req.flash('info', 'successfully joined and logged in as ' + username);
         req.session.username = username;
         req.session.loggedIn = true;
+
+        // Redirect to user profile page
         return res.redirect('/profile/' + uid);
     } catch (error) {
-        // req.flash('error', `Register error: ${error}`);
+        // If there's an error, redirect with an error message
         req.flash('error', `Register error}`);
         return res.redirect('/')
     }
 });
 
+// Route to handle user login
 app.post("/login", async (req, res) => {
     try {
         const username = req.body.username;
         const password = req.body.password;
         const db = await Connection.open(mongoUri, CRITTERQUEST);
+
+        // Find the user in the database
         var existingUser = await db.collection(USERS).findOne({ username: username });
         var uid = existingUser.UID;
+
+        // Log user information (for debugging purposes)
         console.log('user', new Date() + existingUser);
+
         if (!existingUser) {
+            // If user does not exist, redirect with an error message
             req.flash('error', "Username does not exist - try again.");
             return res.redirect('/')
         }
-        // user came pretty fast... the progress gets stuck at bcrpt for a while
+
+        // Compare the provided password with the hashed password
+        // Note: Bcrypt can take some time to process, especially during login attempts
         const match = await bcrypt.compare(password, existingUser.hash);
+
+        // Log the result of password comparison
         console.log('match', new Date() + match);
+
         if (!match) {
+            // If passwords don't match, redirect with an error message
             req.flash('error', "Username or password incorrect - try again.");
             return res.redirect('/')
         }
-        //   req.flash('info', 'successfully logged in as ' + username);
+
+        // Set session variables for logged-in user
         req.session.username = username;
         req.session.loggedIn = true;
+
+        // Log successful login
         console.log('login as', new Date() + username);
+
+        // Redirect to user profile page
         return res.redirect('/profile/' + uid);
     } catch (error) {
-        // req.flash('error', `Invalid loginerror: ${error}`);
+        // If there's an error, redirect with an error message
         req.flash('error', "Username or password incorrect - try again.");
         return res.redirect('/')
     }
 });
-
 
 
 // main page. This shows the use of session cookies
@@ -251,10 +281,10 @@ app.post('/like', async (req, res) => {
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
 
-app.get('/logout', (req, res) => {
-    req.session = null;
-    return res.redirect('/');
-});
+// app.get('/logout', (req, res) => {
+//     req.session = null;
+//     return res.redirect('/');
+// });
 
 // app.post('/logout', (req,res) => {
 //     if (req.session.username) {
@@ -268,7 +298,7 @@ app.get('/logout', (req, res) => {
 //     }
 //   });
 
-
+// Route to handle user logout
 app.post('/logout', (req, res) => {
     req.session = null;
     return res.redirect('/login');

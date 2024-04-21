@@ -136,13 +136,14 @@ ul {
 
 
 /*Login *********************************************************/
-form {
+form:not(.logoutForm) {
   display: inline-block;
   border: 2px solid black;
   padding: 2ex;
   border-radius: 2ex;
   background-color: #A6BB77;
 }
+
 
 [type=submit] {
   font-size: 1em;
