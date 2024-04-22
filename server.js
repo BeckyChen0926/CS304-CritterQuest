@@ -306,7 +306,7 @@ app.post('/logout', (req, res) => {
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
-
+// renders the post an animal sighting form with dynamic list of animals
 app.get('/posting/', async (req, res) => {
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -317,6 +317,7 @@ app.get('/posting/', async (req, res) => {
 });
 
 // limited but not private
+// Post an animal sighting using the posting form.
 app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
@@ -373,6 +374,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     res.redirect('/timeline');
 });
 
+// shows your own profile page
 app.get('/profile/:userID', async (req, res) => {
     // console.log("in profile end point");
     console.log(req.params.userID);
@@ -442,6 +444,7 @@ app.get("/edit/:userID", async (req, res) => {
     res.render("editProfile.ejs", { user, username, aboutMe, uid: uid });
 });
 
+// update your own user about me
 app.post('/edit/:userID', async (req, res) => {
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
