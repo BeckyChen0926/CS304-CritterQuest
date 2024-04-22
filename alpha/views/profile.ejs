@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Node Starter</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <%- include("partials/navbar.ejs", { uid: uid }) %>
+    <div class="myInfo">
+        <div class="username">
+            <h1><%= username %></h1>
+        </div>
+        <div class="about">
+            <h2>About me:<%= aboutme %></h2>
+        </div>
+        <div class="badges">
+            <h2>Badges:</h2>
+            <% if (badges != null){%>
+                <ul>
+                    <% badges.forEach( (badge) => {%>
+
+                    <li><%= badge %></li>
+
+                    <% }) %>
+                </ul> 
+            <% }%> 
+        </div>
+        <div class="posts">
+            <ul>
+                <% posts.forEach( (post) => {  %>
+                    <div class="post">
+                        <li>
+                            <div class="image">
+                                <img src="<%= post['img'] %>">
+                            </div>
+                            <div class="info">
+                                <h1 class="username"><%= post['user'] %></h1> 
+                                <h2 class="location"><%= post['location'] %></h2>
+                            </div>
+                            <div class="time">
+                                <h2><%= post['time'] %></h2>
+                            </div>    
+                            <div class="caption">
+                                <p> <%= post['caption'] %></p>
+                            </div>
+                            <div class="likeComment">
+                                <h2 class="likes">Likes: <%= post['likes'] %> </h2>
+                                <% if (post['comments']){%>
+                                    <h2 class="comments">Comments: <%= post['comments'].length %> </h2>
+                                <% }%>       
+                            </div>
+                        </li>
+                    </div>
+                <% }); %>
+            </ul>
+        </div>
+        <% if( isOwnProfile ) { %>
+            <div class="button">
+                <button><a action='GET' href="/edit/<%= uid %>/">Edit Profile</a></button>
+            </div>
+        <% } %>
+    </div>
+    <div class="myPosts">
+        <br><br>
+        <h1>My posts</h1>
+        <ul>
+            <% myPosts.forEach( (post)=> { %>
+                <div class="post">
+                    <div class="image">
+                        <img src="<%= post['path'] %>">
+                    </div>
+                    <div>
+                        <li>
+                            <div class="info">
+                                <h1 class="username">
+                                    <%= post['user'] %>
+                                </h1>
+                                <h2 class="location">
+                                    <%= post['location'] %>
+                                </h2>
+                            </div>
+                            <div class="time">
+                                <h2>
+                                    <%= post['time'] %>
+                                </h2>
+                            </div>
+                            <div class="animal">
+                                <h2>
+                                    <%= post['animal'] %>
+                                </h2>
+                            </div>
+                            <div class="caption">
+                                <p>
+                                    <%= post['caption'] %>
+                                </p>
+                            </div>
+                            <div>
+                                <p>
+                                    Likes: <%= post['likes'] %>
+                                </p>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            <% }); %>
+        </ul>
+
+    </div>
+</body>
+</html>

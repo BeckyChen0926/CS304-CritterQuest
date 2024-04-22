@@ -1,0 +1,3 @@
+# matches any files and directories with the name node_modules
+# and ignore on commit
+node_modules

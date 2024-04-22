@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Node Starter</title>
+  <!-- load local stylesheet (css) -->
+  <link rel="stylesheet" href="/styles.css" />
+  <!-- loading jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <%- include("partials/navbar.ejs", { uid: uid }) %>
+    <br><br>
+<center>
+    <h1>Posting an animal sighting!</h1>
+    <h2>What did you see?</h2>
+    <form class="posting" id="posting" method="POST" action="/posting" enctype="multipart/form-data">
+      <p><label>Animal
+          <select name="animal">
+            <!-- should iterate through a list of animals and make the dropdown -->
+            <option value="">choose animal</option>
+            <option value="">I will enter a new animal</option>
+            <% animalList.forEach((a) => {%>
+                <option value="<%= a.animal%>"><%= a.animal%></option>
+            <% })%>
+          </select>
+          <input type="text" name="custom_animal" id="custom-animal" placeholder="Or add your own animal">
+
+        </label></p>
+      <p><label>Location <input name="location" value="<%= location %>"></label></p>
+
+      <p>
+        <label>Upload image
+          <input type="file" accept="image/*" name="photo">
+        </label>
+      </p>
+
+      <p><label>Description
+          <textarea rows="3" cols="30" name="caption"></textarea>
+        </label></p>
+      <p>
+        <input type="submit" value="Post my animal sighting!">
+        <input type="reset" value="Reset">
+      </p>
+
+    </form>
+    </center>
+    <!-- load local js -->
+    <script src="/main.js"></script>
+</body>
+
+</html>
