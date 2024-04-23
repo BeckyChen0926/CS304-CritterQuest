@@ -376,8 +376,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 
 // shows your own profile page
 app.get('/profile/:userID', async (req, res) => {
-    // console.log("in profile end point");
-    console.log(req.params.userID);
+    let pageID = req.params.userID;
+    let pageIDNum = parseInt(pageID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
     console.log("people: ", people)
@@ -387,7 +387,16 @@ app.get('/profile/:userID', async (req, res) => {
     console.log("idNumber: ", idNumber);
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
-    var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been implemented yet so we don't have user sessions
+    var isOwnProfile;
+    let currUser = req.session.username;
+    let accessedUserObj = await people.findOne({UID: pageIDNum});
+    let accessUser = accessedUserObj.username;
+    if (currUser == accessUser){
+        isOwnProfile = true;
+    }
+    else{
+        isOwnProfile = false;
+    }
 
     //get the user information stored in the DB
     var person = await people.findOne({ UID: idNumber }); //find profile
