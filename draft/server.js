@@ -132,7 +132,8 @@ app.post("/join", async (req, res) => {
         const db = await Connection.open(mongoUri, CRITTERQUEST);
 
         // Check if the username already exists
-        var existingUser = await db.collection(USERS).findOne({ username: username });
+        var existingUser = await db.collection(USERS)
+                                .findOne({ username: username });
         if (existingUser) {
             // If the username already exists, redirect with an error message
             req.flash('error', "Login already exists - please try logging in instead.");
@@ -195,7 +196,8 @@ app.post("/login", async (req, res) => {
         }
 
         // Compare the provided password with the hashed password
-        // Note: Bcrypt can take some time to process, especially during login attempts
+        // Note: Bcrypt can take some time to process, especially during 
+        // login attempts
         const match = await bcrypt.compare(password, existingUser.hash);
 
         // Log the result of password comparison
@@ -227,13 +229,16 @@ app.post("/login", async (req, res) => {
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { time: -1 } }).toArray();
+    const postList = await db.collection(POSTS)
+                    .find({}, { sort: { time: -1 } }).toArray();
     console.log(postList);
 
-    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    var existingUser = await db.collection(USERS)
+                    .findOne({ username: req.session.username });
     var uid = existingUser.UID;
 
-    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
+    //users can only do access this page if they are logged in, 
+    //so we need to check for that uncomment when we have logins working
     /*
     if(!req.session.logged_in){ 
         return res.render('login.ejs');
@@ -242,6 +247,7 @@ app.get('/timeline/', async (req, res) => {
     return res.render('timeline.ejs', { userPosts: postList, uid: uid });
 });
 
+// increments the like count of the liked post and update that in the database
 async function incrementLikes(time) {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
 
@@ -310,10 +316,12 @@ app.post('/logout', (req, res) => {
 app.get('/posting/', async (req, res) => {
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    var existingUser = await db.collection(USERS)
+                    .findOne({ username: req.session.username });
     var uid = existingUser.UID;
     var animalList = await db.collection(ANIMALS).find({}).toArray();
-    return res.render('form.ejs', { action: '/posting/', location: '', uid: uid,animalList });
+    return res.render('form.ejs', 
+                { action: '/posting/', location: '', uid: uid,animalList });
 });
 
 // limited but not private
@@ -378,7 +386,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 app.get('/profile/:userID', async (req, res) => {
     // console.log("in profile end point");
     console.log(req.params.userID);
-    const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
+    //open the connection to the db critterquest
+    const db = await Connection.open(mongoUri, CRITTERQUEST); 
     const people = db.collection(USERS); //go to the Users collection
     console.log("people: ", people)
     const idString = req.params.userID;
@@ -386,8 +395,10 @@ app.get('/profile/:userID', async (req, res) => {
     const idNumber = parseInt(idString); //need to parse the string as an integer
     console.log("idNumber: ", idNumber);
 
-    //check whether you are viewing your own profile or if you are looking at someone else's 
-    var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been implemented yet so we don't have user sessions
+    //check whether you are viewing your own profile or if you are looking 
+    //at someone else's profile
+    var isOwnProfile = true; //hardcode to yes for now, login stuff hasn't been 
+                    //implemented yet so we don't have user sessions
 
     //get the user information stored in the DB
     var person = await people.findOne({ UID: idNumber }); //find profile
@@ -397,7 +408,8 @@ app.get('/profile/:userID', async (req, res) => {
     // var profilePic = person.pfp;
     var username = person.username;
 
-    var myPosts = await db.collection(POSTS).find({ UID: idNumber },{ sort: { time: -1 } }).toArray();
+    var myPosts = await db.collection(POSTS).find({ UID: idNumber },
+                    { sort: { time: -1 } }).toArray();
     console.log(myPosts);
 
     //get all the posts which are tagged with the userID 
