@@ -21,6 +21,7 @@
                     <li>
                         <div class="info">
                             <h1 class="username"><%= post['user'] %></h1> 
+                            <a href = "/profile/<%= post['UID'] %>"> View <%= post['user'] %>'s profile</a>
                             <h2 class="location"><%= post['location'] %></h2>
                         </div>
                         <div class="time">
@@ -47,9 +48,18 @@
                                 </form>
                             </nobr>
 
-                            <% if (post['comments']){%>
+                            <nobr>
+                                <form class="comment" action="/comment/<%=post['caption']%>" method="get">
+                                    <!-- <input type="hidden" name="postTime" value="<%= post['time'] %>"> -->
+                                    <div class="buttonDiv">
+                                        <button type="image" class="likeButton">comment</button>
+                                    </div>
+                                </form>
+                            </nobr>
+
+                            <!-- <% if (post['comments']){%>
                                 <h2 class="comments">Comments: <%= post['comments'].length %> </h2> 
-                            <% }%>
+                            <% }%> -->
         
                         </div>
                     </li>
