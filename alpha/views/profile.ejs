@@ -75,6 +75,15 @@
                                     Likes: <%= post['likes'] %>
                                 </p>
                             </div>
+                            <div>
+                                <p>Comments:
+                                    <%if (post['comments']){%>
+                                        <%= post['comments'].length %>
+                                    <%} else {%>
+                                        0
+                                    <%}%>
+                                </p>
+                            </div>
                         </li>
                     </div>
                 </div>

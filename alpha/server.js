@@ -459,29 +459,31 @@ app.post('/edit/:userID', async (req, res) => {
 });
 
 // need css + post a comment form
-app.get('/comment/:caption', async (req,res)=>{
-    const caption = req.params.caption;
+app.get('/comment/:PID', async (req,res)=>{
+    // const caption = req.params.caption;
+    const pid = parseInt(req.params.PID);
     // console.log(postId)
     // const postDate = req.body.postTime;
     const uid = parseInt(req.params.userID);
     // return res.redirect(`/comment/${uid}`);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const currPost = await db.collection(POSTS).findOne({caption:caption});
+    const currPost = await db.collection(POSTS).findOne({PID:pid});
     console.log(currPost)
     res.render("comment.ejs", { uid: uid, post: currPost});
     // return res.redirect('/comment',{uid:uid,post:currPost});
 
 })
 
-app.post('/comment/:caption', async (req,res)=>{
-    const caption = req.params.caption;
+app.post('/comment/:PID', async (req,res)=>{
+    // const caption = req.params.caption;
+    const pid = parseInt(req.params.PID);
     const uid = parseInt(req.params.userID);
     const comm = req.body.comment;
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postTime = new Date()
     let currPost = await db.collection(POSTS)
                         .findOneAndUpdate(
-                            { caption: caption },
+                            { PID: pid },
                             { $push: { 'comments': {
                                 'UID':uid,
                                 'user': req.session.username,
@@ -491,7 +493,7 @@ app.post('/comment/:caption', async (req,res)=>{
                             { returnDocument: "after" }
                         );
     console.log(currPost);
-    currPost = await db.collection(POSTS).findOne({caption:caption});
+    currPost = await db.collection(POSTS).findOne({PID:pid});
     console.log(currPost);
     res.render("comment.ejs", { uid: uid, post: currPost});
 
