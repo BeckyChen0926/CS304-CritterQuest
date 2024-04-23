@@ -2,6 +2,7 @@
 body {
   background-image: url("critquestbg.png");
   background-size: cover;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 /*Start Main *********************************************************/
@@ -94,6 +95,7 @@ ul {
 }
 
 .likeButton {
+  all: revert;
   border: none;
   background-color: white;
 }
@@ -161,8 +163,8 @@ ul {
 /*End Profile *********************************************************/
 
 
-/*Login *********************************************************/
-form:not(.logoutForm) {
+/*Start Login *********************************************************/
+.form {
   display: inline-block;
   border: 2px solid black;
   padding: 2ex;
@@ -170,12 +172,29 @@ form:not(.logoutForm) {
   background-color: #A6BB77;
 }
 
-
-[type=submit] {
-  font-size: 1em;
-  font-weight: normal;
-  border: 1px solid #4F772D;
-  border-radius: 0.5em;
-  background-color: #4F772D;
+.submit {
+  background-color:#4F772D;
+  border: solid;
+  border-color: black;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 15px;
   color: white;
+  font-size: 15px;
 }
+
+.reset {
+  background-color: gray;
+  /* border: solid; */
+  /* border-color: black; */
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 15px;
+  color: white;
+  font-size: 15px;
+}
+
+.loginStuff {
+  margin-top: 100px;
+}
+/*End Login *********************************************************/

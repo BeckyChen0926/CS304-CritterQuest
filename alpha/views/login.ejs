@@ -12,9 +12,9 @@
     <center>
     <h1>Welcome to CritterQuest!</h1>
     <%- include('partials/flashes.ejs') %>
-    <section>
+    <section class="loginStuff">
         <h2>Create New Account</h2>
-        <form action="/join" method="POST">
+        <form class="form" action="/join" method="POST">
             <p>
                 <label>username
                     <input type="text" name="username" placeholder="username">
@@ -24,14 +24,14 @@
                     <input type="text" name="password" placeholder="password">
                 </label>
             </p><p>
-                <input type="submit" value="Register">
-                <input type="reset" value="Reset">
+                <input class="submit" type="submit" value="Register">
+                <input class="reset" type="reset" value="Reset">
             </p>
         </form>
     </section>
     <section>
         <h2>Login</h2>
-        <form action="/login" method="POST">
+        <form class="form" action="/login" method="POST">
             <p>
                 <label>username
                     <input type="text" name="username" placeholder="username">
@@ -41,8 +41,8 @@
                     <input type="text" name="password" placeholder="password">
                 </label>
             </p><p>
-                <input type="submit" value="Login">
-                <input type="reset" value="Reset">
+                <input class="submit" type="submit" value="Login">
+                <input class="reset" type="reset" value="Reset">
             </p>
         </form>
     </section>
