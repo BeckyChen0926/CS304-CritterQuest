@@ -353,9 +353,14 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
         // Use the custom animal as the selected animal
         req.body.animal = customAnimal;
     }
+    let counters = db.collection(COUNTERS);
+    counter.incr(counters, "posts");
+    var countObj = await counters.findOne({ collection: 'posts' });
+    var PID = countObj["counter"];
+    console.log('YOUR POST ID IS ' , PID);
     const result = await db.collection(POSTS)
         .insertOne({
-            PID: 3,
+            PID: PID,
             UID: uid,
             // UID: 1,
             // user: username,
