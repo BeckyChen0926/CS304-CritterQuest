@@ -276,28 +276,6 @@ app.post('/like', async (req, res) => {
 });
 
 
-
-
-// shows how logins might work by setting a value in the session
-// This is a conventional, non-Ajax, login, so it redirects to main page 
-
-// app.get('/logout', (req, res) => {
-//     req.session = null;
-//     return res.redirect('/');
-// });
-
-// app.post('/logout', (req,res) => {
-//     if (req.session.username) {
-//       req.session.username = null;
-//       req.session.loggedIn = false;
-//       req.flash('info', 'You are logged out');
-//       return res.redirect('/');
-//     } else {
-//       req.flash('error', 'You are not logged in - please do so.');
-//       return res.redirect('/');
-//     }
-//   });
-
 // Route to handle user logout
 app.post('/logout', (req, res) => {
     req.session = null;
@@ -465,6 +443,21 @@ app.post('/edit/:userID', async (req, res) => {
     // Redirect to the profile page for the updated profile
     res.redirect(`/profile/${uid}`);
 });
+
+// need css + post a comment form
+app.get('/comment/:caption', async (req,res)=>{
+    const caption = req.params.caption;
+    // console.log(postId)
+    // const postDate = req.body.postTime;
+    const uid = parseInt(req.params.userID);
+    // return res.redirect(`/comment/${uid}`);
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const currPost = await db.collection(POSTS).findOne({caption:caption});
+    console.log(currPost)
+    res.render("comment.ejs", { uid: uid,post:currPost });
+    // return res.redirect('/comment',{uid:uid,post:currPost});
+
+})
 
 // ================================================================
 // postlude
