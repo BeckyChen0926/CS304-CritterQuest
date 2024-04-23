@@ -12,9 +12,7 @@
 
 <body>
     <%- include("partials/navbar.ejs", { uid: uid }) %>
-    <div class="myPosts">
-        <br><br>
-        <h1>My post</h1>
+
         <ul>
             <div class="post">
                 <div class="image">
@@ -51,11 +49,39 @@
                             </p>
                         </div>
                     </li>
+                    <form action="/comment/<%=post['caption']%>" method="post">
+                        <p><label>Leave a comment!
+                                <textarea rows="3" cols="30" name="comment"></textarea>
+                            </label></p>
+                        <p>
+                            <input type="submit" value="Send comment">
+                            <input type="reset" value="Reset">
+                        </p>
+
+                    </form>
                 </div>
             </div>
         </ul>
-
-    </div>
+        <ul>
+            <div class="comments">
+                <%if (post.comments){%>
+                    <% post['comments'].forEach((c)=>{ %>
+                        <div>
+                            <li>
+                                <%=c.user%>
+                            </li>
+                            <li>
+                                <%= c.time%>
+                            </li>
+                            <li>
+                                <%= c.comment%>
+                            </li>
+                        </div>
+                        <hr>
+                    <%})%>
+                <%}%>
+            </div>
+        </ul>
 </body>
 
 </html>

@@ -51,8 +51,15 @@
                             <nobr>
                                 <form class="comment" action="/comment/<%=post['caption']%>" method="get">
                                     <!-- <input type="hidden" name="postTime" value="<%= post['time'] %>"> -->
-                                    <div class="buttonDiv">
+                                    <div class="buttonDiv" style="border: 1px blue solid;">
                                         <button type="image" class="likeButton">comment</button>
+                                        <h2 class="commentNum">
+                                            <%if (post['comments']){%>
+                                                <%= post['comments'].length %>
+                                            <%} else {%>
+                                                0
+                                            <%}%>
+                                        </h2>
                                     </div>
                                 </form>
                             </nobr>
