@@ -163,6 +163,7 @@ app.post("/join", async (req, res) => {
         // Flash success message and set session variables
         req.flash('info', 'successfully joined and logged in as ' + username);
         req.session.username = username;
+        req.session.uid = uid;
         req.session.loggedIn = true;
 
         // Redirect to user profile page
@@ -226,12 +227,17 @@ app.post("/login", async (req, res) => {
 
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
+    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
+    if(!req.session.loggedIn){ 
+        req.flash('error', "Please login first!");
+        return res.redirect('/');
+    }
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 } }).toArray();
     console.log(postList);
 
-    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    var uid = existingUser.UID;
+    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    // var uid = req.;
 
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
     /*
@@ -239,7 +245,7 @@ app.get('/timeline/', async (req, res) => {
         return res.render('login.ejs');
     }
     */
-    return res.render('timeline.ejs', { userPosts: postList, uid: uid });
+    return res.render('timeline.ejs', { userPosts: postList, uid: req.session.uid });
 });
 
 async function incrementLikes(time) {
@@ -275,12 +281,20 @@ app.post('/like', async (req, res) => {
     return res.redirect('/timeline');
 });
 
-
-// Route to handle user logout
-app.post('/logout', (req, res) => {
-    req.session = null;
-    return res.redirect('/login');
+app.get('/logout', (req,res)=>{
+    return res.render('logout.ejs');
 });
+app.post('/logout', (req,res) => {
+    if (req.session.username) {
+      req.session.username = null;
+      req.session.loggedIn = false;
+      req.flash('info', 'You are logged out');
+      return res.redirect('/');
+    } else {
+      req.flash('error', 'You are not logged in - please do so.');
+      return res.redirect('/');
+    }
+  });
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
@@ -300,7 +314,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
-    const username = req.session.username;
+    // const username = req.session.username;
     var postTime = new Date();
     console.log('post time: ', postTime);
     // if (!username) {
@@ -320,9 +334,9 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('chmod val', val);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    var existingUser = await db.collection(USERS).findOne({ username: username });
-    var uid = existingUser.UID;
-    console.log('user', existingUser);
+    // var existingUser = await db.collection(USERS).findOne({ username: username });
+    // var uid = req.session.UID;
+    // console.log('user', existingUser);
     const customAnimal = req.body.custom_animal;
     if (customAnimal) {
         // Insert the custom animal into the database
@@ -335,13 +349,12 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     counter.incr(counters, "posts");
     var countObj = await counters.findOne({ collection: 'posts' });
     var PID = countObj["counter"];
+    console.log(req.session);
     console.log('YOUR POST ID IS ' , PID);
     const result = await db.collection(POSTS)
         .insertOne({
             PID: PID,
-            UID: uid,
-            // UID: 1,
-            // user: username,
+            UID: req.session.uid,
             user: req.session.username,
             time: postTime.toLocaleString(),
             path: '/uploads/' + req.file.filename,
@@ -363,11 +376,8 @@ app.get('/profile/:userID', async (req, res) => {
     let pageIDNum = parseInt(pageID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
-    console.log("people: ", people)
     const idString = req.params.userID;
-    console.log("idString: ", idString);
     const idNumber = parseInt(idString); //need to parse the string as an integer
-    console.log("idNumber: ", idNumber);
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile;
@@ -477,7 +487,7 @@ app.get('/comment/:PID', async (req,res)=>{
 app.post('/comment/:PID', async (req,res)=>{
     // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
-    const uid = parseInt(req.params.userID);
+    // const uid = parseInt(req.params.userID);
     const comm = req.body.comment;
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postTime = new Date()
@@ -485,7 +495,7 @@ app.post('/comment/:PID', async (req,res)=>{
                         .findOneAndUpdate(
                             { PID: pid },
                             { $push: { 'comments': {
-                                'UID':uid,
+                                'UID':req.session.uid,
                                 'user': req.session.username,
                                 'time': postTime.toLocaleString(),
                                 'comment': comm
@@ -495,7 +505,7 @@ app.post('/comment/:PID', async (req,res)=>{
     console.log(currPost);
     currPost = await db.collection(POSTS).findOne({PID:pid});
     console.log(currPost);
-    res.render("comment.ejs", { uid: uid, post: currPost});
+    res.render("comment.ejs", { uid: req.session.uid, post: currPost});
 
 })
 
