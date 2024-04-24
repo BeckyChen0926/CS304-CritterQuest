@@ -51,16 +51,17 @@
                             <nobr>
                                 <form class="comment" action="/comment/<%=post['PID']%>" method="get">
                                     <!-- <input type="hidden" name="postTime" value="<%= post['time'] %>"> -->
-                                    <div class="buttonDiv" style="border: 1px blue solid;">
-                                        <button class="commentButton">comment
-                                        <h2 class="commentNum">
+                                    <div class="buttonDiv">
+                                        <button class="commentButton" type="image"><img src="/comment.png" alt="Comment" width="50px"></button>
+                                    </div>
+                                    <div class="commentNum">
+                                        <h2>
                                             <%if (post['comments']){%>
                                                 <%= post['comments'].length %>
                                             <%} else {%>
                                                 0
                                             <%}%>
-                                        </h2>
-                                        </button>
+                                        </h2>  
                                     </div>
                                 </form>
                             </nobr>
