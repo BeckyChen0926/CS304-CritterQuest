@@ -227,7 +227,7 @@ app.post("/login", async (req, res) => {
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
-    if(!req.session.logged_in){ 
+    if(!req.session.loggedIn){ 
         req.flash('error', "Please login first!");
         return res.redirect('/');
     }
@@ -279,11 +279,9 @@ app.get('/logout', (req,res)=>{
     return res.render('logout.ejs');
 });
 app.post('/logout', (req,res) => {
-    console.log("!!!!!!!!!! YOUR USERNAME BELOW !!!!!!!!!!!");
-    console.log(req.session.username);
     if (req.session.username) {
       req.session.username = null;
-      req.session.logged_in = false;
+      req.session.loggedIn = false;
       req.flash('info', 'You are logged out');
       return res.redirect('/');
     } else {
@@ -373,11 +371,8 @@ app.get('/profile/:userID', async (req, res) => {
     let pageIDNum = parseInt(pageID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
-    console.log("people: ", people)
     const idString = req.params.userID;
-    console.log("idString: ", idString);
     const idNumber = parseInt(idString); //need to parse the string as an integer
-    console.log("idNumber: ", idNumber);
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile;
