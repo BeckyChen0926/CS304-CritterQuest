@@ -57,7 +57,6 @@
                             <input type="submit" value="Send comment">
                             <input type="reset" value="Reset">
                         </p>
-
                     </form>
                 </div>
             </div>
@@ -76,6 +75,11 @@
                             <li>
                                 <%= c.comment%>
                             </li>
+                            <!-- <form class="deleteComment" action="/delete-comment" method="post">
+                                <div class="buttonDiv" style="float: right;">
+                                    <button class="deleteComment">Delete</button>
+                                </div>
+                            </form> -->
                         </div>
                         <hr>
                     <%})%>

@@ -52,7 +52,7 @@
                                 <form class="comment" action="/comment/<%=post['PID']%>" method="get">
                                     <!-- <input type="hidden" name="postTime" value="<%= post['time'] %>"> -->
                                     <div class="buttonDiv" style="border: 1px blue solid;">
-                                        <button type="image" class="likeButton">comment
+                                        <button class="commentButton">comment
                                         <h2 class="commentNum">
                                             <%if (post['comments']){%>
                                                 <%= post['comments'].length %>

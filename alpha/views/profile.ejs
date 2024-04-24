@@ -15,7 +15,7 @@
             <h1><%= username %></h1>
         </div>
         <div class="about">
-            <h2>About me:<%= aboutme %></h2>
+            <h2>About me: <%= aboutme %></h2>
         </div>
         <div class="badges">
             <h2>Badges:</h2>
@@ -41,52 +41,57 @@
         <h1 class="postTitle">My Posts</h1>
         <ul>
             <% myPosts.forEach( (post)=> { %>
-                <div class="post">
-                    <div class="image">
-                        <img src="<%= post['path'] %>">
+                    <div class="post">
+                        <div class="image">
+                            <img src="<%= post['path'] %>">
+                        </div>
+                        <div>
+                            <li>
+                                <div class="info">
+                                    <h1 class="username">
+                                        <%= post['user'] %>
+                                    </h1>
+                                    <h2 class="location">
+                                        <%= post['location'] %>
+                                    </h2>
+                                </div>
+                                <div class="time">
+                                    <h2>
+                                        <%= post['time'] %>
+                                    </h2>
+                                </div>
+                                <div class="animal">
+                                    <h2>
+                                        <%= post['animal'] %>
+                                    </h2>
+                                </div>
+                                <div class="caption">
+                                    <p>
+                                        <%= post['caption'] %>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>
+                                        Likes: <%= post['likes'] %>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>Comments:
+                                        <%if (post['comments']){%>
+                                            <%= post['comments'].length %>
+                                        <%} else {%>
+                                            0
+                                        <%}%>
+                                    </p>
+                                </div>
+                            </li>
+                        </div>
+                        <div>
+                            <form action="/comment/<%=post.PID%>" method="get">
+                                <button class="gotoPost">Go to post</button>
+                            </form>
+                        </div>
                     </div>
-                    <div>
-                        <li>
-                            <div class="info">
-                                <h1 class="username">
-                                    <%= post['user'] %>
-                                </h1>
-                                <h2 class="location">
-                                    <%= post['location'] %>
-                                </h2>
-                            </div>
-                            <div class="time">
-                                <h2>
-                                    <%= post['time'] %>
-                                </h2>
-                            </div>
-                            <div class="animal">
-                                <h2>
-                                    <%= post['animal'] %>
-                                </h2>
-                            </div>
-                            <div class="caption">
-                                <p>
-                                    <%= post['caption'] %>
-                                </p>
-                            </div>
-                            <div>
-                                <p>
-                                    Likes: <%= post['likes'] %>
-                                </p>
-                            </div>
-                            <div>
-                                <p>Comments:
-                                    <%if (post['comments']){%>
-                                        <%= post['comments'].length %>
-                                    <%} else {%>
-                                        0
-                                    <%}%>
-                                </p>
-                            </div>
-                        </li>
-                    </div>
-                </div>
             <% }); %>
         </ul>
 

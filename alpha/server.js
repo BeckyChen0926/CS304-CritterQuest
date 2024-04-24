@@ -227,7 +227,7 @@ app.post("/login", async (req, res) => {
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { time: -1 } }).toArray();
+    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 } }).toArray();
     console.log(postList);
 
     var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
