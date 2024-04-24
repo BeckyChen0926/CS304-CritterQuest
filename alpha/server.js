@@ -226,6 +226,11 @@ app.post("/login", async (req, res) => {
 
 // main page. This shows the use of session cookies
 app.get('/timeline/', async (req, res) => {
+    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
+    if(!req.session.logged_in){ 
+        req.flash('error', "Please login first!");
+        return res.redirect('/');
+    }
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 } }).toArray();
     console.log(postList);
@@ -233,12 +238,7 @@ app.get('/timeline/', async (req, res) => {
     var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
     var uid = existingUser.UID;
 
-    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
-    /*
-    if(!req.session.logged_in){ 
-        return res.render('login.ejs');
-    }
-    */
+    
     return res.render('timeline.ejs', { userPosts: postList, uid: uid });
 });
 
@@ -275,12 +275,22 @@ app.post('/like', async (req, res) => {
     return res.redirect('/timeline');
 });
 
-
-// Route to handle user logout
-app.post('/logout', (req, res) => {
-    req.session = null;
-    return res.redirect('/login');
+app.get('/logout', (req,res)=>{
+    return res.render('logout.ejs');
 });
+app.post('/logout', (req,res) => {
+    console.log("!!!!!!!!!! YOUR USERNAME BELOW !!!!!!!!!!!");
+    console.log(req.session.username);
+    if (req.session.username) {
+      req.session.username = null;
+      req.session.logged_in = false;
+      req.flash('info', 'You are logged out');
+      return res.redirect('/');
+    } else {
+      req.flash('error', 'You are not logged in - please do so.');
+      return res.redirect('/');
+    }
+  });
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
