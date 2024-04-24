@@ -163,6 +163,7 @@ app.post("/join", async (req, res) => {
         // Flash success message and set session variables
         req.flash('info', 'successfully joined and logged in as ' + username);
         req.session.username = username;
+        req.session.uid = uid;
         req.session.loggedIn = true;
 
         // Redirect to user profile page
@@ -230,8 +231,8 @@ app.get('/timeline/', async (req, res) => {
     const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 } }).toArray();
     console.log(postList);
 
-    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    var uid = existingUser.UID;
+    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    // var uid = req.;
 
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
     /*
@@ -239,7 +240,7 @@ app.get('/timeline/', async (req, res) => {
         return res.render('login.ejs');
     }
     */
-    return res.render('timeline.ejs', { userPosts: postList, uid: uid });
+    return res.render('timeline.ejs', { userPosts: postList, uid: req.session.uid });
 });
 
 async function incrementLikes(time) {
@@ -300,7 +301,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
-    const username = req.session.username;
+    // const username = req.session.username;
     var postTime = new Date();
     console.log('post time: ', postTime);
     // if (!username) {
@@ -320,9 +321,9 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('chmod val', val);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    var existingUser = await db.collection(USERS).findOne({ username: username });
-    var uid = existingUser.UID;
-    console.log('user', existingUser);
+    // var existingUser = await db.collection(USERS).findOne({ username: username });
+    // var uid = req.session.UID;
+    // console.log('user', existingUser);
     const customAnimal = req.body.custom_animal;
     if (customAnimal) {
         // Insert the custom animal into the database
@@ -335,13 +336,12 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     counter.incr(counters, "posts");
     var countObj = await counters.findOne({ collection: 'posts' });
     var PID = countObj["counter"];
+    console.log(req.session);
     console.log('YOUR POST ID IS ' , PID);
     const result = await db.collection(POSTS)
         .insertOne({
             PID: PID,
-            UID: uid,
-            // UID: 1,
-            // user: username,
+            UID: req.session.uid,
             user: req.session.username,
             time: postTime.toLocaleString(),
             path: '/uploads/' + req.file.filename,
@@ -477,7 +477,7 @@ app.get('/comment/:PID', async (req,res)=>{
 app.post('/comment/:PID', async (req,res)=>{
     // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
-    const uid = parseInt(req.params.userID);
+    // const uid = parseInt(req.params.userID);
     const comm = req.body.comment;
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postTime = new Date()
@@ -485,7 +485,7 @@ app.post('/comment/:PID', async (req,res)=>{
                         .findOneAndUpdate(
                             { PID: pid },
                             { $push: { 'comments': {
-                                'UID':uid,
+                                'UID':req.session.uid,
                                 'user': req.session.username,
                                 'time': postTime.toLocaleString(),
                                 'comment': comm
@@ -495,7 +495,7 @@ app.post('/comment/:PID', async (req,res)=>{
     console.log(currPost);
     currPost = await db.collection(POSTS).findOne({PID:pid});
     console.log(currPost);
-    res.render("comment.ejs", { uid: uid, post: currPost});
+    res.render("comment.ejs", { uid: req.session.uid, post: currPost});
 
 })
 
