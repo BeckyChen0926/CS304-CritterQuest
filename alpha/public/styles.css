@@ -129,6 +129,13 @@ ul {
   float: left;
 }
 
+/* needed for search form! */
+.search {
+  margin-top: 100px;
+  width: 70%;
+  border: 3px solid #4F772D;
+  padding: 10px;
+}
 
 /*End Timeline *********************************************************/
 
