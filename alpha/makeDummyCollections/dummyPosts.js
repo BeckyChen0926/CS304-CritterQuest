@@ -109,7 +109,7 @@ async function insertPosts(db) {
 
 async function main() {
     const posts = await Connection.open(mongoUri, 'critterquest');
-    // deleteAll(posts);
+    deleteAll(posts);
     posts.collection('animals').deleteMany({});
     posts.collection('animals').insertMany([
         { 'animal': 'dog' },
@@ -131,9 +131,31 @@ async function main() {
         { 'animal': 'possum' },
         { 'animal': 'chipmunk' },
         { 'animal': 'frog' }
-    ])
+    ]);
     // let insert = await insertPosts(posts);
     // console.log(insert);
 }
 
 main()
+
+// db.animals.insertMany([
+//     { 'animal': 'dog' },
+//     { 'animal': 'cat' },
+//     { 'animal': 'goose' },
+//     { 'animal': 'raccoon' },
+//     { 'animal': 'deer' },
+//     { 'animal': 'squirrel' },
+//     { 'animal': 'bear' },
+//     { 'animal': 'wolf' },
+//     { 'animal': 'coyote' },
+//     { 'animal': 'turtle' },
+//     { 'animal': 'duck' },
+//     { 'animal': 'fish' },
+//     { 'animal': 'owl' },
+//     { 'animal': 'hawk' },
+//     { 'animal': 'rabbit' },
+//     { 'animal': 'hedgehog' },
+//     { 'animal': 'possum' },
+//     { 'animal': 'chipmunk' },
+//     { 'animal': 'frog' }
+// ]);

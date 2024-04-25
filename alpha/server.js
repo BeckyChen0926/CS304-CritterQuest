@@ -383,6 +383,7 @@ app.get('/profile/:userID', async (req, res) => {
     var isOwnProfile;
     let currUser = req.session.username;
     let accessedUserObj = await people.findOne({UID: pageIDNum});
+    console.log(accessedUserObj);
     let accessUser = accessedUserObj.username;
     if (currUser == accessUser){
         isOwnProfile = true;
