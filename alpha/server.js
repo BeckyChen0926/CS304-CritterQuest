@@ -154,7 +154,7 @@ app.post("/join", async (req, res) => {
             hash: hash,
             UID: uid,
             aboutme: "",
-            badges: ['Welcome!'],
+            badges: ['welcomeBadge.png'],
         });
 
         // Log successful registration
