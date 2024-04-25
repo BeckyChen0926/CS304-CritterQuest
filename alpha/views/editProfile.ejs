@@ -51,7 +51,17 @@
                          value="<%= user.aboutme %>">
               </td>
             </tr>
-            <tr><td>Badges</td><td><%= user.badges %></td></tr>
+            <tr><td>Badges</td>
+              <% if (user.badges != null){%>
+                <td>
+                    <% user.badges.forEach( (badge) => {%>
+
+                    <img src="/<%= badge %>" alt="badge" width="80px">
+
+                    <% }) %>
+                    
+                </td> 
+              <% }%>
           </table>
           <input type="submit" value="update">
         </form>
