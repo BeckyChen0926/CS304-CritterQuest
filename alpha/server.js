@@ -254,7 +254,7 @@ app.get('/timeline/', async (req, res) => {
         return res.redirect('/');
     }
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 } }).toArray();
+    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1,time:-1 } }).toArray();
     console.log(postList);
 
     // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
