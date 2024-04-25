@@ -177,6 +177,9 @@ app.post("/join", async (req, res) => {
 
 // Route to handle user login
 app.post("/login", async (req, res) => {
+    if(req.session.loggedIn){
+        return res.redirect("/timeline");
+    }
     try {
         const username = req.body.username;
         const password = req.body.password;
@@ -285,6 +288,10 @@ app.get('/logout', (req,res)=>{
     return res.render('logout.ejs');
 });
 app.post('/logout', (req,res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     if (req.session.username) {
       req.session.username = null;
       req.session.loggedIn = false;
@@ -300,6 +307,10 @@ app.post('/logout', (req,res) => {
 // from previous request, including a SELECT menu. Everything but radio buttons
 // renders the post an animal sighting form with dynamic list of animals
 app.get('/posting/', async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
@@ -372,6 +383,10 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 
 // shows your own profile page
 app.get('/profile/:userID', async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     let pageID = req.params.userID;
     let pageIDNum = parseInt(pageID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
@@ -425,6 +440,10 @@ app.get('/profile/:userID', async (req, res) => {
  * Render the edit form
  */
 app.get("/edit/:userID", async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     const uid = parseInt(req.params.userID);
     console.log("uid", uid);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -471,6 +490,10 @@ app.post('/edit/:userID', async (req, res) => {
 
 // need css + post a comment form
 app.get('/comment/:PID', async (req,res)=>{
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
     // console.log(postId)
@@ -486,6 +509,10 @@ app.get('/comment/:PID', async (req,res)=>{
 })
 
 app.post('/comment/:PID', async (req,res)=>{
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
     // const uid = parseInt(req.params.userID);
