@@ -118,13 +118,25 @@ const COUNTERS = "counters";
 // const UPLOADS = 'uploads';
 const ANIMALS = 'animals';
 
-// Route to render the login page
+/*
+Route to render the login page
+Users who are already logged in will simply be redireected to the timeline page.
+*/
 app.get('/', (req, res) => {
+    if(req.session.loggedIn){
+        return res.redirect("/timeline");
+    }
     // Renders the login page when accessing the root URL
     return res.render('login.ejs');
 });
 
-// Route to handle user registration
+/*
+Route which processes the entered username and password in the submitted register form
+If the username already exists, then they are prompted to choose another username or login if the account is theirs
+Otherwise, they will be inserted into the users database
+
+NOTE FROM TEAM: Currently, the badges are being hardcoded where we assign the welcome badge to everyone. We will add user-obtainable badges later. 
+*/
 app.post("/join", async (req, res) => {
     try {
         const username = req.body.username;
@@ -154,7 +166,7 @@ app.post("/join", async (req, res) => {
             hash: hash,
             UID: uid,
             aboutme: "",
-            badges: ['Welcome!'],
+            badges: ['welcomeBadge.png'],
         });
 
         // Log successful registration
@@ -175,7 +187,12 @@ app.post("/join", async (req, res) => {
     }
 });
 
-// Route to handle user login
+/*
+Route which processes the entered username and password in the submitted login form
+If the username doesnt exists, then they are prompted with an error saying that the username does not exist
+If the password is incorrect, they are prompted that the username or password is incorrect
+Otherwise, they will be allowed to login. 
+*/
 app.post("/login", async (req, res) => {
     try {
         const username = req.body.username;
@@ -225,7 +242,11 @@ app.post("/login", async (req, res) => {
 });
 
 
-// main page. This shows the use of session cookies
+/*
+Route which displays the timeline 
+If the username already exists, then they are prompted to choose another username or login if the account is theirs
+Otherwise, they will be inserted into the users database
+*/
 app.get('/timeline/', async (req, res) => {
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
     if(!req.session.loggedIn){ 
@@ -233,7 +254,7 @@ app.get('/timeline/', async (req, res) => {
         return res.redirect('/');
     }
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1 } }).toArray();
+    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1,time:-1 } }).toArray();
     console.log(postList);
 
     // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
@@ -285,6 +306,10 @@ app.get('/logout', (req,res)=>{
     return res.render('logout.ejs');
 });
 app.post('/logout', (req,res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     if (req.session.username) {
       req.session.username = null;
       req.session.loggedIn = false;
@@ -300,6 +325,10 @@ app.post('/logout', (req,res) => {
 // from previous request, including a SELECT menu. Everything but radio buttons
 // renders the post an animal sighting form with dynamic list of animals
 app.get('/posting/', async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
@@ -372,18 +401,28 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 
 // shows your own profile page
 app.get('/profile/:userID', async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
+
+    //check to see if this person exists
     let pageID = req.params.userID;
     let pageIDNum = parseInt(pageID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
+    let accessedUserObj = await people.findOne({UID: pageIDNum});
+    if(accessedUserObj == null){
+        req.flash('error', "This user doesn't exist! ");
+        return res.redirect("/timeline")
+    }
+
     const idString = req.params.userID;
     const idNumber = parseInt(idString); //need to parse the string as an integer
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile;
     let currUser = req.session.username;
-    let accessedUserObj = await people.findOne({UID: pageIDNum});
-    console.log(accessedUserObj);
     let accessUser = accessedUserObj.username;
     if (currUser == accessUser){
         isOwnProfile = true;
@@ -410,6 +449,7 @@ app.get('/profile/:userID', async (req, res) => {
     return res.render('profile.ejs',
         {
             uid: idNumber,
+            UID: req.session.uid,
             posts: allPosts,
             badges: allBadges,
             isOwnProfile: isOwnProfile,
@@ -425,6 +465,10 @@ app.get('/profile/:userID', async (req, res) => {
  * Render the edit form
  */
 app.get("/edit/:userID", async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     const uid = parseInt(req.params.userID);
     console.log("uid", uid);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -471,6 +515,10 @@ app.post('/edit/:userID', async (req, res) => {
 
 // need css + post a comment form
 app.get('/comment/:PID', async (req,res)=>{
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
     // console.log(postId)
@@ -486,6 +534,10 @@ app.get('/comment/:PID', async (req,res)=>{
 })
 
 app.post('/comment/:PID', async (req,res)=>{
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
     // const uid = parseInt(req.params.userID);
