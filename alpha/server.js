@@ -166,7 +166,7 @@ app.post("/join", async (req, res) => {
             hash: hash,
             UID: uid,
             aboutme: "",
-            badges: ['Welcome!'],
+            badges: ['welcomeBadge.png'],
         });
 
         // Log successful registration
@@ -405,18 +405,24 @@ app.get('/profile/:userID', async (req, res) => {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
+
+    //check to see if this person exists
     let pageID = req.params.userID;
     let pageIDNum = parseInt(pageID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
+    let accessedUserObj = await people.findOne({UID: pageIDNum});
+    if(accessedUserObj == null){
+        req.flash('error', "This user doesn't exist! ");
+        return res.redirect("/timeline")
+    }
+
     const idString = req.params.userID;
     const idNumber = parseInt(idString); //need to parse the string as an integer
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile;
     let currUser = req.session.username;
-    let accessedUserObj = await people.findOne({UID: pageIDNum});
-    console.log(accessedUserObj);
     let accessUser = accessedUserObj.username;
     if (currUser == accessUser){
         isOwnProfile = true;

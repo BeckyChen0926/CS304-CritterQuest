@@ -10,8 +10,7 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs", { uid: uid }) %>
-
-    
+    <%- include('partials/flashes.ejs') %>
     <ul>
         <% userPosts.forEach( (post) => {  %>
             <div class="post">
