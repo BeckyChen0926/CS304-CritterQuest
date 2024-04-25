@@ -3,53 +3,23 @@
 <head>
     <meta charset="UTF-8" />
     <title>Node Starter</title>
-    <!-- load local stylesheet (css) -->
     <link rel="stylesheet" href="/styles.css" />
     <!-- loading jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <%- include("navbar.ejs", { uid: uid }) %>
-    <h1>Hello Man</h1>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<form method="GET" action="/search/" class="search">
-    <p>
+    <%- include("partials/navbar.ejs", { uid: uid }) %>
+    <p class = "searchtt">Search by animals or locations!</p>
+    <p class = "search">
         <label for="search">Search:</label>
         <input type="text" name="term" id="search">
-        <label for="kind"> by </label>
+        <label for="kind">Kind:</label>
         <select required name="kind" id="kind">
             <option value="">Choose one</option>
-            <option value="animal">Animals</option>
-            <option value="region">Location</option>
+            <option value="animal">Animal</option>
+            <option value="location">Location</option>
         </select>
         <input type="submit" value="Search">
     </p>
-</form>
+</body>
+</html>

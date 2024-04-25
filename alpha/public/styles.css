@@ -129,13 +129,6 @@ ul {
   float: left;
 }
 
-/* needed for search form! */
-.search {
-  margin-top: 100px;
-  width: 70%;
-  border: 3px solid #4F772D;
-  padding: 10px;
-}
 
 /*End Timeline *********************************************************/
 
@@ -241,3 +234,17 @@ ul {
 }
 /*End Login *********************************************************/
 
+.searchtt {
+  margin-top: 100px;
+  font-size: large;
+  padding: 10px;
+}
+
+
+/* needed for search form! */
+.search {
+  margin-top: 60px;
+  width: 70%;
+  border: 3px solid #4F772D;
+  padding: 10px;
+}

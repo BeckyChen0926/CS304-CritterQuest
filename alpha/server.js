@@ -510,10 +510,17 @@ app.post('/comment/:PID', async (req,res)=>{
 
 })
 
-app.get('/search', async (req, res) =>
+app.get('/filter', async (req, res) =>
     {
-        return res.render('partials/search.ejs', {uid: req.session.uid});
+        return res.render('filter.ejs', {uid: req.session.uid});
     });
+
+app.post('/filter/', async(req,res) => {
+    const term = req.body.term;
+    const kind = req.body.kind;
+    console.log(term,kind);
+}
+);
 
 // search (filter out)
 // app.post('/search/', async (req, res) => {
