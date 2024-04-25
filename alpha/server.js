@@ -166,7 +166,7 @@ app.post("/join", async (req, res) => {
             hash: hash,
             UID: uid,
             aboutme: "",
-            badges: ['Welcome!'],
+            badges: ['welcomeBadge.png'],
         });
 
         // Log successful registration
@@ -449,6 +449,7 @@ app.get('/profile/:userID', async (req, res) => {
     return res.render('profile.ejs',
         {
             uid: idNumber,
+            UID: req.session.uid,
             posts: allPosts,
             badges: allBadges,
             isOwnProfile: isOwnProfile,
