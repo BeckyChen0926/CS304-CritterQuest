@@ -410,6 +410,7 @@ app.get('/profile/:userID', async (req, res) => {
     return res.render('profile.ejs',
         {
             uid: idNumber,
+            UID: req.session.uid,
             posts: allPosts,
             badges: allBadges,
             isOwnProfile: isOwnProfile,
