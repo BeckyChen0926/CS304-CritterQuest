@@ -3,20 +3,23 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Node Starter</title>
+  <title>CritterQuest Logout</title>
   <!-- load local stylesheet (css) -->
   <link rel="stylesheet" href="/styles.css" />
   <!-- loading jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- favicon -->
+  <link rel="icon" type="image/x-icon" href="/logo.png">
 </head>
 
 <body>
-  <h1>Logout</h1>
-  <form class="logout" id="logout" method="POST" action="/logout" enctype="multipart/form-data">
-    <p><button type="submit" name="logout">Logout</button></p>
-
-  </form>
-  <!-- load local js -->
+  <center>
+    <h1 class="logoutHead">Are you sure you want to logout?</h1>
+    <form class="logout" id="logout" method="POST" action="/logout" enctype="multipart/form-data">
+      <p><button class="logoutButton" type="submit" name="logout">Logout</button></p>
+    </form>
+  </center>
+ <!-- load local js -->
   <script src="/main.js"></script>
 </body>
 

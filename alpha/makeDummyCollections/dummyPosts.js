@@ -107,11 +107,18 @@ async function insertPosts(db) {
     return result.acknowledged; //returns true if item successfully inserted
 }
 
+async function deleteAllCounters(db) {
+    const result = await db.collection('counters').deleteMany({});
+    const insert = await db.collection('counters').insertOne({ collection: "posts", count: 1 });
+    return result.acknowledged; //returns true if item successfully deleted
+}
+
 async function main() {
-    const posts = await Connection.open(mongoUri, 'critterquest');
-    deleteAll(posts);
-    posts.collection('animals').deleteMany({});
-    posts.collection('animals').insertMany([
+    const critterquest = await Connection.open(mongoUri, 'critterquest');
+    deleteAll(critterquest);
+    // deleteAllCounters(critterquest);
+    // critterquest.collection('animals').deleteMany({});
+    critterquest.collection('animals').insertMany([
         { 'animal': 'dog' },
         { 'animal': 'cat' },
         { 'animal': 'goose' },

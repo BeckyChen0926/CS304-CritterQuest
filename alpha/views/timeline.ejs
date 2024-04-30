@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/styles.css" />
     <!-- loading jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- favicon -->
+    <link rel="icon" type="image/x-icon" href="/logo.png">
 </head>
 <body>
     <%- include("partials/navbar.ejs", { uid: uid }) %>
@@ -15,7 +17,7 @@
         <% userPosts.forEach( (post) => {  %>
             <div class="post">
                 <div class="image">
-                    <img src="<%= post['path'] %>">
+                    <img src="<%= post['path'] %>" alt="<%= post.caption%>">
                 </div>
                 <div>
                     <li>
@@ -39,6 +41,7 @@
                             <nobr>        
                                 <form class="likeForm" action="/like" method="post">
                                     <input type="hidden" name="postTime" value="<%= post['time'] %>">
+                                    <input type="hidden" name="postid" value="<%= post.PID%>">
                                     <div class="buttonDiv">
                                         <button type="image" class="likeButton"><img src="/like.png" alt="Like" width="50px"></button>
                                     </div>

@@ -116,13 +116,12 @@ const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
 const USERS = "users";
 const COUNTERS = "counters";
-// const UPLOADS = 'uploads';
 const ANIMALS = 'animals';
 
-/*
-Route to render the login page
-Users who are already logged in will simply be redireected to the timeline page.
-*/
+
+// Route to render the login page
+// Users who are already logged in (this current session) will be redirected to the timeline page.
+// Returns the rendered login page if the user is not logged in.
 app.get('/', (req, res) => {
     if(req.session.loggedIn){
         return res.redirect("/timeline");
@@ -131,13 +130,11 @@ app.get('/', (req, res) => {
     return res.render('login.ejs');
 });
 
-/*
-Route which processes the entered username and password in the submitted register form
-If the username already exists, then they are prompted to choose another username or login if the account is theirs
-Otherwise, they will be inserted into the users database
-
-NOTE FROM TEAM: Currently, the badges are being hardcoded where we assign the welcome badge to everyone. We will add user-obtainable badges later. 
-*/
+// Route to handle user registration
+// Processes the submitted registration form.
+// If the username already exists, prompts the user to choose another username or login.
+// Otherwise, inserts the new user into the users database and assigns them the welcome badge.
+// NOTE FROM TEAM: Currently, the badges are being hardcoded where we assign the welcome badge to everyone. We will add user-obtainable badges later. 
 app.post("/join", async (req, res) => {
     try {
         const username = req.body.username;
@@ -188,12 +185,11 @@ app.post("/join", async (req, res) => {
     }
 });
 
-/*
-Route which processes the entered username and password in the submitted login form
-If the username doesnt exists, then they are prompted with an error saying that the username does not exist
-If the password is incorrect, they are prompted that the username or password is incorrect
-Otherwise, they will be allowed to login. 
-*/
+// Route to handle user login
+// Processes the submitted login form, comparing the provided password with the hashed password stored in the database.
+// If successful, sets session variables and redirects to the profile page.
+// If there are any issues, such as non-existent username or incorrect password, prompts the user accordingly.
+// Returns a redirect to the profile page or the login page, depending on the outcome.
 app.post("/login", async (req, res) => {
     try {
         const username = req.body.username;
@@ -243,11 +239,10 @@ app.post("/login", async (req, res) => {
 });
 
 
-/*
-Route which displays the timeline 
-If the username already exists, then they are prompted to choose another username or login if the account is theirs
-Otherwise, they will be inserted into the users database
-*/
+// Route to display the timeline page
+// Fetches a list of all posts and renders the timeline page with user posts and user ID.
+// Users must be logged in to access this page.
+// Returns the rendered timeline page if the user is logged in.
 app.get('/timeline/', async (req, res) => {
     //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
     if(!req.session.loggedIn){ 
@@ -258,26 +253,20 @@ app.get('/timeline/', async (req, res) => {
     const postList = await db.collection(POSTS).find({}, { sort: { PID: -1,time:-1 } }).toArray();
     console.log(postList);
 
-    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    // var uid = req.;
-
-    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
-    /*
-    if(!req.session.logged_in){ 
-        return res.render('login.ejs');
-    }
-    */
     return res.render('timeline.ejs', { userPosts: postList, uid: req.session.uid });
 });
 
-async function incrementLikes(time) {
+// Helper function to increment the likes on a post
+// Takes the post id as an argument and increments the 'likes' field of the post in the database.
+// Returns the updated number of likes.
+async function incrementLikes(pid) {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
 
     const postsCollection = db.collection(POSTS);
 
     // Update the 'likes' field of the post and return the updated document
     const updatedPost = await postsCollection.findOneAndUpdate(
-        { time: time },
+        { PID: pid },
         { $inc: { likes: 1 } },
         { returnDocument: "after" }
     );
@@ -286,14 +275,18 @@ async function incrementLikes(time) {
     return updatedPost.likes;
 }
 
-// Handle the like button click
+// Route to handle the like button click on a post
+// Increments the likes for the post using pid and redirects to the timeline page.
+// If there is an error, returns an internal server error status.
+// Returns a redirect to the timeline page if successful.
+// NOTE FROM TEAM: might try to update to ajax later.
 app.post('/like', async (req, res) => {
     // const postId = req.body.postId;
-    const postDate = req.body.postTime;
+    const pid = parseInt(req.body.postid);
 
     try {
         // Increment likes for the post
-        const updatedLikes = await incrementLikes(postDate);
+        const updatedLikes = await incrementLikes(pid);
         console.log(updatedLikes);
         return res.redirect('/timeline');
     } catch (error) {
@@ -303,9 +296,14 @@ app.post('/like', async (req, res) => {
     return res.redirect('/timeline');
 });
 
+// Route to render the logout page
+// Displays the logout confirmation page.
 app.get('/logout', (req,res)=>{
     return res.render('logout.ejs');
 });
+
+// Route to handle user logout
+// Clears session variables and redirects the user to the login page.
 app.post('/logout', (req,res) => {
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
@@ -322,9 +320,11 @@ app.post('/logout', (req,res) => {
     }
   });
 
-// two kinds of forms (GET and POST), both of which are pre-filled with data
-// from previous request, including a SELECT menu. Everything but radio buttons
-// renders the post an animal sighting form with dynamic list of animals
+// Route to render the posting form
+// Displays the animal sighting form with a dynamic list of animals for selection
+// or the user can enter their own animal.
+// Requires the user to be logged in to access this page.
+// Returns the rendered posting form if the user is logged in.
 app.get('/posting/', async (req, res) => {
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
@@ -338,8 +338,9 @@ app.get('/posting/', async (req, res) => {
     return res.render('form.ejs', { action: '/posting/', location: '', uid: uid,animalList });
 });
 
-// limited but not private
-// Post an animal sighting using the posting form.
+// Route to handle posting an animal sighting
+// Takes the form data, uploads a photo, and inserts a new post into the database.
+// Redirects the user to the timeline page after successfully posting.
 app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
@@ -364,9 +365,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('chmod val', val);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    // var existingUser = await db.collection(USERS).findOne({ username: username });
-    // var uid = req.session.UID;
-    // console.log('user', existingUser);
+
     const customAnimal = req.body.custom_animal;
     if (customAnimal) {
         // Insert the custom animal into the database
@@ -400,7 +399,10 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     res.redirect('/timeline');
 });
 
-// shows your own profile page
+// Route to render the user's own profile page
+// Displays the user's profile with their posts, badges, and description.
+// Requires the user to be logged in to access this page.
+// Returns the rendered profile page if the user is logged in.
 app.get('/profile/:userID', async (req, res) => {
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
@@ -462,9 +464,10 @@ app.get('/profile/:userID', async (req, res) => {
 });
 
 
-/**
- * Render the edit form
- */
+// Route to render the edit profile form
+// Displays the form with the user's current information pre-filled.
+// Requires the user to be logged in to access this page.
+// Returns the rendered edit profile form.
 app.get("/edit/:userID", async (req, res) => {
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
@@ -492,48 +495,48 @@ app.get("/edit/:userID", async (req, res) => {
     res.render("editProfile.ejs", { user, username, aboutMe, uid: uid });
 });
 
-// update your own user about me
+// Route to handle updating the user's profile
+// Updates the user's 'about me' information with the entered info
+// in the database.
+// Redirects the user to their updated profile page if successful.
 app.post('/edit/:userID', async (req, res) => {
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
-    const { username, aboutMe } = req.body;
+    const aboutme= req.body.aboutMe;
 
     // Fetch user details using uid
-    const user = await users.findOne({ UID: uid });
-
-    // Update user info.
-    // user.username = username;
-    user.aboutme = aboutMe;
-
-    // Save the updated user
-    const result = await users.updateOne({ UID: uid }, { $set: user });
-    console.log(result);
-
+    const filter = {UID: uid};  // document to update
+    const update = {$set: {aboutme: aboutme}};   // changes to make
+    const options = {upsert: false}; //don't want to upsert
+    await users.updateOne(filter, update, options);
+    
     // Redirect to the profile page for the updated profile
     res.redirect(`/profile/${uid}`);
 });
 
-// need css + post a comment form
+// Route to render the comment page with a form for a specific post
+// Displays the specific post and form to add a comment to this specific post.
+// Users must be logged in to access this page.
 app.get('/comment/:PID', async (req,res)=>{
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
-    // const caption = req.params.caption;
     const pid = parseInt(req.params.PID);
-    // console.log(postId)
-    // const postDate = req.body.postTime;
+
     const uid = parseInt(req.params.userID);
-    // return res.redirect(`/comment/${uid}`);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const currPost = await db.collection(POSTS).findOne({PID:pid});
     console.log(currPost)
     res.render("comment.ejs", { uid: uid, post: currPost});
-    // return res.redirect('/comment',{uid:uid,post:currPost});
 
 })
 
+// Route to handle posting a comment on a specific post
+// Adds a comment to the specified post in the database.
+// Users must be logged in to access this feature.
+// Returns the rendered post and comment page with the comment section.
 app.post('/comment/:PID', async (req,res)=>{
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
@@ -563,6 +566,7 @@ app.post('/comment/:PID', async (req,res)=>{
 
 })
 
+// SEARCH FUNCTION WIP
 app.get('/filter', async (req, res) =>
     {
         return res.render('filter.ejs', {uid: req.session.uid});
