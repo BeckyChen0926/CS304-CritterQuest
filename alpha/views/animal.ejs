@@ -4,9 +4,11 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Animals</title>
+  <title>Search</title>
   <!-- load local stylesheet (css) -->
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+
   <!-- loading jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
@@ -16,7 +18,7 @@
     <%- include("partials/navbar.ejs", { uid: uid }) %>
     <%- include("partials/searchbar.ejs") %>
     </br>
-    <h1><%= animals[0].animal %></h1>
+    <h1>Posts related to <%= term %>:</h1>
     </center>
 
     <ul>

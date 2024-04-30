@@ -566,49 +566,59 @@ app.post('/comment/:PID', async (req,res)=>{
 
 })
 
-// SEARCH FUNCTION WIP
+// Route to render the search bar page
 app.get('/filter', async (req, res) =>
     {
         return res.render('filter.ejs', {uid: req.session.uid});
     });
 
-// SEARCH FUNCTION WIP
+// Route to handle searching by animals or locations
+// Allows users to search for animals or locations based on the provided query parameters.
+// Renders posts based on search results, else return a page warning about no posts found
 app.get('/search/', async(req,res) => {
+    // Extract search term and kind from query parameters
     const term = req.query.term;
     const kind = req.query.kind;
     console.log(term,kind);
+
+    // Open connection to the database
     const db = await Connection.open(mongoUri,  CRITTERQUEST);
-    const animals = db.collection(ANIMALS);
-    let result = [];
-    if (kind == "animal"){
-        result = await animals.find({animal: new RegExp(term, 'i')}).toArray();
+    const posts = db.collection(POSTS);
+
+    // Perform search based on the kind of search
+    if (kind === "animal"){
+        // Search for animals matching the term
+        const result = await posts.find({ animal: new RegExp(term, 'i') }).sort({ PID: -1, time: -1 }).toArray();
         console.log("result",result);
-        // console.log("result",result[0].animal);
        
-        // console.log("animals",animalPosts);
-        if (result.length == 0) {
-            return res.render("none.ejs",{option: kind, uid: req.session.uid});
+        if (result.length === 0) {
+            // If no results found, render 'none.ejs' template with appropriate message
+            return res.render("none.ejs", { option: kind, uid: req.session.uid, term: term });
         } else {
-            console.log(result)
-            const animalPosts = await db.collection(POSTS).find({animal:result[0].animal}, { sort: { PID: -1,time:-1 } }).toArray();
-            return res.render("animal.ejs",{option: kind, uid: req.session.uid,animal:result[0],animals: animalPosts});
+            console.log(result);
+            // Find posts related to the found animal
+            const animalPosts = await posts.find({ animal: result[0].animal }).sort({ PID: -1, time: -1 }).toArray();
+            // Render 'animal.ejs' template with information about the animal and related posts
+            return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: animalPosts, term: term });
         }
-    } else if (kind == "location") {
-        result = await db.collection(POSTS).find({location:term}).toArray();
+    } else if (kind === "location") {
+        // Search for posts with the specified location
+        const result = await posts.find({ location: new RegExp(term, 'i') }).sort({ PID: -1, time: -1 }).toArray();
         console.log("result",result);
-        // console.log("result",result[0].animal);
-        // console.log("animals",animalPosts);
-        if (result.length == 0) {
-            return res.render("none.ejs",{option: kind, uid: req.session.uid});
+        
+        if (result.length === 0) {
+            // If no results found, render 'none.ejs' template with appropriate message
+            return res.render("none.ejs", { option: kind, uid: req.session.uid, term: term });
         } else {
-            console.log(result)
-            const locationPosts = await db.collection(POSTS).find({location:new RegExp(term, 'i')}, { sort: { PID: -1,time:-1 } }).toArray();
-            return res.render("animal.ejs",{option: kind, uid: req.session.uid,animal:result[0],animals: locationPosts});
+            console.log(result);
+            // Find posts related to the found location
+            const locationPosts = await posts.find({ location: new RegExp(term, 'i') }).sort({ PID: -1, time: -1 }).toArray();
+            // Render 'animal.ejs' template with information about the location and related posts
+            return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: locationPosts, term: term });
         }
     }
-    
-}
-);
+});
+
 
 
 // ================================================================
