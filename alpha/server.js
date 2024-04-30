@@ -572,6 +572,7 @@ app.get('/filter', async (req, res) =>
         return res.render('filter.ejs', {uid: req.session.uid});
     });
 
+// SEARCH FUNCTION WIP
 app.get('/search/', async(req,res) => {
     const term = req.query.term;
     const kind = req.query.kind;
