@@ -7,10 +7,12 @@ CritterQuest Alpha Version: 4/30/24
 A site to foster a community around sharing and learning about animals. 
 Users can see a timeline of others' posts and like and comment on others’ posts as well.
 
+```
 Register for your own account:
 Sample Username: scott
 Sample Password: scott
-(Or any string you’d like) 
+(Or any string you’d like)
+```
 
 Sample Post Info:
 Select: dog (leave the “add your own animal” box blank, unless you are adding a new animal that is not in the drop-down menu)
