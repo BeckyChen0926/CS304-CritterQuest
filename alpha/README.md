@@ -44,6 +44,6 @@ Caption: I saw a flamingo in the lake for the first time. Made my day!
 ```
 
 There is also a search tab on the nav bar that will take you to a search form, where you can search by location or animals.
-Search "dog" (exists) and "swan" (does not exist) and select By: "animal" to see the relevant posts. Search "lake" and select By: "location" to see all posts with location name that includes "lake."
+Search "dog" (exists) and "swan" (does not exist) and select By: "animal" to see the relevant posts. Search "lake" and select By: "location" to see all posts with location name that includes "lake." Don't like or comment on the relevant posts yet, as we are still working on the handles.
 
 Finally, the nav bar contains the Logout link which takes you back to the Login/Register page.
