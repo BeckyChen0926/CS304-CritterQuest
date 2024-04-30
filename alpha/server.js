@@ -502,19 +502,14 @@ app.post('/edit/:userID', async (req, res) => {
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
-    const { username, aboutMe } = req.body;
+    const aboutme= req.body.aboutMe;
 
     // Fetch user details using uid
-    const user = await users.findOne({ UID: uid });
-
-    // Update user info.
-    // user.username = username;
-    user.aboutme = aboutMe;
-
-    // Save the updated user
-    const result = await users.updateOne({ UID: uid }, { $set: user });
-    console.log(result);
-
+    const filter = {UID: uid};  // document to update
+    const update = {$set: {aboutme: aboutme}};   // changes to make
+    const options = {upsert: false}; //don't want to upsert
+    await users.updateOne(filter, update, options);
+    
     // Redirect to the profile page for the updated profile
     res.redirect(`/profile/${uid}`);
 });
