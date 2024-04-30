@@ -17,6 +17,8 @@
     <%- include("partials/searchbar.ejs") %>
     </br>
     <h1><%= animals[0].animal %></h1>
+    </center>
+
     <ul>
         <% animals.forEach( (post) => {  %>
             <div class="post">
@@ -82,7 +84,6 @@
             </div>
         <% }); %>
     </ul>
-    </center>
     <!-- load local js -->
     <script src="/main.js"></script>
 </body>

@@ -13,6 +13,8 @@
 </head>
 
 <body>
+  <%- include("partials/navbar.ejs", { uid: uid }) %>
+  <br><br>
   <center>
     <h1 class="logoutHead">Are you sure you want to logout?</h1>
     <form class="logout" id="logout" method="POST" action="/logout" enctype="multipart/form-data">
