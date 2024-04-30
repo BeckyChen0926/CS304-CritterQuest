@@ -21,8 +21,8 @@ Caption: I just saw the cute dog outside of sci! Literally the best day ever!!
 Sample Post 2 Info:
 Type in "Add new animal": flamingo (leave the “Select Animal” drop-down untouched, unless you are selected an existing animal entry)
 Location: Lake Waban
-Image: [Any image of a flamingo, or you can save this linked image and post it](https://www.google.com/url?sa=i&url=https%3A%2F%2Febird.org%2Fspecies%2Fgrefla2&psig=AOvVaw2pUXqzI0n-1D0dqDeJ8ikS&ust=1714603840846000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLC3kpmD64UDFQAAAAAdAAAAABAp)
-Caption: I saw a flamingo in the lake during my lake walk. Made my day!
+Image: [Any image of a flamingo, or you can save this linked image and post it]([https://www.google.com/url?sa=i&url=https%3A%2F%2Febird.org%2Fspecies%2Fgrefla2&psig=AOvVaw2pUXqzI0n-1D0dqDeJ8ikS&ust=1714603840846000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLC3kpmD64UDFQAAAAAdAAAAABAp](https://images.app.goo.gl/E1i7E3w7p2R1dDF69))
+Caption: I saw a flamingo in the lake for the first time. Made my day!
 
 Directions:
 You can create a new account or log in with the sample username and password. We suggest that you create your own account.
