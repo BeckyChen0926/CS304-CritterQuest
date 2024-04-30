@@ -14,6 +14,8 @@ Sample Password: scott
 (Or any string you’d like)
 ```
 
+NOTE: we ran into PID and UID duplication issues which we emailed you about. However, this only happens occasionally. If the like or comment button doesn't work for one post, try other posts. 
+
 Directions:
 You can create a new account or log in with the sample username and password. We suggest that you create your own account.
 Just type in the username and password and click either login or register. 
