@@ -184,13 +184,14 @@ ul {
   color: white;
   border: solid;
   border-color: black;
-  text-align: center;
+  /* text-align: center; */
   border-radius: 4px;
   padding: 10px 25px;
   float: right;
   cursor: pointer;
   margin-left: 100px;
   font-size: 15px;
+  white-space: nowrap;
 }
 
 /*End Profile *********************************************************/
@@ -233,6 +234,20 @@ ul {
   margin-top: 100px;
 }
 /*End Login *********************************************************/
+
+/*Start Logout *********************************************************/
+.logoutButton {
+  background-color:#4F772D;
+  border: solid;
+  border-color: black;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 15px;
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+/*End Logout *********************************************************/
 
 .searchtt {
   margin-top: 100px;
