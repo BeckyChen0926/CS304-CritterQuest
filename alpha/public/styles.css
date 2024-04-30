@@ -63,7 +63,7 @@ ul {
   flex: 1;
   padding: 20px;
   background-color: white;
-  margin: 15px;
+  margin: 20px;
   margin-left: -20px;
 }
 
@@ -93,6 +93,10 @@ ul {
 
 .info {
   flex-direction: column;
+}
+
+.postTime {
+  margin-top: -20px;
 }
 
 .likeButton {
@@ -263,3 +267,22 @@ ul {
   border: 3px solid #4F772D;
   padding: 10px;
 }
+
+/*Start individual posts page **********************************************/
+.comments {
+  background-color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  padding-top: 5px;
+  margin-left: -20px;
+  margin-right: 20px;
+  margin-top: -30px
+}
+
+.time {
+  font-size: 70%;
+  margin-top: 0px;
+  margin-bottom: 15px;
+}
+/*End individual posts page **********************************************/

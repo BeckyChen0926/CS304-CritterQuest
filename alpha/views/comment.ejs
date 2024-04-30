@@ -65,13 +65,14 @@
         </ul>
         <ul>
             <div class="comments">
+                <h2>Comments:</h2>
                 <%if (post.comments){%>
                     <% post['comments'].forEach((c)=>{ %>
                         <div>
                             <li>
                                 <%=c.user%>
                             </li>
-                            <li>
+                            <li class="time">
                                 <%= c.time%>
                             </li>
                             <li>

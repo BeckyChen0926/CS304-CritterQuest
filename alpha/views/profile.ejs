@@ -58,7 +58,7 @@
                                         <%= post['location'] %>
                                     </h2>
                                 </div>
-                                <div class="time">
+                                <div class="time postTime">
                                     <h2>
                                         <%= post['time'] %>
                                     </h2>
@@ -78,7 +78,7 @@
                                         Likes: <%= post['likes'] %>
                                     </p>
                                 </div>
-                                <div>
+                                <div class="comments">
                                     <p>Comments:
                                         <%if (post['comments']){%>
                                             <%= post['comments'].length %>
