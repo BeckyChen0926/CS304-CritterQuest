@@ -63,8 +63,9 @@ async function deleteAll(db) {
 
 async function deleteAllCounters(db) {
     const result = await db.collection('counters').deleteMany({});
-    const insert = await db.collection('counters').insertOne({collection: "users", count: 2});
-    return result.acknowledged; //returns true if item successfully deleted
+    const insert = await db.collection('counters').insertOne({collection: "users", count: 1});
+    const postCount = await db.collection('counters').insertOne({ collection: "posts", count: 1 });
+    return insert.acknowledged; //returns true if item successfully deleted
 }
 
 // just to insert a few users
@@ -97,8 +98,8 @@ async function main(){
     const critterquest = await Connection.open(mongoUri,'critterquest');
     deleteAll(critterquest);
     deleteAllCounters(critterquest);
-    let insert = await insertUsers(critterquest);
-    console.log(insert);
+    // let insert = await insertUsers(critterquest);
+    // console.log(insert);
 }
 
 main()
