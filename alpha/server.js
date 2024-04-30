@@ -584,12 +584,13 @@ app.get('/search/', async(req,res) => {
         result = await animals.find({animal: term}).toArray();
         console.log("result",result);
         // console.log("result",result[0].animal);
-        const animalPosts = await db.collection(POSTS).find({animal:result[0].animal}, { sort: { PID: -1,time:-1 } }).toArray();
-        console.log("animals",animalPosts);
+       
+        // console.log("animals",animalPosts);
         if (result.length == 0) {
-            return res.render("none.ejs",{option: kind, uid: req.session.uid});
+            return res.render("timeline.ejs",{option: kind, uid: req.session.uid});
         } else {
             console.log(result)
+            const animalPosts = await db.collection(POSTS).find({animal:result[0].animal}, { sort: { PID: -1,time:-1 } }).toArray();
             return res.render("animal.ejs",{option: kind, uid: req.session.uid,animal:result[0],animals: animalPosts});
         }
     }
