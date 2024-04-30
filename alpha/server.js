@@ -581,73 +581,34 @@ app.get('/search/', async(req,res) => {
     const animals = db.collection(ANIMALS);
     let result = [];
     if (kind == "animal"){
-        result = await animals.find({animal: term}).toArray();
+        result = await animals.find({animal: new RegExp(term, 'i')}).toArray();
         console.log("result",result);
         // console.log("result",result[0].animal);
-        const animalPosts = await db.collection(POSTS).find({animal:result[0].animal}, { sort: { PID: -1,time:-1 } }).toArray();
-        console.log("animals",animalPosts);
+       
+        // console.log("animals",animalPosts);
         if (result.length == 0) {
             return res.render("none.ejs",{option: kind, uid: req.session.uid});
         } else {
             console.log(result)
+            const animalPosts = await db.collection(POSTS).find({animal:result[0].animal}, { sort: { PID: -1,time:-1 } }).toArray();
             return res.render("animal.ejs",{option: kind, uid: req.session.uid,animal:result[0],animals: animalPosts});
+        }
+    } else if (kind == "location") {
+        result = await db.collection(POSTS).find({location:term}).toArray();
+        console.log("result",result);
+        // console.log("result",result[0].animal);
+        // console.log("animals",animalPosts);
+        if (result.length == 0) {
+            return res.render("none.ejs",{option: kind, uid: req.session.uid});
+        } else {
+            console.log(result)
+            const locationPosts = await db.collection(POSTS).find({location:new RegExp(term, 'i')}, { sort: { PID: -1,time:-1 } }).toArray();
+            return res.render("animal.ejs",{option: kind, uid: req.session.uid,animal:result[0],animals: locationPosts});
         }
     }
     
 }
 );
-
-// search (filter out)
-// app.post('/search/', async (req, res) => {
-//     // Extract search term and kind from request parameters
-//     const term = req.query.term;
-//     const kind = req.query.kind;
-//     console.log(`You submitted ${term} and ${kind}`);
-//     // Connect to the database
-//     const db = await Connection.open(mongoUri,  CRITTERQUEST);
-//     const animals = db.collection(ANIMALS);
-//     // const regions = db.collection();
-//     let result = [];
-//     // Search for person
-//     if (kind == "animal") {
-//         result = await animals.find({ name: new RegExp([term].join(""), "i") }).toArray();
-//         console.log(result);
-//         // Check if any results found
-//         if (result.length == 0) {
-//             // Render 'none.ejs' view if no results found
-//             return res.render('none.ejs', { option: kind, uid: req.session.uid, userPosts: postList});
-//         }
-//         // Single result found
-//         if (result.length == 1) {
-//             // Redirect to the detail page for the particular person
-//             const personId = parseInt(result[0].nm);
-//             res.redirect(`/nm/` + personId);
-//         }
-//         // Multiple results found
-//         if (result.length > 1) {
-//             // Render 'multiple.ejs' view with search results
-//             return res.render('multiple.ejs', { option: kind, searched: term, list: result });
-//         }
-//     } else { // Search for movie
-//         result = await movie.find({ title: new RegExp([term].join(""), "i") }).toArray();
-//         // Check if any results found
-//         if (result.length == 0) {
-//             // Render 'none.ejs' view if no results found
-//             return res.render('none.ejs', { option: kind });
-//         }
-//         // Single result found
-//         if (result.length == 1) {
-//             // Redirect to the detail page for the particular movie
-//             const movieID = parseInt(result[0].tt);
-//             res.redirect(`/tt/` + movieID);
-//         }
-//         // Multiple results found
-//         if (result.length > 1) {
-//             // Render 'multiple_movie.ejs' view with search results
-//             return res.render('multiple_movie.ejs', { option: kind, searched: term, list: result });
-//         }
-//     }
-// });
 
 
 // ================================================================
