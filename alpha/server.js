@@ -366,7 +366,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
 
-    const customAnimal = req.body.custom_animal;
+    const customAnimal = req.body.custom_animal.toLowerCase();
     if (customAnimal) {
         // Insert the custom animal into the database
         await db.collection(ANIMALS).insertOne({ 'animal': customAnimal });
