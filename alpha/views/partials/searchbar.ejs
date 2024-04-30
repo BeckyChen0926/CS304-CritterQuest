@@ -1,0 +1,17 @@
+<form method="GET" action="/search/" class="search">
+    <p>
+        <label for="search">Search:</label>
+        <input type="text" name="term" id="search">
+    </p>
+    <p>
+        <label for="kind">By:</label>
+        <select required name="kind" id="kind">
+            <option value="">Choose one</option>
+            <option value="animal">Animals</option>
+            <option value="location">Locations</option>
+        </select>
+    </p>
+    <p>
+        <input type="submit" value="Search">
+    </p>
+</form>

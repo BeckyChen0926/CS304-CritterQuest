@@ -9,17 +9,24 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs", { uid: uid }) %>
-    <p class = "searchtt">Search by animals or locations!</p>
-    <p class = "search">
-        <label for="search">Search:</label>
-        <input type="text" name="term" id="search">
-        <label for="kind">Kind:</label>
-        <select required name="kind" id="kind">
-            <option value="">Choose one</option>
-            <option value="animal">Animal</option>
-            <option value="location">Location</option>
-        </select>
-        <input type="submit" value="Search">
-    </p>
+    </br>
+    <h1>Search posts by specific animals or locations!</h1>
+    <form method="GET" action="/search/" class="search">
+        <p>
+            <label for="search">Search:</label>
+            <input type="text" name="term" id="search">
+        </p>
+        <p>
+            <label for="kind">By:</label>
+            <select required name="kind" id="kind">
+                <option value="">Choose one</option>
+                <option value="animal">Animals</option>
+                <option value="location">Locations</option>
+            </select>
+        </p>
+        <p>
+            <input type="submit" value="Search">
+        </p>
+    </form>
 </body>
 </html>

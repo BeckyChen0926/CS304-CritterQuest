@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>CritterQuest/title>
-    <!-- load local stylesheet (css) -->
-    <link rel="stylesheet" href="/styles.css" />
-    <!-- loading jquery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>Node Starter</title>
+  <!-- load local stylesheet (css) -->
+  <link rel="stylesheet" href="/styles.css" />
+  <!-- loading jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
+
 <body>
     <center>
-    <%- include("../partials/search.ejs") %>
+    <%- include("partials/navbar.ejs", { uid: uid }) %>
+    </br>
+    </br>
     <h2>Sorry, no <%= option %> is in the database.</h2>
-    <%- include("../partials/about.ejs") %>
+    <%- include("partials/searchbar.ejs") %>
     </center>
     <!-- load local js -->
     <script src="/main.js"></script>
 </body>
+
 </html>

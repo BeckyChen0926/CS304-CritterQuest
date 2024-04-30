@@ -69,6 +69,7 @@ function timeString(dateObj) {
 }
 
 const fs = require('node:fs/promises');
+const { rmSync } = require('fs');
 
 // app.use('/uploads', express.static('uploads'));
 // var storage = multer.diskStorage({
@@ -567,10 +568,27 @@ app.get('/filter', async (req, res) =>
         return res.render('filter.ejs', {uid: req.session.uid});
     });
 
-app.post('/filter/', async(req,res) => {
-    const term = req.body.term;
-    const kind = req.body.kind;
+app.get('/search/', async(req,res) => {
+    const term = req.query.term;
+    const kind = req.query.kind;
     console.log(term,kind);
+    const db = await Connection.open(mongoUri,  CRITTERQUEST);
+    const animals = db.collection(ANIMALS);
+    let result = [];
+    if (kind == "animal"){
+        result = await animals.find({animal: term}).toArray();
+        console.log("result",result);
+        // console.log("result",result[0].animal);
+        const animalPosts = await db.collection(POSTS).find({animal:result[0].animal}, { sort: { PID: -1,time:-1 } }).toArray();
+        console.log("animals",animalPosts);
+        if (result.length == 0) {
+            return res.render("none.ejs",{option: kind, uid: req.session.uid});
+        } else {
+            console.log(result)
+            return res.render("animal.ejs",{option: kind, uid: req.session.uid,animal:result[0],animals: animalPosts});
+        }
+    }
+    
 }
 );
 
