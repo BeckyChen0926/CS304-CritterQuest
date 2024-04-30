@@ -12,6 +12,7 @@
 <body>
     <%- include("partials/navbar.ejs", { uid: uid }) %>
     </br>
+    <center>
     <h1>Search posts by specific animals or locations!</h1>
     <form method="GET" action="/search/" class="search">
         <p>
@@ -30,5 +31,6 @@
             <input type="submit" value="Search">
         </p>
     </form>
+    </center>
 </body>
 </html>

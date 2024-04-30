@@ -299,7 +299,7 @@ app.post('/like', async (req, res) => {
 // Route to render the logout page
 // Displays the logout confirmation page.
 app.get('/logout', (req,res)=>{
-    return res.render('logout.ejs');
+    return res.render('logout.ejs',{uid:req.session.uid});
 });
 
 // Route to handle user logout
