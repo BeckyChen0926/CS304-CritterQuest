@@ -566,16 +566,15 @@ app.post('/comment/:PID', async (req,res)=>{
 
 })
 
-// Route to render the filter page
+// Route to render the search bar page
 app.get('/filter', async (req, res) =>
     {
         return res.render('filter.ejs', {uid: req.session.uid});
     });
 
-// SEARCH FUNCTION WIP
-// Route to handle searching for animals or locations
+// Route to handle searching by animals or locations
 // Allows users to search for animals or locations based on the provided query parameters.
-// Renders appropriate templates based on search results.
+// Renders posts based on search results, else return a page warning about no posts found
 app.get('/search/', async(req,res) => {
     // Extract search term and kind from query parameters
     const term = req.query.term;
