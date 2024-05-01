@@ -23,18 +23,19 @@ TODO:
 - Other additions that are not core features
 ```
 
-```
-Register for your own account:
-Sample Username: scott
-Sample Password: scott
-(Or any string you’d like)
-```
-
 NOTE: we ran into PID and UID duplication issues which we emailed you about. However, this only happens occasionally. If the like or comment button doesn't work for one post, try other posts. 
 
 Directions:
 You can create a new account or log in with the sample username and password. We suggest that you create your own account.
 Just type in the username and password and click either login or register. 
+
+```
+To register for your own account:
+Sample Username: scott
+Sample Password: scott
+(Or any string you’d like)
+```
+
 Clicking the reset button will clear the entered username and password. It will take a while to login, just wait.
 After logging in or registering it will take you to your profile page with your information. 
 You can edit the about me info by clicking the "Edit Profile" button. 
