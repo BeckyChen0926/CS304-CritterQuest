@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title><%= username %>'s Profile</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- favicon -->
+    <link rel="icon" type="image/x-icon" href="/logo.png">
+</head>
+<body>
+    <%- include("partials/navbar.ejs", { uid: UID }) %>
+    <div class="myInfo form">
+        <div class="username">
+            <h1><%= username %></h1>
+        </div>
+        <div class="about">
+            <h2>About me: <%= aboutme %></h2>
+        </div>
+        <div class="badges">
+            <h2>Badges:</h2>
+            <% if (badges != null){%>
+                <ul>
+                    <% badges.forEach( (badge) => {%>
+
+                    <li><img src="/<%= badge %>" alt="badge" width="120px"></li>
+
+                    <% }) %>
+                    
+                </ul> 
+            <% }%> 
+        </div>
+       
+        <% if( isOwnProfile ) { %>
+            <div class="button">
+                <button class="editProfileButton"><a class="editProfileLink" action='GET' href="/edit/<%= uid %>/">Edit Profile</a></button>
+            </div>
+        <% } %>
+    </div>
+    <div class="myPosts">
+        <br><br>
+        <h1 class="postTitle">My Posts</h1>
+        <ul>
+            <% myPosts.forEach( (post)=> { %>
+                    <div class="post">
+                        <div class="image">
+                            <img src="<%= post['path'] %>" alt="<%= post.caption%>">
+                        </div>
+                        <div>
+                            <li>
+                                <div class="info">
+                                    <h1 class="username">
+                                        <%= post['user'] %>
+                                    </h1>
+                                    <h2 class="location">
+                                        <%= post['location'] %>
+                                    </h2>
+                                </div>
+                                <div class="time postTime">
+                                    <h2>
+                                        <%= post['time'] %>
+                                    </h2>
+                                </div>
+                                <div class="animal">
+                                    <h2>
+                                        <%= post['animal'] %>
+                                    </h2>
+                                </div>
+                                <div class="caption">
+                                    <p>
+                                        <%= post['caption'] %>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>
+                                        Likes: <%= post['likes'] %>
+                                    </p>
+                                </div>
+                                <div class="comments">
+                                    <p>Comments:
+                                        <%if (post['comments']){%>
+                                            <%= post['comments'].length %>
+                                        <%} else {%>
+                                            0
+                                        <%}%>
+                                    </p>
+                                </div>
+                            </li>
+                        </div>
+                        <div>
+                            <form action="/comment/<%=post.PID%>" method="get">
+                                <button class="goToPost">Go to post</button>
+                            </form>
+                        </div>
+                    </div>
+            <% }); %>
+        </ul>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Animals</title>
+  <!-- load local stylesheet (css) -->
+  <link rel="stylesheet" href="/styles.css" />
+  <!-- loading jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <center>
+    <%- include("partials/navbar.ejs", { uid: uid }) %>
+    </br>
+    </br>
+    <h2>Sorry, no such <%= option %> is posted.</h2>
+    <%- include("partials/searchbar.ejs") %>
+    </center>
+    <!-- load local js -->
+    <script src="/main.js"></script>
+</body>
+
+</html>

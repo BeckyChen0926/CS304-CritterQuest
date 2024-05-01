@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title><%= post.user %>'s Post</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- favicon -->
+    <link rel="icon" type="image/x-icon" href="/logo.png">
+</head>
+
+<body>
+    <%- include("partials/navbar.ejs", { uid: uid }) %>
+
+        <ul>
+            <div class="post">
+                <div class="image">
+                    <img src="<%= post['path'] %>">
+                </div>
+                <div>
+                    <li>
+                        <div class="info">
+                            <h1 class="username">
+                                <%= post['user'] %>
+                            </h1>
+                            <h2 class="location">
+                                <%= post['location'] %>
+                            </h2>
+                        </div>
+                        <div class="time">
+                            <h2>
+                                <%= post['time'] %>
+                            </h2>
+                        </div>
+                        <div class="animal">
+                            <h2>
+                                <%= post['animal'] %>
+                            </h2>
+                        </div>
+                        <div class="caption">
+                            <p>
+                                <%= post['caption'] %>
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Likes: <%= post['likes'] %>
+                            </p>
+                        </div>
+                    </li>
+                    <form action="/comment/<%=post['PID']%>" method="post">
+                        <p><label>Leave a comment!
+                                <textarea rows="3" cols="30" name="comment"></textarea>
+                            </label></p>
+                        <p>
+                            <input type="submit" value="Send comment">
+                            <input type="reset" value="Reset">
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </ul>
+        <ul>
+            <div class="comments">
+                <h2>Comments:</h2>
+                <%if (post.comments){%>
+                    <% post['comments'].forEach((c)=>{ %>
+                        <div>
+                            <li>
+                                <%=c.user%>
+                            </li>
+                            <li class="time">
+                                <%= c.time%>
+                            </li>
+                            <li>
+                                <%= c.comment%>
+                            </li>
+                            <!-- <form class="deleteComment" action="/delete-comment" method="post">
+                                <div class="buttonDiv" style="float: right;">
+                                    <button class="deleteComment">Delete</button>
+                                </div>
+                            </form> -->
+                        </div>
+                        <hr>
+                    <%})%>
+                <%}%>
+            </div>
+        </ul>
+</body>
+
+</html>
