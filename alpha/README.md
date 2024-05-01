@@ -7,6 +7,22 @@ CritterQuest Alpha Version: 4/30/24
 A site to foster a community around sharing and learning about animals. 
 Users can see a timeline of others' posts and like and comment on others’ posts as well.
 
+Status
+```
+Completed:
+- Most core functions, including posting, timeline, login & logout, like & comment, search
+- UI designs
+- Pass WAVE check
+- documentation
+
+TODO:
+- Debug PID and UID counter
+- Implement Ajax for like a post
+- Delet & edit posts and comments
+- Badge system
+- Other additions that are not core features
+```
+
 ```
 Register for your own account:
 Sample Username: scott
