@@ -53,7 +53,7 @@ app.use(cookieSession({
     keys: ['horsebattery'],
 
     // Cookie Options
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 2 * 60 * 60 * 1000 // 24 hours
 }));
 
 function timeString(dateObj) {
@@ -332,10 +332,10 @@ app.get('/posting/', async (req, res) => {
     }
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    var uid = existingUser.UID;
+    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
+    // var uid = existingUser.UID;
     var animalList = await db.collection(ANIMALS).find({}).toArray();
-    return res.render('form.ejs', { action: '/posting/', location: '', uid: uid,animalList });
+    return res.render('form.ejs', { action: '/posting/', location: '', uid: req.session.uid,animalList });
 });
 
 // Route to handle posting an animal sighting
@@ -442,7 +442,7 @@ app.get('/profile/:userID', async (req, res) => {
     // var profilePic = person.pfp;
     var username = person.username;
 
-    var myPosts = await db.collection(POSTS).find({ UID: idNumber },{ sort: { time: -1 } }).toArray();
+    var myPosts = await db.collection(POSTS).find({ UID: idNumber },{ sort: { PID: -1 } }).toArray();
     console.log(myPosts);
 
     //get all the posts which are tagged with the userID 
@@ -525,11 +525,10 @@ app.get('/comment/:PID', async (req,res)=>{
     }
     const pid = parseInt(req.params.PID);
 
-    const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const currPost = await db.collection(POSTS).findOne({PID:pid});
     console.log(currPost)
-    res.render("comment.ejs", { uid: uid, post: currPost});
+    res.render("comment.ejs", { uid: req.session.uid, post: currPost});
 
 })
 
