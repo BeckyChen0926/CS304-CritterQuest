@@ -147,7 +147,8 @@ app.post("/join", async (req, res) => {
 
         // Increment user counter and get the UID
         let counters = db.collection(COUNTERS);
-        var newCount = counter.incr(counters, "users");
+        var newCount = await counter.incr(counters, "users");
+        // console.log(newCount);
         // var countObj = await counters.findOne({ collection: 'users' });
         console.log('new count: ' + newCount);
         // var uid = countObj["counter"];
