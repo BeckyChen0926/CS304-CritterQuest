@@ -446,6 +446,29 @@ app.get('/profile/:userID', async (req, res) => {
     var myPosts = await posts.find({ UID: userID },{ sort: { PID: -1 } }).toArray();
     console.log(myPosts);
 
+    //check for new badges
+    if (!(allBadges.includes("firstPost.png")) && myPosts.length > 0) {
+        //console.log("checking for post");
+        allBadges += "firstPost.png";
+        await db.collection(USERS).updateOne(
+            {UID: currUser},
+            {$push: {badges: "firstPost.png"}}
+        ); 
+        //console.log("first: ", first);    
+    } if (!(allBadges.includes("fivePosts.png")) && myPosts.length >= 5) {
+        allBadges += "fivePosts.png";
+        await db.collection(USERS).updateOne(
+            {UID: currUser},
+            {$push: {badges: "fivePosts.png"}}
+        );
+    } if (!(allBadges.includes("tenPosts.png")) && myPosts.length >= 10) {
+        allBadges += "tenPosts.png";
+        await db.collection(USERS).updateOne(
+            {UID: currUser},
+            {$push: {badges: "tenPosts.png"}}
+        );
+    }
+
     return res.render('profile.ejs',
         {
             uid: userID,  
