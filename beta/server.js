@@ -147,7 +147,7 @@ app.post("/join", async (req, res) => {
 
         // Increment user counter and get the UID
         let counters = db.collection(COUNTERS);
-        var newCount = await counter.incr(counters, "users");
+        var newCount = await counter.incr(counters, USERS);
         // console.log(newCount);
         // var countObj = await counters.findOne({ collection: 'users' });
         console.log('new count: ' + newCount);
@@ -374,10 +374,21 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
         // Use the custom animal as the selected animal
         req.body.animal = customAnimal;
     }
+
+    // let counters = db.collection(COUNTERS);
+    // counter.incr(counters, "posts");
+    // var countObj = await counters.findOne({ collection: 'posts' });
+    // var PID = countObj["counter"];
+
+    // Increment posts counter and get the PID
     let counters = db.collection(COUNTERS);
-    counter.incr(counters, "posts");
-    var countObj = await counters.findOne({ collection: 'posts' });
-    var PID = countObj["counter"];
+    var newCount = await counter.incr(counters, POSTS);
+    // console.log(newCount);
+    // var countObj = await counters.findOne({ collection: 'users' });
+    console.log('new count: ' + newCount);
+    // var uid = countObj["counter"];
+    const PID = newCount;
+
     console.log(req.session);
     console.log('YOUR POST ID IS ' , PID);
     const result = await db.collection(POSTS)
