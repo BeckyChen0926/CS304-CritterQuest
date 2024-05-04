@@ -45,21 +45,42 @@
                                 <%= post['caption'] %>
                             </p>
                         </div>
-                        <div>
+                        <!-- <div>
                             <p>
                                 Likes: <%= post['likes'] %>
                             </p>
+                        </div> -->
+                        <div class="likeComment">
+                            <nobr>
+                                <form class="likeForm" action="/like" method="post">
+                                    <input type="hidden" name="postTime" value="<%= post['time'] %>">
+                                    <input type="hidden" name="postid" value="<%= post.PID%>">
+                                    <div class="buttonDiv">
+                                        <button type="image" class="likeButton"><img src="/like.png" alt="Like" width="50px"></button>
+                                    </div>
+                                    <div class="likeDiv">
+                                        <h2 class="likes">
+                                            <%= post['likes'] %>
+                                        </h2>
+                                    </div>
+                                </form>
+                            </nobr>
+                        </div>
+                        <br>
+                    <!-- </li>
+                    <li> -->
+                        <div>
+                        <form action="/comment/<%=post['PID']%>" method="post">
+                            <p><label>Leave a comment!
+                                    <textarea rows="3" cols="30" name="comment"></textarea>
+                                </label></p>
+                            <p>
+                                <input type="submit" value="Send comment">
+                                <input type="reset" value="Reset">
+                            </p>
+                        </form>
                         </div>
                     </li>
-                    <form action="/comment/<%=post['PID']%>" method="post">
-                        <p><label>Leave a comment!
-                                <textarea rows="3" cols="30" name="comment"></textarea>
-                            </label></p>
-                        <p>
-                            <input type="submit" value="Send comment">
-                            <input type="reset" value="Reset">
-                        </p>
-                    </form>
                 </div>
             </div>
         </ul>

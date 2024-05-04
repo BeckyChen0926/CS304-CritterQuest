@@ -16,7 +16,7 @@ const cookieSession = require('cookie-session');
 const flash = require('express-flash');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const ROUNDS = 19;
+const ROUNDS = 14;
 const counter = require('./counter-utils.js')
 
 
@@ -53,7 +53,7 @@ app.use(cookieSession({
     keys: ['horsebattery'],
 
     // Cookie Options
-    maxAge: 2 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
 function timeString(dateObj) {
@@ -71,11 +71,7 @@ function timeString(dateObj) {
 const fs = require('node:fs/promises');
 const { rmSync } = require('fs');
 
-// app.use('/uploads', express.static('uploads'));
-// var storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'uploads')
-//     },
+
 app.use('/uploads', express.static('/students/critterquest/uploads'));
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -151,9 +147,11 @@ app.post("/join", async (req, res) => {
 
         // Increment user counter and get the UID
         let counters = db.collection(COUNTERS);
-        counter.incr(counters, "users");
-        var countObj = await counters.findOne({ collection: 'users' });
-        var uid = countObj["counter"];
+        var newCount = counter.incr(counters, "users");
+        // var countObj = await counters.findOne({ collection: 'users' });
+        console.log('new count: ' + newCount);
+        // var uid = countObj["counter"];
+        const uid = newCount;
 
         // Hash the password before storing it
         const hash = await bcrypt.hash(password, ROUNDS);
@@ -224,6 +222,7 @@ app.post("/login", async (req, res) => {
 
         // Set session variables for logged-in user
         req.session.username = username;
+        req.session.uid = uid;
         req.session.loggedIn = true;
 
         // Log successful login
@@ -410,23 +409,22 @@ app.get('/profile/:userID', async (req, res) => {
     }
 
     //check to see if this person exists
-    let pageID = req.params.userID;
-    let pageIDNum = parseInt(pageID);
+    const userID = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
-    let accessedUserObj = await people.findOne({UID: pageIDNum});
+    let accessedUserObj = await people.findOne({ UID: userID });
     if(accessedUserObj == null){
         req.flash('error', "This user doesn't exist! ");
         return res.redirect("/timeline")
     }
 
-    const idString = req.params.userID;
-    const idNumber = parseInt(idString); //need to parse the string as an integer
+    // const idString = req.params.userID;
+    // const idNumber = parseInt(idString); //need to parse the string as an integer
 
     //check whether you are viewing your own profile or if you are looking at someone else's 
     var isOwnProfile;
-    let currUser = req.session.username;
-    let accessUser = accessedUserObj.username;
+    let currUser = req.session.uid;
+    let accessUser = accessedUserObj.UID;
     if (currUser == accessUser){
         isOwnProfile = true;
     }
@@ -435,30 +433,24 @@ app.get('/profile/:userID', async (req, res) => {
     }
 
     //get the user information stored in the DB
-    var person = await people.findOne({ UID: idNumber }); //find profile
-    console.log(person);
-    var allBadges = person.badges || null; //list of images, its just words for now 
-    var personDescription = person.aboutme || null;
-    // var profilePic = person.pfp;
-    var username = person.username;
+    // var person = await people.findOne({ UID: userID }); //find profile
+    console.log(accessedUserObj);
+    var allBadges = accessedUserObj.badges || null; //list of images, its just words for now 
+    var personDescription = accessedUserObj.aboutme || null;
+    var username = accessedUserObj.username;
 
-    var myPosts = await db.collection(POSTS).find({ UID: idNumber },{ sort: { PID: -1 } }).toArray();
-    console.log(myPosts);
-
-    //get all the posts which are tagged with the userID 
     const posts = db.collection(POSTS); //go to the Users collection
-    var allPosts = await posts.find({ UID: idNumber });
+    var myPosts = await posts.find({ UID: userID },{ sort: { PID: -1 } }).toArray();
+    console.log(myPosts);
 
     return res.render('profile.ejs',
         {
-            uid: idNumber,
-            UID: req.session.uid,
-            posts: allPosts,
+            uid: userID,  
+            UID: req.session.uid, //for nav bar profile access
             badges: allBadges,
             isOwnProfile: isOwnProfile,
             aboutme: personDescription,
             username: username,
-            // pfp: profilePic
             myPosts:myPosts
         });
 });
@@ -512,7 +504,7 @@ app.post('/edit/:userID', async (req, res) => {
     await users.updateOne(filter, update, options);
     
     // Redirect to the profile page for the updated profile
-    res.redirect(`/profile/${uid}`);
+    res.redirect(`/profile/${req.session.uid}`);
 });
 
 // Route to render the comment page with a form for a specific post
