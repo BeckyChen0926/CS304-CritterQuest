@@ -307,7 +307,11 @@ ul {
   all: revert;
   /* position: relative; */
   margin-left: 59em;
-  margin-top: -30em;
+  margin-top: -28em;
   cursor: pointer;
+}
+
+.extraSpace {
+  background-color: white;
 }
 /*End individual posts page **********************************************/

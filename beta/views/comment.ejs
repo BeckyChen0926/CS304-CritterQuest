@@ -68,15 +68,17 @@
                         </div>
                         <br>
                         <div>
-                        <form action="/comment/<%=post['PID']%>" method="post" class="leaveComment">
-                            <p><label>Leave a comment! <br>
-                                    <textarea rows="3" cols="30" name="comment"></textarea>
-                                </label></p>
-                            <p>
-                                <input type="submit" value="Send comment">
-                                <input type="reset" value="Reset">
-                            </p>
-                        </form>
+                        <div class="extraSpace">
+                            <form action="/comment/<%=post['PID']%>" method="post" class="leaveComment">
+                                <p><label>Leave a comment! <br>
+                                        <textarea rows="3" cols="30" name="comment"></textarea>
+                                    </label></p>
+                                <p>
+                                    <input type="submit" value="Send comment">
+                                    <input type="reset" value="Reset">
+                                </p>
+                            </form>
+                        </div>
                         <%if (post.UID==uid) {%>
                             <form method="POST" action="/delete/<%=post['PID']%>">
                                 <div class="buttonDiv deletePost">
