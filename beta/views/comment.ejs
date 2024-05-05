@@ -77,12 +77,15 @@
                                 <input type="reset" value="Reset">
                             </p>
                         </form>
+                        <form action="/deletePost/<%=post['PID']%>" method="post">
+                            <input type="submit" value="delete">
+                        </form>
                         </div>
                     </li>
                 </div>
                 <%if (post.UID==uid) {%>
-                    <div style="margin-left: 10%;">
-                        My post (tag in a cute box i guess)
+                    <div class="myPost">
+                        <img src="/star.png" alt="Your Post" width="40px">
                     </div>
                 <%}%>
             </div>
@@ -107,12 +110,13 @@
                                     <button class="deleteComment">Delete</button>
                                 </div>
                             </form> -->
+                            <%if (c.UID==uid) {%>
+                                <div class="myComment">
+                                    <img src="/star.png" alt="Your Post" width="20px">
+                                </div>
+                            <%}%>
                         </div>
-                        <%if (c.UID==uid) {%>
-                            <div style="margin-left: 10%;">
-                                My comment (tag in a cute box i guess, need better css tho its currently on the line below the comment)
-                            </div>
-                        <%}%>
+                        
                         <hr>
                     <%})%>
                 <%}%>
