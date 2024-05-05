@@ -33,5 +33,11 @@ function loginAjax() {
 
 $("#login-ajax").click(loginAjax);
 
+$(".likeComment").on('click', '.likeButton', function (event) {
+    //if(!progressive_on) return;
+    var tt = $(this).closest(".likeform").attr(".PID");
+    likeMovie(tt);
+  });
+
 console.log('main.js loaded');
 

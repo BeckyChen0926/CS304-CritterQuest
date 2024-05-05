@@ -345,17 +345,18 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
+    if(!req.session.loggedIn){
+        req.flash('info', "You are not logged in");
+        return res.redirect('/login');
+    }
+    if (!req.file) {
+        req.flash('error', "No file uploaded");
+        return res.redirect('/posting/');
+    }
     // const username = req.session.username;
     var postTime = new Date();
     console.log('post time: ', postTime);
-    // if (!username) {
-    //     req.flash('info', "You are not logged in");
-    //     return res.redirect('/login');
-    // }
-    // if (!req.file) {
-    //     req.flash('error', "No file uploaded");
-    //     return res.redirect('/posting/');
-    // }
+    
 
     // change the permissions of the file to be world-readable
     // this can be a relative or absolute pathname. 
@@ -378,7 +379,6 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     // Increment posts counter and get the PID
     let counters = db.collection(COUNTERS);
     var newCount = await counter.incr(counters, POSTS);
-    console.log('new count: ' + newCount);
     const PID = newCount;
 
     console.log(req.session);
@@ -518,6 +518,10 @@ app.get("/edit/:userID", async (req, res) => {
 // in the database.
 // Redirects the user to their updated profile page if successful.
 app.post('/edit/:userID', async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
@@ -586,6 +590,10 @@ app.post('/comment/:PID', async (req,res)=>{
 // Route to render the search bar page
 app.get('/filter', async (req, res) =>
     {
+        if(!req.session.loggedIn){
+            req.flash('error', 'You are not logged in - please do so.');
+            return res.redirect("/");
+        }
         return res.render('filter.ejs', {uid: req.session.uid});
     });
 
@@ -593,6 +601,10 @@ app.get('/filter', async (req, res) =>
 // Allows users to search for animals or locations based on the provided query parameters.
 // Renders posts based on search results, else return a page warning about no posts found
 app.get('/search/', async(req,res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     // Extract search term and kind from query parameters
     const term = req.query.term;
     const kind = req.query.kind;
@@ -637,6 +649,31 @@ app.get('/search/', async(req,res) => {
 });
 
 
+app.post("/delete/:PID", async (req,res) => {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const posts = db.collection(POSTS);
+
+    let pid = parseInt(req.params.PID);
+
+    let deletePost = posts.deleteOne({PID:pid});
+
+    req.flash("info", "Your post was deleted successfully.");
+
+    return res.redirect("/timeline");
+})
+
+app.post("/deleteProfile/:PID", async (req,res) => {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const posts = db.collection(POSTS);
+
+    let pid = parseInt(req.params.PID);
+
+    let deletePost = posts.deleteOne({PID:pid});
+
+    req.flash("info", "Your post was deleted successfully.");
+
+    return res.redirect('/profile/' + pid);
+})
 
 // ================================================================
 // postlude
