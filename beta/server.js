@@ -415,7 +415,8 @@ app.get('/profile/:userID', async (req, res) => {
     const userID = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
     const people = db.collection(USERS); //go to the Users collection
-    let accessedUserObj = await people.findOne({ UID: userID });
+    let accessedUserObj = await people.findOne({UID: userID });
+    // console.log(userID);
     if(accessedUserObj == null){
         req.flash('error', "This user doesn't exist! ");
         return res.redirect("/timeline")
@@ -648,7 +649,7 @@ app.get('/search/', async(req,res) => {
     }
 });
 
-
+//delete from timeline
 app.post("/delete/:PID", async (req,res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
@@ -662,6 +663,7 @@ app.post("/delete/:PID", async (req,res) => {
     return res.redirect("/timeline");
 })
 
+//delete from profile
 app.post("/deleteProfile/:PID", async (req,res) => {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
@@ -670,10 +672,26 @@ app.post("/deleteProfile/:PID", async (req,res) => {
 
     let deletePost = posts.deleteOne({PID:pid});
 
-    req.flash("info", "Your post was deleted successfully.");
-
-    return res.redirect('/profile/' + pid);
+    // req.flash("info", "Your post was deleted successfully.");
+    
+    return res.redirect(`/profile/${req.session.uid}`);
 })
+
+// //delete on comment page
+// app.post("/deletePost/:PID", async (req,res) => {
+//     const db = await Connection.open(mongoUri, CRITTERQUEST);
+//     const posts = db.collection(POSTS);
+
+//     let pid = parseInt(req.params.PID);
+
+//     let deletePost = posts.deleteOne({PID:pid});
+
+//     // req.flash("info", "Your post was deleted successfully.");
+    
+//     return res.redirect(`/comment/`+pid);
+// })
+
+
 
 // ================================================================
 // postlude
