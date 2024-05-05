@@ -345,7 +345,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
-    if (!username) {
+    if(!req.session.loggedIn){
         req.flash('info', "You are not logged in");
         return res.redirect('/login');
     }
