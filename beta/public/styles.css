@@ -133,6 +133,9 @@ ul {
   float: left;
 }
 
+.myPost {
+  margin-left: 700px;
+}
 
 /*End Timeline *********************************************************/
 
@@ -284,5 +287,10 @@ ul {
   font-size: 70%;
   margin-top: 0px;
   margin-bottom: 15px;
+}
+
+.myComment {
+  margin-left: 80em;
+  /* float: inline-end; */
 }
 /*End individual posts page **********************************************/
