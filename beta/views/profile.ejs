@@ -78,7 +78,7 @@
                                         Likes: <%= post['likes'] %>
                                     </p>
                                 </div>
-                                <div class="comments">
+                                <div class="commentNum">
                                     <p>Comments:
                                         <%if (post['comments']){%>
                                             <%= post['comments'].length %>
@@ -93,9 +93,7 @@
                             <form action="/comment/<%=post.PID%>" method="get">
                                 <button class="goToPost">Go to post</button>
                             </form>
-                            <form action="/deleteProfile/<%=post.PID%>" method="post">
-                                <button class="goToPost">Delete post</button>
-                            </form>
+                            
 
                         </div>
                     </div>
