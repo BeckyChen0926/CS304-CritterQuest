@@ -280,6 +280,7 @@ async function incrementLikes(pid) {
 // If there is an error, returns an internal server error status.
 // Returns a redirect to the timeline page if successful.
 // NOTE FROM TEAM: might try to update to ajax later.
+
 app.post('/like', async (req, res) => {
     // const postId = req.body.postId;
     const pid = parseInt(req.body.postid);
@@ -296,6 +297,27 @@ app.post('/like', async (req, res) => {
     return res.redirect('/timeline');
 });
 
+// AJAX THINGS
+
+/*
+async function likePost(PID) {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const result = await db.collection(POSTS)
+          .updateOne({PID: PID},
+                     {$inc: {likes: 1}},
+                     {upsert: false});
+    doc = await db.collection(POSTS).findOne({PID: PID});
+    return doc;
+}
+
+app.post('/likeAjax/:PID', async (req,res) => {
+    const PID = parseInt(req.params.PID);
+    const doc = await likePost(PID);
+    //return res.json({error: false, likes: doc.likes, PID: PID});
+});
+
+
+*/
 // Route to render the logout page
 // Displays the logout confirmation page.
 app.get('/logout', (req,res)=>{
@@ -608,16 +630,27 @@ app.get('/search/', async(req,res) => {
     // Extract search term and kind from query parameters
     const term = req.query.term;
     const kind = req.query.kind;
-    console.log(term,kind);
+    const filter = req.query.filter;
+    console.log(term,kind,filter);
 
     // Open connection to the database
     const db = await Connection.open(mongoUri,  CRITTERQUEST);
     const posts = db.collection(POSTS);
+    var sortBy;
+    if (filter == "default"){
+        sortBy = { PID: -1, time: -1 };
+    }
+    else if (filter == "alphabetical"){
+        sortBy = { animal: 1};
+    }
+    else if(filter == "user"){
+        sortBy = { user: 1};
+    }
 
     // Perform search based on the kind of search
     if (kind === "animal"){
         // Search for animals matching the term
-        const result = await posts.find({ animal: new RegExp(term, 'i') }).sort({ PID: -1, time: -1 }).toArray();
+        const result = await posts.find({ animal: new RegExp(term, 'i') }).sort(sortBy).toArray();
         console.log("result",result);
        
         if (result.length === 0) {
@@ -626,13 +659,13 @@ app.get('/search/', async(req,res) => {
         } else {
             console.log(result);
             // Find posts related to the found animal
-            const animalPosts = await posts.find({ animal: result[0].animal }).sort({ PID: -1, time: -1 }).toArray();
+            const animalPosts = await posts.find({ animal: result[0].animal }).sort(sortBy).toArray();
             // Render 'animal.ejs' template with information about the animal and related posts
             return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: animalPosts, term: term });
         }
     } else if (kind === "location") {
         // Search for posts with the specified location
-        const result = await posts.find({ location: new RegExp(term, 'i') }).sort({ PID: -1, time: -1 }).toArray();
+        const result = await posts.find({ location: new RegExp(term, 'i') }).sort(sortBy).toArray();
         console.log("result",result);
         
         if (result.length === 0) {
@@ -641,7 +674,7 @@ app.get('/search/', async(req,res) => {
         } else {
             console.log(result);
             // Find posts related to the found location
-            const locationPosts = await posts.find({ location: new RegExp(term, 'i') }).sort({ PID: -1, time: -1 }).toArray();
+            const locationPosts = await posts.find({ location: new RegExp(term, 'i') }).sort(sortBy).toArray();
             // Render 'animal.ejs' template with information about the location and related posts
             return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: locationPosts, term: term });
         }
