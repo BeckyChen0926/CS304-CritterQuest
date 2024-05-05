@@ -51,7 +51,7 @@
                             </p>
                         </div> -->
                         <div class="likeComment">
-                            <nobr>
+                            
                                 <form class="likeForm" action="/like" method="post">
                                     <input type="hidden" name="postTime" value="<%= post['time'] %>">
                                     <input type="hidden" name="postid" value="<%= post.PID%>">
@@ -64,30 +64,33 @@
                                         </h2>
                                     </div>
                                 </form>
-                            </nobr>
+                            
                         </div>
                         <br>
                         <div>
-                        <form action="/comment/<%=post['PID']%>" method="post">
-                            <p><label>Leave a comment!
-                                    <textarea rows="3" cols="30" name="comment"></textarea>
-                                </label></p>
-                            <p>
-                                <input type="submit" value="Send comment">
-                                <input type="reset" value="Reset">
-                            </p>
-                        </form>
-                        <form action="/deletePost/<%=post['PID']%>" method="post">
-                            <input type="submit" value="delete">
-                        </form>
+                        <div class="extraSpace">
+                            <form action="/comment/<%=post['PID']%>" method="post" class="leaveComment">
+                                <p><label>Leave a comment! <br>
+                                        <textarea rows="3" cols="30" name="comment"></textarea>
+                                    </label></p>
+                                <p>
+                                    <input type="submit" value="Send comment">
+                                    <input type="reset" value="Reset">
+                                </p>
+                            </form>
+                        </div>
+                        <%if (post.UID==uid) {%>
+                            <form method="POST" action="/delete/<%=post['PID']%>">
+                                <div class="buttonDiv deletePost">
+                                    <button type="submit" class="submit">Delete</button>
+                                </div>
+                            </form>
+                        <%}%>
                         </div>
                     </li>
                 </div>
-                <%if (post.UID==uid) {%>
-                    <div class="myPost">
-                        <img src="/star.png" alt="Your Post" width="40px">
-                    </div>
-                <%}%>
+                
+                
             </div>
         </ul>
         <ul>

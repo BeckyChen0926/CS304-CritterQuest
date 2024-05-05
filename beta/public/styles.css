@@ -133,8 +133,13 @@ ul {
   float: left;
 }
 
-.myPost {
-  margin-left: 700px;
+
+.deleteButton {
+  all: revert;
+  /* position: relative; */
+  margin-left: 59em;
+  margin-top: -17.5em;
+  cursor: pointer;
 }
 
 /*End Timeline *********************************************************/
@@ -191,15 +196,13 @@ ul {
   color: white;
   border: solid;
   border-color: black;
-  /* text-align: center; */
   border-radius: 4px;
   padding: 10px 25px;
-  float: right;
-  cursor: pointer;
-  margin-left: 100px;
-  font-size: 15px;
   white-space: nowrap;
+  margin-left: 20em;
 }
+
+
 
 /*End Profile *********************************************************/
 
@@ -272,6 +275,7 @@ ul {
 }
 
 /*Start individual posts page **********************************************/
+
 .comments {
   background-color: white;
   padding-left: 20px;
@@ -292,5 +296,22 @@ ul {
 .myComment {
   margin-left: 80em;
   /* float: inline-end; */
+}
+
+.leaveComment {
+  margin-top: 4em;
+  margin-bottom: 2em;
+}
+
+.deletePost {
+  all: revert;
+  /* position: relative; */
+  margin-left: 59em;
+  margin-top: -28em;
+  cursor: pointer;
+}
+
+.extraSpace {
+  background-color: white;
 }
 /*End individual posts page **********************************************/
