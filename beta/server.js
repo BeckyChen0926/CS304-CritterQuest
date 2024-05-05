@@ -113,6 +113,7 @@ const POSTS = "posts";
 const USERS = "users";
 const COUNTERS = "counters";
 const ANIMALS = 'animals';
+const COMMENTS = 'comments';
 
 
 // Route to render the login page
@@ -443,6 +444,8 @@ app.get('/profile/:userID', async (req, res) => {
     var personDescription = accessedUserObj.aboutme || null;
     var username = accessedUserObj.username;
 
+    console.log('allbages: ',allBadges);
+
     const posts = db.collection(POSTS); //go to the Users collection
     var myPosts = await posts.find({ UID: userID },{ sort: { PID: -1 } }).toArray();
     console.log(myPosts);
@@ -450,31 +453,34 @@ app.get('/profile/:userID', async (req, res) => {
     //check for new badges
     if (!(allBadges.includes("firstPost.png")) && myPosts.length > 0) {
         //console.log("checking for post");
-        allBadges += "firstPost.png";
+        // allBadges += "firstPost.png";
         await db.collection(USERS).updateOne(
             {UID: currUser},
             {$push: {badges: "firstPost.png"}}
         ); 
         //console.log("first: ", first);    
-    } if (!(allBadges.includes("fivePosts.png")) && myPosts.length >= 5) {
-        allBadges += "fivePosts.png";
+    } 
+    if (!(allBadges.includes("fivePosts.png")) && myPosts.length >= 5) {
+        // allBadges += "fivePosts.png";
         await db.collection(USERS).updateOne(
             {UID: currUser},
             {$push: {badges: "fivePosts.png"}}
         );
-    } if (!(allBadges.includes("tenPosts.png")) && myPosts.length >= 10) {
-        allBadges += "tenPosts.png";
+    } 
+    if (!(allBadges.includes("tenPosts.png")) && myPosts.length >= 10) {
+        // allBadges += "tenPosts.png";
         await db.collection(USERS).updateOne(
             {UID: currUser},
             {$push: {badges: "tenPosts.png"}}
         );
     }
-
+    curr = await db.collection(USERS).findOne({UID:currUser});
+    console.log('curr Bages: ', curr.badges);
     return res.render('profile.ejs',
         {
             uid: userID,  
             UID: req.session.uid, //for nav bar profile access
-            badges: allBadges,
+            badges: curr.badges,
             isOwnProfile: isOwnProfile,
             aboutme: personDescription,
             username: username,
@@ -547,10 +553,11 @@ app.get('/comment/:PID', async (req,res)=>{
         return res.redirect("/");
     }
     const pid = parseInt(req.params.PID);
+    console.log('new pid comment: ',pid);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const currPost = await db.collection(POSTS).findOne({PID:pid});
-    console.log(currPost)
+    console.log('currpost:',currPost)
     res.render("comment.ejs", { uid: req.session.uid, post: currPost});
 
 })
@@ -570,6 +577,13 @@ app.post('/comment/:PID', async (req,res)=>{
     const comm = req.body.comment;
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const postTime = new Date()
+
+    // Increment posts counter and get the PID
+    let counters = db.collection(COUNTERS);
+    var newCount = await counter.incr(counters, COMMENTS);
+    const CID = newCount;
+    console.log('YOUR COMM ID IS ', CID);
+
     let currPost = await db.collection(POSTS)
                         .findOneAndUpdate(
                             { PID: pid },
@@ -577,6 +591,7 @@ app.post('/comment/:PID', async (req,res)=>{
                                 'UID':req.session.uid,
                                 'user': req.session.username,
                                 'time': postTime.toLocaleString(),
+                                'CID': CID,
                                 'comment': comm
                             } } },
                             { returnDocument: "after" }
@@ -691,6 +706,28 @@ app.post("/deleteProfile/:PID", async (req,res) => {
 //     return res.redirect(`/comment/`+pid);
 // })
 
+
+// delete comment from detail post page
+app.post("/deleteComment/:PID/:CID", async (req, res) => {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const posts = db.collection(POSTS);
+
+    let pid = parseInt(req.params.PID);
+    let cid = parseInt(req.params.CID);
+
+    let deleteComment = posts.findOneAndUpdate({
+                "PID": pid
+            },
+                {
+                    "$pull": {
+                        "comments": {
+                            "CID": cid
+                        }
+                    }
+                })
+
+    return res.redirect(`/comment/${pid}`);
+})
 
 
 // ================================================================

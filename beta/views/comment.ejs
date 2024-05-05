@@ -114,6 +114,11 @@
                                 <div class="myComment">
                                     <img src="/star.png" alt="Your Post" width="20px">
                                 </div>
+                                <div>
+                                    <form action="/deleteComment/<%=post['PID']%>/<%= c.CID%>" method="post">
+                                        <button type="submit" class="submit">Delete comment</button>
+                                    </form>
+                                </div>
                             <%}%>
                         </div>
                         
