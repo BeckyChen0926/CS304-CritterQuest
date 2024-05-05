@@ -649,6 +649,31 @@ app.get('/search/', async(req,res) => {
 });
 
 
+app.post("/delete/:PID", async (req,res) => {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const posts = db.collection(POSTS);
+
+    let pid = parseInt(req.params.PID);
+
+    let deletePost = posts.deleteOne({PID:pid});
+
+    req.flash("info", "Your post was deleted successfully.");
+
+    return res.redirect("/timeline");
+})
+
+app.post("/deleteProfile/:PID", async (req,res) => {
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
+    const posts = db.collection(POSTS);
+
+    let pid = parseInt(req.params.PID);
+
+    let deletePost = posts.deleteOne({PID:pid});
+
+    req.flash("info", "Your post was deleted successfully.");
+
+    return res.redirect('/profile/' + pid);
+})
 
 // ================================================================
 // postlude

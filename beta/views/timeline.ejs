@@ -75,6 +75,11 @@
                     <div style="margin-left: 10%;">
                         My post (tag in a cute box i guess)
                     </div>
+                    <form method="POST" action="/delete/<%=post['PID']%>">
+                        <div class="buttonDiv">
+                            <button type="submit" class="submit">Delete</button>
+                        </div>
+                    </form>
                 <%}%>
             </div>
         <% }); %>
