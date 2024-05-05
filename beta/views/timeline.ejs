@@ -41,7 +41,7 @@
                                  
                                 <form class="likeForm" action="/like" method="post">
                                     <input type="hidden" name="postTime" value="<%= post['time'] %>">
-                                    <input type="hidden" name="postid" value="<%= post.PID%>">
+                                    <input class = "PID" data-pid="<%=post.PID%>" type="hidden" name="postid" value="<%= post.PID%>">
                                     <div class="buttonDiv">
                                         <button type="image" class="likeButton"><img src="/like.png" alt="Like" width="50px"></button>
                                     </div>

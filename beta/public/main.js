@@ -33,11 +33,27 @@ function loginAjax() {
 
 $("#login-ajax").click(loginAjax);
 
+/*
+function processAction(resp) {
+    console.log('response is ',resp);
+    if (resp.error) {
+        alert('Error: '+resp.error);
+    }
+    console.log("Liked post "+resp.PID+". Total likes: "+resp.likes);
+    $(`[data-pid=${resp.PID}]`).find('.likes').text(resp.likes);
+}
+
+function likePost(PID) {
+    // $.ajax("/likeAjax/"+tt, {method: 'POST', data: {tt: tt}, success: processAction});
+    $.post("/likeAjax/"+PID, {PID: PID}).then(processAction);
+}
+
 $(".likeComment").on('click', '.likeButton', function (event) {
     //if(!progressive_on) return;
-    var tt = $(this).closest(".likeform").attr(".PID");
-    likeMovie(tt);
+    var PID = $(this).closest("[data-pid]").attr('data-pid');
+    likePost(PID);
   });
+*/
 
 console.log('main.js loaded');
 
