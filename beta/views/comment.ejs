@@ -67,8 +67,6 @@
                             </nobr>
                         </div>
                         <br>
-                    <!-- </li>
-                    <li> -->
                         <div>
                         <form action="/comment/<%=post['PID']%>" method="post">
                             <p><label>Leave a comment!
@@ -82,6 +80,11 @@
                         </div>
                     </li>
                 </div>
+                <%if (post.UID==uid) {%>
+                    <div style="margin-left: 10%;">
+                        My post (tag in a cute box i guess)
+                    </div>
+                <%}%>
             </div>
         </ul>
         <ul>
@@ -105,6 +108,11 @@
                                 </div>
                             </form> -->
                         </div>
+                        <%if (c.UID==uid) {%>
+                            <div style="margin-left: 10%;">
+                                My comment (tag in a cute box i guess, need better css tho its currently on the line below the comment)
+                            </div>
+                        <%}%>
                         <hr>
                     <%})%>
                 <%}%>

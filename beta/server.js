@@ -345,17 +345,18 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
+    if (!username) {
+        req.flash('info', "You are not logged in");
+        return res.redirect('/login');
+    }
+    if (!req.file) {
+        req.flash('error', "No file uploaded");
+        return res.redirect('/posting/');
+    }
     // const username = req.session.username;
     var postTime = new Date();
     console.log('post time: ', postTime);
-    // if (!username) {
-    //     req.flash('info', "You are not logged in");
-    //     return res.redirect('/login');
-    // }
-    // if (!req.file) {
-    //     req.flash('error', "No file uploaded");
-    //     return res.redirect('/posting/');
-    // }
+    
 
     // change the permissions of the file to be world-readable
     // this can be a relative or absolute pathname. 
@@ -375,18 +376,9 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
         req.body.animal = customAnimal;
     }
 
-    // let counters = db.collection(COUNTERS);
-    // counter.incr(counters, "posts");
-    // var countObj = await counters.findOne({ collection: 'posts' });
-    // var PID = countObj["counter"];
-
     // Increment posts counter and get the PID
     let counters = db.collection(COUNTERS);
     var newCount = await counter.incr(counters, POSTS);
-    // console.log(newCount);
-    // var countObj = await counters.findOne({ collection: 'users' });
-    console.log('new count: ' + newCount);
-    // var uid = countObj["counter"];
     const PID = newCount;
 
     console.log(req.session);
@@ -406,7 +398,6 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
         });
     console.log('insertOne result', result);
 
-    // req.flash('info','file uploaded');
     res.redirect('/timeline');
 });
 
@@ -454,6 +445,29 @@ app.get('/profile/:userID', async (req, res) => {
     const posts = db.collection(POSTS); //go to the Users collection
     var myPosts = await posts.find({ UID: userID },{ sort: { PID: -1 } }).toArray();
     console.log(myPosts);
+
+    //check for new badges
+    if (!(allBadges.includes("firstPost.png")) && myPosts.length > 0) {
+        //console.log("checking for post");
+        allBadges += "firstPost.png";
+        await db.collection(USERS).updateOne(
+            {UID: currUser},
+            {$push: {badges: "firstPost.png"}}
+        ); 
+        //console.log("first: ", first);    
+    } if (!(allBadges.includes("fivePosts.png")) && myPosts.length >= 5) {
+        allBadges += "fivePosts.png";
+        await db.collection(USERS).updateOne(
+            {UID: currUser},
+            {$push: {badges: "fivePosts.png"}}
+        );
+    } if (!(allBadges.includes("tenPosts.png")) && myPosts.length >= 10) {
+        allBadges += "tenPosts.png";
+        await db.collection(USERS).updateOne(
+            {UID: currUser},
+            {$push: {badges: "tenPosts.png"}}
+        );
+    }
 
     return res.render('profile.ejs',
         {
@@ -504,6 +518,10 @@ app.get("/edit/:userID", async (req, res) => {
 // in the database.
 // Redirects the user to their updated profile page if successful.
 app.post('/edit/:userID', async (req, res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
@@ -572,6 +590,10 @@ app.post('/comment/:PID', async (req,res)=>{
 // Route to render the search bar page
 app.get('/filter', async (req, res) =>
     {
+        if(!req.session.loggedIn){
+            req.flash('error', 'You are not logged in - please do so.');
+            return res.redirect("/");
+        }
         return res.render('filter.ejs', {uid: req.session.uid});
     });
 
@@ -579,6 +601,10 @@ app.get('/filter', async (req, res) =>
 // Allows users to search for animals or locations based on the provided query parameters.
 // Renders posts based on search results, else return a page warning about no posts found
 app.get('/search/', async(req,res) => {
+    if(!req.session.loggedIn){
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
     // Extract search term and kind from query parameters
     const term = req.query.term;
     const kind = req.query.kind;
