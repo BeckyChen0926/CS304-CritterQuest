@@ -33,7 +33,7 @@ function loginAjax() {
 
 $("#login-ajax").click(loginAjax);
 
-/*
+
 function processAction(resp) {
     console.log('response is ',resp);
     if (resp.error) {
@@ -53,7 +53,7 @@ $(".likeComment").on('click', '.likeButton', function (event) {
     var PID = $(this).closest("[data-pid]").attr('data-pid');
     likePost(PID);
   });
-*/
+
 
 console.log('main.js loaded');
 

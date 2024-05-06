@@ -22,31 +22,31 @@
                 <div>
                     <li>
                         <div class="info">
-                            <h1 class="username"><%= post['user'] %></h1> 
-                            <a href = "/profile/<%= post['UID'] %>"> View <%= post['user'] %>'s profile</a>
-                            <h2 class="location"><%= post['location'] %></h2>
+                            <h1 class="username"><%= post.user %></h1> 
+                            <a href = "/profile/<%= post.UID %>"> View <%= post['user'] %>'s profile</a>
+                            <h2 class="location"><%= post.location %></h2>
                         </div>
                         <div class="time postTime">
-                            <h2><%= post['time'] %></h2>
+                            <h2><%= post.time %></h2>
                         </div>    
                         <div class="animal">
                             <h2>
-                                <%= post['animal'] %>
+                                <%= post.animal %>
                             </h2>
                         </div>
                         <div class="caption">
-                            <p> <%= post['caption'] %></p>
+                            <p> <%= post.caption %></p>
                         </div>
                         <div class="likeComment">
                                  
-                                <form class="likeForm" action="/like" method="post">
+                                <form class="likeForm" action="/like" method="post" data-pid="<%=post.PID%>">
                                     <input type="hidden" name="postTime" value="<%= post['time'] %>">
-                                    <input class = "PID" data-pid="<%=post.PID%>" type="hidden" name="postid" value="<%= post.PID%>">
+                                    <input class = "PID" type="hidden" name="postid" value="<%= post.PID%>">
                                     <div class="buttonDiv">
-                                        <button type="image" class="likeButton"><img src="/like.png" alt="Like" width="50px"></button>
+                                        <button type="button" class="likeButton"><img src="/like.png" alt="Like" width="50px"></button>
                                     </div>
                                     <div class="likeDiv">
-                                        <h2 class="likes"><%= post['likes'] %> </h2>
+                                        <h2 class="likes"><%= post.likes %> </h2>
                                     </div>
                                 </form>
                             

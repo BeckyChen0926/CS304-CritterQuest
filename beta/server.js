@@ -300,7 +300,7 @@ app.post('/like', async (req, res) => {
 
 // AJAX THINGS
 
-/*
+
 async function likePost(PID) {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const result = await db.collection(POSTS)
@@ -314,11 +314,11 @@ async function likePost(PID) {
 app.post('/likeAjax/:PID', async (req,res) => {
     const PID = parseInt(req.params.PID);
     const doc = await likePost(PID);
-    //return res.json({error: false, likes: doc.likes, PID: PID});
+    return res.json({error: false, likes: doc.likes, PID: PID});
 });
 
 
-*/
+
 // Route to render the logout page
 // Displays the logout confirmation page.
 app.get('/logout', (req,res)=>{
