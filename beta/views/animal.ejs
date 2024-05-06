@@ -45,44 +45,15 @@
                         <div class="caption">
                             <p> <%= post['caption'] %></p>
                         </div>
-                        <div class="likeComment">
-                            <nobr>
-                                <form class="likeForm" action="/like" method="post">
-                                    <input type="hidden" name="postTime" value="<%= post['time'] %>">
-                                    <input type="hidden" name="postid" value="<%= post.PID%>">
-                                    <div class="buttonDiv">
-                                        <button type="image" class="likeButton"><img src="/like.png" alt="Like" width="50px"></button>
-                                    </div>
-                                    <div class="likeDiv">
-                                        <h2 class="likes">
-                                            <%= post['likes'] %>
-                                        </h2>
-                                    </div>
-                                </form>
-                            </nobr>
-                        
-                            <nobr>
-                                <form class="comment" action="/comment/<%=post['PID']%>" method="get">
-                                    <!-- <input type="hidden" name="postTime" value="<%= post['time'] %>"> -->
-                                    <div class="buttonDiv">
-                                        <button class="commentButton" type="image"><img src="/comment.png" alt="Comment" width="50px"></button>
-                                    </div>
-                                    <div class="commentNum">
-                                        <h2>
-                                            <%if (post['comments']){%>
-                                                <%= post['comments'].length %>
-                                                    <%} else {%>
-                                                        0
-                                                        <%}%>
-                                        </h2>
-                                    </div>
-                                </form>
-                            </nobr>
-
-                        </div>
                     </li>
                 </div>
+                <div>
+                    <form action="/comment/<%=post.PID%>" method="get">
+                        <button class="goToPost">Go to post</button>
+                    </form>
+                </div>
             </div>
+           
         <% }); %>
     </ul>
     <!-- load local js -->
