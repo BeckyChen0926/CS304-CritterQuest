@@ -663,13 +663,10 @@ app.get('/search/', async(req,res) => {
     const posts = db.collection(POSTS);
     var sortBy;
     if (filter == "default"){
-        sortBy = {time: -1 };
+        sortBy = {time: -1, PID:1};
     }
-    else if (filter == "alphabetical"){
-        sortBy = {animal: 1};
-    }
-    else if(filter == "user"){
-        sortBy = {user: 1};
+    else if (filter == "likes"){
+        sortBy = {likes: -1, PID:1};
     }
 
     // Perform search based on the kind of search
@@ -681,9 +678,6 @@ app.get('/search/', async(req,res) => {
             // If no results found, render 'none.ejs' template with appropriate message
             return res.render("none.ejs", { option: kind, uid: req.session.uid, term: term });
         } else {
-            console.log("result2",result);
-            // Find posts related to the found animal
-            console.log("result3",result,result[0].animal)
             const animalPosts = await posts.find({ animal: new RegExp(term, 'i')}).sort(sortBy).toArray();
             // Render 'animal.ejs' template with information about the animal and related posts
             return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: animalPosts, term: term });
@@ -697,7 +691,6 @@ app.get('/search/', async(req,res) => {
             // If no results found, render 'none.ejs' template with appropriate message
             return res.render("none.ejs", { option: kind, uid: req.session.uid, term: term });
         } else {
-            console.log(result);
             // Find posts related to the found location
             const locationPosts = await posts.find({ location: new RegExp(term, 'i') }).sort(sortBy).toArray();
             // Render 'animal.ejs' template with information about the location and related posts
