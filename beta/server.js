@@ -257,63 +257,72 @@ app.get('/timeline/', async (req, res) => {
     return res.render('timeline.ejs', { userPosts: postList, uid: req.session.uid });
 });
 
-// Helper function to increment the likes on a post
-// Takes the post id as an argument and increments the 'likes' field of the post in the database.
-// Returns the updated number of likes.
-async function incrementLikes(pid) {
-    const db = await Connection.open(mongoUri, CRITTERQUEST);
+// // Helper function to increment the likes on a post
+// // Takes the post id as an argument and increments the 'likes' field of the post in the database.
+// // Returns the updated number of likes.
+// async function incrementLikes(pid) {
+//     const db = await Connection.open(mongoUri, CRITTERQUEST);
 
-    const postsCollection = db.collection(POSTS);
+//     const postsCollection = db.collection(POSTS);
 
-    // Update the 'likes' field of the post and return the updated document
-    const updatedPost = await postsCollection.findOneAndUpdate(
-        { PID: pid },
-        { $inc: { likes: 1 } },
-        { returnDocument: "after" }
-    );
+//     // Update the 'likes' field of the post and return the updated document
+//     const updatedPost = await postsCollection.findOneAndUpdate(
+//         { PID: pid },
+//         { $inc: { likes: 1 } },
+//         { returnDocument: "after" }
+//     );
 
-    // Return the updated number of likes
-    return updatedPost.likes;
-}
+//     // Return the updated number of likes
+//     return updatedPost.likes;
+// }
 
-// Route to handle the like button click on a post
-// Increments the likes for the post using pid and redirects to the timeline page.
-// If there is an error, returns an internal server error status.
-// Returns a redirect to the timeline page if successful.
-// NOTE FROM TEAM: might try to update to ajax later.
+// // Route to handle the like button click on a post
+// // Increments the likes for the post using pid and redirects to the timeline page.
+// // If there is an error, returns an internal server error status.
+// // Returns a redirect to the timeline page if successful.
+// // NOTE FROM TEAM: might try to update to ajax later.
 
-app.post('/like', async (req, res) => {
-    // const postId = req.body.postId;
-    const pid = parseInt(req.body.postid);
+// app.post('/like', async (req, res) => {
+//     // const postId = req.body.postId;
+//     const pid = parseInt(req.body.postid);
 
-    try {
-        // Increment likes for the post
-        const updatedLikes = await incrementLikes(pid);
-        console.log(updatedLikes);
-        return res.redirect('/timeline');
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Internal Server Error');
-    }
-    return res.redirect('/timeline');
-});
+//     try {
+//         // Increment likes for the post
+//         const updatedLikes = await incrementLikes(pid);
+//         console.log(updatedLikes);
+//         return res.redirect('/timeline');
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+//     return res.redirect('/timeline');
+// });
 
 // AJAX THINGS
 
-
-async function likePost(PID) {
+// can only like once 
+async function likePost(PID,currUser) {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const result = await db.collection(POSTS)
-          .updateOne({PID: PID},
-                     {$inc: {likes: 1}},
-                     {upsert: false});
-    doc = await db.collection(POSTS).findOne({PID: PID});
+    const currPost = await db.collection(POSTS).findOne({PID:PID});
+    console.log(currPost);
+    console.log(currPost.likedBy);
+    if (!(currPost.likedBy.includes(currUser))){
+        const result = await db.collection(POSTS)
+            .updateOne({ PID: PID },
+                {
+                    $inc: { likes: 1 },
+                    $push: { likedBy: currUser }
+                },
+                { upsert: false });
+    }
+    const doc = await db.collection(POSTS).findOne({PID: PID});
     return doc;
 }
 
 app.post('/likeAjax/:PID', async (req,res) => {
     const PID = parseInt(req.params.PID);
-    const doc = await likePost(PID);
+    const currUser = req.session.uid;
+    const doc = await likePost(PID,currUser);
     return res.json({error: false, likes: doc.likes, PID: PID});
 });
 
@@ -417,7 +426,8 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             location: req.body.location,
             caption: req.body.caption,
             likes: 0,
-            comments: []
+            comments: [],
+            likedBy:[]
         });
     console.log('insertOne result', result);
 
