@@ -1,23 +1,23 @@
 <form method="GET" action="/search/" class="search">
     <p>
-        <label for="search">Search:</label>
+        <b><label for="search">Search:</label></b>
         <input type="text" name="term" id="search">
     </p>
     <p>
         <label for="kind">Kind:</label>
-        <select required name="kind" id="kind">
+        <select required name="kind" id="kind" class="dropdown">
             <option value="">Choose one</option>
             <option value="animal">Animals</option>
             <option value="location">Locations</option>
         </select>
 
         <label for="By">By:</label>
-        <select required name="filter" id="filter">
+        <select required name="filter" id="filter" class="dropdown">
             <option value="default">Default (by time)</option>
             <option value="likes">likes</option>
         </select>
     </p>
     <p>
-        <input type="submit" value="Search">
+        <input type="submit" value="Search" class="submit">
     </p>
 </form>

@@ -259,12 +259,13 @@ ul {
 }
 /*End Logout *********************************************************/
 
+/*Start Search ***********************************/
+
 .searchtt {
   margin-top: 100px;
   font-size: large;
   padding: 10px;
 }
-
 
 /* needed for search form! */
 .search {
@@ -272,7 +273,35 @@ ul {
   width: 70%;
   border: 3px solid #4F772D;
   padding: 10px;
+  background-color: #A6BB77;
 }
+
+.dropdown {
+  background-color:#4F772D;
+  border: solid;
+  border-color: black;
+  text-align: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.goToPostSearch {
+  text-decoration: none;
+  background-color:#4F772D;
+  color: white;
+  border: solid;
+  border-color: black;
+  border-radius: 4px;
+  padding: 10px 25px;
+  white-space: nowrap;
+  margin-left: 50em;
+}
+
+/* End Search **************************************/
 
 /*Start individual posts page **********************************************/
 
