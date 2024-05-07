@@ -765,7 +765,8 @@ app.post("/delete/:PID", async (req,res) => {
 
 
 // Route handler for deleting a comment from a detailed post page
-// It receives a POST request to delete a comment with a specific CID from a post with a specific PID
+// It receives a POST request to delete a comment with a specific 
+// CID from a post with a specific PID
 app.post("/deleteComment/:PID/:CID", async (req, res) => {
     // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -775,7 +776,8 @@ app.post("/deleteComment/:PID/:CID", async (req, res) => {
     let pid = parseInt(req.params.PID);
     let cid = parseInt(req.params.CID);
 
-    // Find and update the post with the specified PID to remove the comment with the specified CID
+    // Find and update the post with the specified PID to remove the 
+    // comment with the specified CID
     let deleteComment = posts.findOneAndUpdate({
                 "PID": pid
             },
@@ -787,7 +789,8 @@ app.post("/deleteComment/:PID/:CID", async (req, res) => {
                     }
                 })
 
-    // Redirect the user back to the detailed post page from which the comment was deleted
+    // Redirect the user back to the detailed post page from which the 
+    // comment was deleted
     return res.redirect(`/comment/${pid}`);
 })
 
