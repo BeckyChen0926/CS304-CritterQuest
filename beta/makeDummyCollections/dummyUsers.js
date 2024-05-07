@@ -65,6 +65,8 @@ async function deleteAllCounters(db) {
     const result = await db.collection('counters').deleteMany({});
     const insert = await db.collection('counters').insertOne({collection: "users", count: 1});
     const postCount = await db.collection('counters').insertOne({ collection: "posts", count: 1 });
+    const commCount = await db.collection('counters').insertOne({ collection: "comments", count: 1 });
+
     return insert.acknowledged; //returns true if item successfully deleted
 }
 

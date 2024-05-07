@@ -89,7 +89,7 @@ var storage = multer.diskStorage({
 var upload = multer({
     storage: storage,
     // max fileSize in bytes, causes an ugly error
-    limits: { fileSize: 1_000_000 }
+    limits: { fileSize: 30_000_000 }
 });
 
 app.use((err, req, res, next) => {
@@ -653,15 +653,17 @@ app.post('/comment/:PID', async (req,res)=>{
 
 })
 
-// Route to render the search bar page
-app.get('/filter', async (req, res) =>
-    {
-        if(!req.session.loggedIn){
-            req.flash('error', 'You are not logged in - please do so.');
-            return res.redirect("/");
-        }
-        return res.render('filter.ejs', {uid: req.session.uid});
-    });
+// Route handler for the '/filter' endpoint, showing the search page
+app.get('/filter', async (req, res) => {
+    // Check if the user is not logged in
+    if (!req.session.loggedIn) {
+        // If not logged in, set an error message and redirect to the homepage
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
+    // If logged in, render the 'filter.ejs' template and pass the user's ID
+    return res.render('filter.ejs', { uid: req.session.uid });
+});
 
 // Route to handle searching by animals or locations
 // Allows users to search for animals or locations based on the provided 
@@ -681,13 +683,16 @@ app.get('/search/', async(req,res) => {
     const db = await Connection.open(mongoUri,  CRITTERQUEST);
     const posts = db.collection(POSTS);
     var sortBy;
+    // Check if the filter is set to "default"
     if (filter == "default"){
+        // If so, sort by time in descending order and PID in ascending order
         sortBy = {time: -1, PID:1};
     }
+    // If the filter is set to "likes"
     else if (filter == "likes"){
+        // Sort by likes in descending order and PID in ascending order
         sortBy = {likes: -1, PID:1};
     }
-
     // Perform search based on the kind of search
     if (kind === "animal"){
         // Search for animals matching the term
@@ -738,57 +743,55 @@ app.get('/search/', async(req,res) => {
     }
 });
 
-//delete from timeline
+// Route handler for deleting a post from the timeline
+// It receives a POST request to delete a post with a specific PID
 app.post("/delete/:PID", async (req,res) => {
+    // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
 
+    // Extract the PID from the request parameters
     let pid = parseInt(req.params.PID);
 
+    // Delete the post with the specified PID from the database
     let deletePost = posts.deleteOne({PID:pid});
 
+    // Set a flash message indicating successful deletion
     req.flash("info", "Your post was deleted successfully.");
 
+    // Redirect the user back to the timeline page
     return res.redirect("/timeline");
 })
 
-//delete from profile
+// Route handler for deleting a post from the user's profile
+// It receives a POST request to delete a post with a specific PID
 app.post("/deleteProfile/:PID", async (req,res) => {
+    // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
 
+    // Extract the PID from the request parameters
     let pid = parseInt(req.params.PID);
 
+    // Delete the post with the specified PID from the database
     let deletePost = posts.deleteOne({PID:pid});
 
-    // req.flash("info", "Your post was deleted successfully.");
-    
+    // Redirect the user back to their profile page
     return res.redirect(`/profile/${req.session.uid}`);
 })
 
-// //delete on comment page
-// app.post("/deletePost/:PID", async (req,res) => {
-//     const db = await Connection.open(mongoUri, CRITTERQUEST);
-//     const posts = db.collection(POSTS);
-
-//     let pid = parseInt(req.params.PID);
-
-//     let deletePost = posts.deleteOne({PID:pid});
-
-//     // req.flash("info", "Your post was deleted successfully.");
-    
-//     return res.redirect(`/comment/`+pid);
-// })
-
-
-// delete comment from detail post page
+// Route handler for deleting a comment from a detailed post page
+// It receives a POST request to delete a comment with a specific CID from a post with a specific PID
 app.post("/deleteComment/:PID/:CID", async (req, res) => {
+    // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
 
+    // Extract the PID and CID from the request parameters
     let pid = parseInt(req.params.PID);
     let cid = parseInt(req.params.CID);
 
+    // Find and update the post with the specified PID to remove the comment with the specified CID
     let deleteComment = posts.findOneAndUpdate({
                 "PID": pid
             },
@@ -800,8 +803,10 @@ app.post("/deleteComment/:PID/:CID", async (req, res) => {
                     }
                 })
 
+    // Redirect the user back to the detailed post page from which the comment was deleted
     return res.redirect(`/comment/${pid}`);
 })
+
 
 
 // ================================================================

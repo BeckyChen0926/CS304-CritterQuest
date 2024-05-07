@@ -117,7 +117,7 @@ async function main() {
     const critterquest = await Connection.open(mongoUri, 'critterquest');
     deleteAll(critterquest);
     // deleteAllCounters(critterquest);
-    // critterquest.collection('animals').deleteMany({});
+    critterquest.collection('animals').deleteMany({});
     critterquest.collection('animals').insertMany([
         { 'animal': 'dog' },
         { 'animal': 'cat' },
