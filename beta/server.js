@@ -1,9 +1,11 @@
 // start app with 'npm run dev' in a terminal window
 // go to http://localhost:port/ to view your deployment!
-// every time you change something in server.js and save, your deployment will automatically reload
+// every time you change something in server.js and save, 
+// your deployment will automatically reload
 
 // to exit, type 'ctrl + c', then press the enter key in a terminal window
-// if you're prompted with 'terminate batch job (y/n)?', type 'y', then press the enter key in the same terminal
+// if you're prompted with 'terminate batch job (y/n)?', 
+// type 'y', then press the enter key in the same terminal
 
 // standard modules, loaded from node_modules
 const path = require('path');
@@ -117,7 +119,8 @@ const COMMENTS = 'comments';
 
 
 // Route to render the login page
-// Users who are already logged in (this current session) will be redirected to the timeline page.
+// Users who are already logged in (this current session) will
+// be redirected to the timeline page.
 // Returns the rendered login page if the user is not logged in.
 app.get('/', (req, res) => {
     if(req.session.loggedIn){
@@ -129,9 +132,9 @@ app.get('/', (req, res) => {
 
 // Route to handle user registration
 // Processes the submitted registration form.
-// If the username already exists, prompts the user to choose another username or login.
-// Otherwise, inserts the new user into the users database and assigns them the welcome badge.
-// NOTE FROM TEAM: Currently, the badges are being hardcoded where we assign the welcome badge to everyone. We will add user-obtainable badges later. 
+// If the username already exists, prompts the user to choose another username 
+// or login. Otherwise, inserts the new user into the users database and 
+// assigns them the welcome badge. 
 app.post("/join", async (req, res) => {
     try {
         const username = req.body.username;
@@ -139,10 +142,12 @@ app.post("/join", async (req, res) => {
         const db = await Connection.open(mongoUri, CRITTERQUEST);
 
         // Check if the username already exists
-        var existingUser = await db.collection(USERS).findOne({ username: username });
+        var existingUser = await db.collection(USERS)
+                                   .findOne({ username: username });
         if (existingUser) {
             // If the username already exists, redirect with an error message
-            req.flash('error', "Login already exists - please try logging in instead.");
+            req.flash('error', 
+                      "Login already exists - please try logging in instead.");
             return res.redirect('/')
         }
 
@@ -186,10 +191,13 @@ app.post("/join", async (req, res) => {
 });
 
 // Route to handle user login
-// Processes the submitted login form, comparing the provided password with the hashed password stored in the database.
+// Processes the submitted login form, comparing the provided password with the
+// hashed password stored in the database.
 // If successful, sets session variables and redirects to the profile page.
-// If there are any issues, such as non-existent username or incorrect password, prompts the user accordingly.
-// Returns a redirect to the profile page or the login page, depending on the outcome.
+// If there are any issues, such as non-existent username or incorrect password,
+// prompts the user accordingly.
+// Returns a redirect to the profile page or the login page, depending on the 
+// outcome.
 app.post("/login", async (req, res) => {
     try {
         const username = req.body.username;
@@ -197,7 +205,8 @@ app.post("/login", async (req, res) => {
         const db = await Connection.open(mongoUri, CRITTERQUEST);
 
         // Find the user in the database
-        var existingUser = await db.collection(USERS).findOne({ username: username });
+        var existingUser = await db.collection(USERS)
+                                   .findOne({ username: username });
         var uid = existingUser.UID;
 
         // Log user information (for debugging purposes)
@@ -210,7 +219,8 @@ app.post("/login", async (req, res) => {
         }
 
         // Compare the provided password with the hashed password
-        // Note: Bcrypt can take some time to process, especially during login attempts
+        // Note: Bcrypt can take some time to process, especially during 
+        // login attempts
         const match = await bcrypt.compare(password, existingUser.hash);
 
         // Log the result of password comparison
@@ -241,24 +251,29 @@ app.post("/login", async (req, res) => {
 
 
 // Route to display the timeline page
-// Fetches a list of all posts and renders the timeline page with user posts and user ID.
+// Fetches a list of all posts and renders the timeline page with user posts 
+// and user ID.
 // Users must be logged in to access this page.
 // Returns the rendered timeline page if the user is logged in.
 app.get('/timeline/', async (req, res) => {
-    //users can only do access this page if they are logged in, so we need to check for that uncomment when we have logins working
+    //users can only do access this page if they are logged in, 
+    //so we need to check for that uncomment when we have logins working
     if(!req.session.loggedIn){ 
         req.flash('error', "Please login first!");
         return res.redirect('/');
     }
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, { sort: { PID: -1,time:-1 } }).toArray();
+    const postList = await db.collection(POSTS).find({}, 
+                            { sort: { PID: -1,time:-1 } }).toArray();
     console.log(postList);
 
-    return res.render('timeline.ejs', { userPosts: postList, uid: req.session.uid });
+    return res.render('timeline.ejs', { userPosts: postList, 
+                                        uid: req.session.uid });
 });
 
 // // Helper function to increment the likes on a post
-// // Takes the post id as an argument and increments the 'likes' field of the post in the database.
+// // Takes the post id as an argument and increments the 'likes' 
+// // field of the post in the database.
 // // Returns the updated number of likes.
 // async function incrementLikes(pid) {
 //     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -277,7 +292,8 @@ app.get('/timeline/', async (req, res) => {
 // }
 
 // // Route to handle the like button click on a post
-// // Increments the likes for the post using pid and redirects to the timeline page.
+// // Increments the likes for the post using pid and redirects to the 
+// // timeline page.
 // // If there is an error, returns an internal server error status.
 // // Returns a redirect to the timeline page if successful.
 // // NOTE FROM TEAM: might try to update to ajax later.
@@ -353,7 +369,8 @@ app.post('/logout', (req,res) => {
   });
 
 // Route to render the posting form
-// Displays the animal sighting form with a dynamic list of animals for selection
+// Displays the animal sighting form with a dynamic list of animals for        
+// selection
 // or the user can enter their own animal.
 // Requires the user to be logged in to access this page.
 // Returns the rendered posting form if the user is logged in.
@@ -364,14 +381,15 @@ app.get('/posting/', async (req, res) => {
     }
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    // var existingUser = await db.collection(USERS).findOne({ username: req.session.username });
-    // var uid = existingUser.UID;
     var animalList = await db.collection(ANIMALS).find({}).toArray();
-    return res.render('form.ejs', { action: '/posting/', location: '', uid: req.session.uid,animalList });
+    return res.render('form.ejs', { action: '/posting/', 
+                                  location: '', 
+                                  uid: req.session.uid,animalList });
 });
 
 // Route to handle posting an animal sighting
-// Takes the form data, uploads a photo, and inserts a new post into the database.
+// Takes the form data, uploads a photo, and inserts a new post into the 
+// database.
 // Redirects the user to the timeline page after successfully posting.
 app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
@@ -446,7 +464,8 @@ app.get('/profile/:userID', async (req, res) => {
 
     //check to see if this person exists
     const userID = parseInt(req.params.userID);
-    const db = await Connection.open(mongoUri, CRITTERQUEST); //open the connection to the db critterquest
+    //open the connection to the db critterquest
+    const db = await Connection.open(mongoUri, CRITTERQUEST); 
     const people = db.collection(USERS); //go to the Users collection
     let accessedUserObj = await people.findOne({UID: userID });
     // console.log(userID);
@@ -455,10 +474,8 @@ app.get('/profile/:userID', async (req, res) => {
         return res.redirect("/timeline")
     }
 
-    // const idString = req.params.userID;
-    // const idNumber = parseInt(idString); //need to parse the string as an integer
-
-    //check whether you are viewing your own profile or if you are looking at someone else's 
+    // check whether you are viewing your own profile, 
+    // or if you are looking at someone else's 
     var isOwnProfile;
     let currUser = req.session.uid;
     let accessUser = accessedUserObj.UID;
@@ -472,14 +489,15 @@ app.get('/profile/:userID', async (req, res) => {
     //get the user information stored in the DB
     // var person = await people.findOne({ UID: userID }); //find profile
     console.log(accessedUserObj);
-    var allBadges = accessedUserObj.badges || null; //list of images, its just words for now 
+    var allBadges = accessedUserObj.badges || null; 
     var personDescription = accessedUserObj.aboutme || null;
     var username = accessedUserObj.username;
 
     console.log('allbages: ',allBadges);
 
     const posts = db.collection(POSTS); //go to the Users collection
-    var myPosts = await posts.find({ UID: userID },{ sort: { PID: -1 } }).toArray();
+    var myPosts = await posts.find({ UID: userID },
+                                   { sort: { PID: -1 } }).toArray();
     console.log(myPosts);
 
     //check for new badges
@@ -646,8 +664,9 @@ app.get('/filter', async (req, res) =>
     });
 
 // Route to handle searching by animals or locations
-// Allows users to search for animals or locations based on the provided query parameters.
-// Renders posts based on search results, else return a page warning about no posts found
+// Allows users to search for animals or locations based on the provided 
+// query parameters. Renders posts based on search results, else return 
+// a page warning about no posts found
 app.get('/search/', async(req,res) => {
     if(!req.session.loggedIn){
         req.flash('error', 'You are not logged in - please do so.');
@@ -672,29 +691,49 @@ app.get('/search/', async(req,res) => {
     // Perform search based on the kind of search
     if (kind === "animal"){
         // Search for animals matching the term
-        const result = await posts.find({ animal: new RegExp(term, 'i') }).toArray();
+        const result = await posts.find({ animal: new RegExp(term, 'i') })
+                                  .toArray();
        
         if (result.length === 0) {
-            // If no results found, render 'none.ejs' template with appropriate message
-            return res.render("none.ejs", { option: kind, uid: req.session.uid, term: term });
+            // If no results found, render 'none.ejs' template 
+            // with appropriate message
+            return res.render("none.ejs", { option: kind, 
+                                            uid: req.session.uid, 
+                                            term: term });
         } else {
-            const animalPosts = await posts.find({ animal: new RegExp(term, 'i')}).sort(sortBy).toArray();
-            // Render 'animal.ejs' template with information about the animal and related posts
-            return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: animalPosts, term: term });
+            const animalPosts = await posts.find({ animal: new RegExp(term, 'i')})
+                                           .sort(sortBy).toArray();
+            // Render 'animal.ejs' template with information about the animal 
+            // and related posts
+            return res.render("animal.ejs", { option: kind, 
+                                              uid: req.session.uid, 
+                                              animal: result[0], 
+                                              animals: animalPosts, 
+                                              term: term });
         }
     } else if (kind === "location") {
         // Search for posts with the specified location
-        const result = await posts.find({ location: new RegExp(term, 'i') }).toArray();
+        const result = await posts.find({ location: new RegExp(term, 'i') })
+                                  .toArray();
         console.log("result",result);
         
         if (result.length === 0) {
-            // If no results found, render 'none.ejs' template with appropriate message
-            return res.render("none.ejs", { option: kind, uid: req.session.uid, term: term });
+            // If no results found, render 'none.ejs' template 
+            // with appropriate message
+            return res.render("none.ejs", { option: kind, 
+                                            uid: req.session.uid, 
+                                            term: term });
         } else {
             // Find posts related to the found location
-            const locationPosts = await posts.find({ location: new RegExp(term, 'i') }).sort(sortBy).toArray();
-            // Render 'animal.ejs' template with information about the location and related posts
-            return res.render("animal.ejs", { option: kind, uid: req.session.uid, animal: result[0], animals: locationPosts, term: term });
+            var condition = new RegExp(term, 'i')
+            const locationPosts = await posts.find({ location: condition })
+                                             .sort(sortBy).toArray();
+            // Render 'animal.ejs' template with information about the location 
+            // and related posts
+            return res.render("animal.ejs", { option: kind, uid: req.session.uid, 
+                                              animal: result[0], 
+                                              animals: locationPosts, 
+                                              term: term });
         }
     }
 });
