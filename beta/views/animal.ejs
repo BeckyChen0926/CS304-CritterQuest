@@ -45,6 +45,20 @@
                         <div class="caption">
                             <p> <%= post['caption'] %></p>
                         </div>
+                        <div class="likes">
+                            <p>
+                                Likes: <%= post.likes%>
+                            </p>
+                        </div>
+                        <div class="comments">
+                            <p>
+                                <%if (post['comments']){%>
+                                    Comments: <%= post['comments'].length %>
+                                <%} else {%>
+                                    Comments: 0
+                                <%}%>
+                            </p>
+                        </div>
                     </li>
                 </div>
                 <div>
