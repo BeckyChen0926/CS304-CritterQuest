@@ -524,7 +524,7 @@ app.get('/profile/:userID', async (req, res) => {
             {$push: {badges: "tenPosts.png"}}
         );
     }
-    curr = await db.collection(USERS).findOne({UID:currUser});
+    curr = await db.collection(USERS).findOne({UID:accessUser});
     console.log('curr Bages: ', curr.badges);
     return res.render('profile.ejs',
         {
