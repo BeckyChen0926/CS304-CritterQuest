@@ -763,22 +763,6 @@ app.post("/delete/:PID", async (req,res) => {
     return res.redirect("/timeline");
 })
 
-// Route handler for deleting a post from the user's profile
-// It receives a POST request to delete a post with a specific PID
-app.post("/deleteProfile/:PID", async (req,res) => {
-    // Establish a connection to the database
-    const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const posts = db.collection(POSTS);
-
-    // Extract the PID from the request parameters
-    let pid = parseInt(req.params.PID);
-
-    // Delete the post with the specified PID from the database
-    let deletePost = posts.deleteOne({PID:pid});
-
-    // Redirect the user back to their profile page
-    return res.redirect(`/profile/${req.session.uid}`);
-})
 
 // Route handler for deleting a comment from a detailed post page
 // It receives a POST request to delete a comment with a specific CID from a post with a specific PID
