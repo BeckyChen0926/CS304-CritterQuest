@@ -257,48 +257,7 @@ app.get('/timeline/', async (req, res) => {
     return res.render('timeline.ejs', { userPosts: postList, uid: req.session.uid });
 });
 
-// // Helper function to increment the likes on a post
-// // Takes the post id as an argument and increments the 'likes' field of the post in the database.
-// // Returns the updated number of likes.
-// async function incrementLikes(pid) {
-//     const db = await Connection.open(mongoUri, CRITTERQUEST);
 
-//     const postsCollection = db.collection(POSTS);
-
-//     // Update the 'likes' field of the post and return the updated document
-//     const updatedPost = await postsCollection.findOneAndUpdate(
-//         { PID: pid },
-//         { $inc: { likes: 1 } },
-//         { returnDocument: "after" }
-//     );
-
-//     // Return the updated number of likes
-//     return updatedPost.likes;
-// }
-
-// // Route to handle the like button click on a post
-// // Increments the likes for the post using pid and redirects to the timeline page.
-// // If there is an error, returns an internal server error status.
-// // Returns a redirect to the timeline page if successful.
-// // NOTE FROM TEAM: might try to update to ajax later.
-
-// app.post('/like', async (req, res) => {
-//     // const postId = req.body.postId;
-//     const pid = parseInt(req.body.postid);
-
-//     try {
-//         // Increment likes for the post
-//         const updatedLikes = await incrementLikes(pid);
-//         console.log(updatedLikes);
-//         return res.redirect('/timeline');
-//     } catch (error) {
-//         console.error('Error:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-//     return res.redirect('/timeline');
-// });
-
-// AJAX THINGS
 
 // can only like once 
 async function likePost(PID,currUser) {
@@ -635,15 +594,17 @@ app.post('/comment/:PID', async (req,res)=>{
 
 })
 
-// Route to render the search bar page
-app.get('/filter', async (req, res) =>
-    {
-        if(!req.session.loggedIn){
-            req.flash('error', 'You are not logged in - please do so.');
-            return res.redirect("/");
-        }
-        return res.render('filter.ejs', {uid: req.session.uid});
-    });
+// Route handler for the '/filter' endpoint, showing the search page
+app.get('/filter', async (req, res) => {
+    // Check if the user is not logged in
+    if (!req.session.loggedIn) {
+        // If not logged in, set an error message and redirect to the homepage
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect("/");
+    }
+    // If logged in, render the 'filter.ejs' template and pass the user's ID
+    return res.render('filter.ejs', { uid: req.session.uid });
+});
 
 // Route to handle searching by animals or locations
 // Allows users to search for animals or locations based on the provided query parameters.
@@ -662,13 +623,16 @@ app.get('/search/', async(req,res) => {
     const db = await Connection.open(mongoUri,  CRITTERQUEST);
     const posts = db.collection(POSTS);
     var sortBy;
+    // Check if the filter is set to "default"
     if (filter == "default"){
+        // If so, sort by time in descending order and PID in ascending order
         sortBy = {time: -1, PID:1};
     }
+    // If the filter is set to "likes"
     else if (filter == "likes"){
+        // Sort by likes in descending order and PID in ascending order
         sortBy = {likes: -1, PID:1};
     }
-
     // Perform search based on the kind of search
     if (kind === "animal"){
         // Search for animals matching the term
@@ -699,57 +663,55 @@ app.get('/search/', async(req,res) => {
     }
 });
 
-//delete from timeline
+// Route handler for deleting a post from the timeline
+// It receives a POST request to delete a post with a specific PID
 app.post("/delete/:PID", async (req,res) => {
+    // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
 
+    // Extract the PID from the request parameters
     let pid = parseInt(req.params.PID);
 
+    // Delete the post with the specified PID from the database
     let deletePost = posts.deleteOne({PID:pid});
 
+    // Set a flash message indicating successful deletion
     req.flash("info", "Your post was deleted successfully.");
 
+    // Redirect the user back to the timeline page
     return res.redirect("/timeline");
 })
 
-//delete from profile
+// Route handler for deleting a post from the user's profile
+// It receives a POST request to delete a post with a specific PID
 app.post("/deleteProfile/:PID", async (req,res) => {
+    // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
 
+    // Extract the PID from the request parameters
     let pid = parseInt(req.params.PID);
 
+    // Delete the post with the specified PID from the database
     let deletePost = posts.deleteOne({PID:pid});
 
-    // req.flash("info", "Your post was deleted successfully.");
-    
+    // Redirect the user back to their profile page
     return res.redirect(`/profile/${req.session.uid}`);
 })
 
-// //delete on comment page
-// app.post("/deletePost/:PID", async (req,res) => {
-//     const db = await Connection.open(mongoUri, CRITTERQUEST);
-//     const posts = db.collection(POSTS);
-
-//     let pid = parseInt(req.params.PID);
-
-//     let deletePost = posts.deleteOne({PID:pid});
-
-//     // req.flash("info", "Your post was deleted successfully.");
-    
-//     return res.redirect(`/comment/`+pid);
-// })
-
-
-// delete comment from detail post page
+// Route handler for deleting a comment from a detailed post page
+// It receives a POST request to delete a comment with a specific CID from a post with a specific PID
 app.post("/deleteComment/:PID/:CID", async (req, res) => {
+    // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
 
+    // Extract the PID and CID from the request parameters
     let pid = parseInt(req.params.PID);
     let cid = parseInt(req.params.CID);
 
+    // Find and update the post with the specified PID to remove the comment with the specified CID
     let deleteComment = posts.findOneAndUpdate({
                 "PID": pid
             },
@@ -761,8 +723,10 @@ app.post("/deleteComment/:PID/:CID", async (req, res) => {
                     }
                 })
 
+    // Redirect the user back to the detailed post page from which the comment was deleted
     return res.redirect(`/comment/${pid}`);
 })
+
 
 
 // ================================================================
