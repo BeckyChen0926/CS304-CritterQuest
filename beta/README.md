@@ -1,29 +1,35 @@
 # CS304_CritterQuest
 
-Team members: Ada, Becky, Lauren, Kaitlyn
+Team members: Lauren Burgin, Becky Chen, Kaitlyn Tsien, Ada Wang
+Project Name: CritterQuest
+Title: CritterQuest, a forum for animal lovers
 
-CritterQuest Alpha Version: 4/30/24
+CritterQuest Beta Version: 5/7/24
 
-A site to foster a community around sharing and learning about animals. 
-Users can see a timeline of others' posts and like and comment on others’ posts as well.
+Our project is CritterQuest, a site where users can create accounts and post photos to share and document animals they see in their area. Users can see a timeline of others' posts and like and comment on others’ posts as well.
 
 Status
 ```
-Completed:
-- Most core functions, including posting, timeline, login & logout, like & comment, search
-- UI designs
-- Pass WAVE check
-- documentation
+Newly completed:
+Debug PID and UID counter
+Implement Ajax for like a post
+Delete posts and comments
+Badge system that awards you cute badges once you have posted your first post, five posts, and ten posts
+Improved the search function
+New UI designs
+Pass all WAVE check
+Documentation + break up long lines
 
-TODO:
-- Debug PID and UID counter
-- Implement Ajax for like a post
-- Delet & edit posts and comments
-- Badge system
-- Other additions that are not core features
+Completed in past versions:
+Most core functions, including posting, timeline, login & logout, like & comment, search
 ```
 
-NOTE: we ran into PID and UID duplication issues which we emailed you about. However, this only happens occasionally. If the like or comment button doesn't work for one post, try other posts. 
+Using Critterquest
+```
+Account: critterquest
+Directory: beta
+```
+Our platform is pretty intuitive, but below are some recommended steps to use critterquest!
 
 Directions:
 You can create a new account or log in with the sample username and password. We suggest that you create your own account.
@@ -34,15 +40,17 @@ To register for your own account:
 Sample Username: scott
 Sample Password: scott
 (Or any string you’d like)
+And click register
 ```
 
-Clicking the reset button will clear the entered username and password. It will take a while to login, just wait.
-After logging in or registering it will take you to your profile page with your information. 
-You can edit the about me info by clicking the "Edit Profile" button. 
+Clicking the reset button will clear the entered username and password. After logging in or registering it will take you to your profile page with your information. 
+You can edit your about me info by clicking the "Edit Profile" button. 
 You can just type your new about me into the form, and clicking update will update your information and take you back to your profile page. You will also see the posts you have posted on the right side of your profile page.
 
-The nav bar on top has a link to the timeline. Clicking it will take you to a timeline of all the posts in the database in reverse chronological order. You are able to click the like button to like the post. We plan to implement ajax for the like buttons in the future.
+The nav bar on top has a link to the timeline. Clicking it will take you to a timeline of all the posts in the database in reverse chronological order. You are able to click the like button to like the post. 
 You are also able to click the comment button to go to the detail page of that one page. You can leave a comment by typing in the "Leave a comment!" box and click "send comment" to submit. The comment will show up at the bottom of that page. Now, click timeline in the nav bar to go back to the timeline.
+
+You can click on “View [insert name]’s profile” to check out other users’ profiles and see how many badges they have.
 
 The nav bar also has a link to Post a Sighting. Clicking this will take you to the post form where you select the type of animal you saw from a dropdown bar (or, if you want to most an animal that is not in the list, select “I will enter a new animal” and type your animal in the box to the right), type the location where you saw it, upload your image, and then write a caption for the post. 
 Clicking the “Post my animal sighting!” button will redirect you to the timeline where your upload will appear.
@@ -61,8 +69,26 @@ Image: [Any image of a flamingo, or you can save this linked image and post it](
 Caption: I saw a flamingo in the lake for the first time. Made my day!
 
 ```
+Now, if you go back to your profile, you will see you have received the adorable “first post” badge.
 
-There is also a search tab on the nav bar that will take you to a search form, where you can search by location or animals.
-Search "dog" (exists) and "swan" (does not exist) and select By: "animal" to see the relevant posts. Search "lake" and select By: "location" to see all posts with location name that includes "lake." Don't like or comment on the relevant posts yet, as we are still working on the handles.
+There is also a search tab on the nav bar that will take you to a search form, where you can search by location or animals. Try it out!
+Sample Search Info:
+```
+Type “dog” into the text box, select “Animals” in the first drop down menu, you can also sort by like counts in the other drop down if desired, otherwise, it will just sort by time of post.
+Type “drogon” into the text box, select “Animals” in the first drop down menu, you can also sort by like counts in the other drop down if desired, otherwise, it will just sort by time of post.
+Type “tower” into the text box, select “Locations” in the drop down menu, you can also sort by like counts in the other drop down if desired, otherwise, it will just sort by time of post.
+Type “ada” into the text box, select “users” in the drop down menu, you can also sort by like counts in the other drop down if desired, otherwise, it will just sort by time of post.
+```
 
 Finally, the nav bar contains the Logout link which takes you back to the Login/Register page.
+
+Collections we have in the database:
+```
+animals
+counters
+posts
+users
+```
+
+Link to our demo video:
+https://drive.google.com/file/d/1TRjTJfSgqYKkJd1ntfYQEmVcF1hCElh_/view?usp=drive_link
