@@ -34,16 +34,16 @@
           <input type="text" name="custom_animal" id="custom-animal" placeholder="Or add your own animal">
         </label>
       </p>
-      <p><label>Location <input name="location" value="<%= location %>"></label></p>
+      <p><label>Location <input required name="location" value="<%= location %>"></label></p>
 
       <p>
         <label>Upload image
-          <input type="file" accept="image/*" name="photo">
+          <input required type="file" accept="image/*" name="photo">
         </label>
       </p>
 
       <p><label>Description
-          <textarea rows="3" cols="30" name="caption"></textarea>
+          <textarea required rows="3" cols="30" name="caption"></textarea>
         </label></p>
       <p>
         <input type="submit" value="Post my animal sighting!">
