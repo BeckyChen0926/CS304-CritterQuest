@@ -1,11 +1,4 @@
-// start app with 'npm run dev' in a terminal window
-// go to http://localhost:port/ to view your deployment!
-// every time you change something in server.js and save, 
-// your deployment will automatically reload
-
-// to exit, type 'ctrl + c', then press the enter key in a terminal window
-// if you're prompted with 'terminate batch job (y/n)?', 
-// type 'y', then press the enter key in the same terminal
+// Authors: Ada, Becky, Lauren, Kaitlyn
 
 // standard modules, loaded from node_modules
 const path = require('path');
@@ -123,7 +116,7 @@ const COMMENTS = 'comments';
 // be redirected to the timeline page.
 // Returns the rendered login page if the user is not logged in.
 app.get('/', (req, res) => {
-    if(req.session.loggedIn){
+    if (req.session.loggedIn) {
         return res.redirect("/timeline");
     }
     // Renders the login page when accessing the root URL
@@ -143,11 +136,11 @@ app.post("/join", async (req, res) => {
 
         // Check if the username already exists
         var existingUser = await db.collection(USERS)
-                                   .findOne({ username: username });
+            .findOne({ username: username });
         if (existingUser) {
             // If the username already exists, redirect with an error message
-            req.flash('error', 
-                      "Login already exists - please try logging in instead.");
+            req.flash('error',
+                "Login already exists - please try logging in instead.");
             return res.redirect('/')
         }
 
@@ -206,7 +199,7 @@ app.post("/login", async (req, res) => {
 
         // Find the user in the database
         var existingUser = await db.collection(USERS)
-                                   .findOne({ username: username });
+            .findOne({ username: username });
         var uid = existingUser.UID;
 
         // Log user information (for debugging purposes)
@@ -258,18 +251,22 @@ app.post("/login", async (req, res) => {
 app.get('/timeline/', async (req, res) => {
     //users can only do access this page if they are logged in, 
     //so we need to check for that uncomment when we have logins working
-    if(!req.session.loggedIn){ 
+    if (!req.session.loggedIn) {
         req.flash('error', "Please login first!");
         return res.redirect('/');
     }
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const postList = await db.collection(POSTS).find({}, 
-                            { sort: { PID: -1,time:-1 } }).toArray();
+    const postList = await db.collection(POSTS).find({},
+        { sort: { PID: -1, time: -1 } }).toArray();
     console.log(postList);
 
-    return res.render('timeline.ejs', { userPosts: postList, 
-                                        uid: req.session.uid });
+    return res.render('timeline.ejs', {
+        userPosts: postList,
+        uid: req.session.uid
+    });
 });
+
+// classic like (non ajax)
 
 // // Helper function to increment the likes on a post
 // // Takes the post id as an argument and increments the 'likes' 
@@ -316,13 +313,20 @@ app.get('/timeline/', async (req, res) => {
 
 // AJAX THINGS
 
-// can only like once 
-async function likePost(PID,currUser) {
+// Function to handle liking a post
+// Increases the like count of a post with a specified PID and records 
+// the user who liked the post.
+// Allows a user to like a post only once by checking if the user is 
+// already in the likedBy array.
+// Returns the updated post document from the database.
+async function likePost(PID, currUser) {
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const currPost = await db.collection(POSTS).findOne({PID:PID});
+    const currPost = await db.collection(POSTS).findOne({ PID: PID });
     console.log(currPost);
     console.log(currPost.likedBy);
-    if (!(currPost.likedBy.includes(currUser))){
+    // Check if the current user has already liked the post
+    if (!(currPost.likedBy.includes(currUser))) {
+        // Increment the likes count and add the user to the likedBy array
         const result = await db.collection(POSTS)
             .updateOne({ PID: PID },
                 {
@@ -331,42 +335,48 @@ async function likePost(PID,currUser) {
                 },
                 { upsert: false });
     }
-    const doc = await db.collection(POSTS).findOne({PID: PID});
+    // Get the updated post document
+    const doc = await db.collection(POSTS).findOne({ PID: PID });
     return doc;
 }
 
-app.post('/likeAjax/:PID', async (req,res) => {
+// Route to handle AJAX for liking a post
+// Receives a POST request to like a post with a specified PID.
+// Calls the likePost function and returns a JSON response with the 
+// updated likes count and PID, which directly updates the like count
+// on display without reloading or redirecting
+app.post('/likeAjax/:PID', async (req, res) => {
     const PID = parseInt(req.params.PID);
     const currUser = req.session.uid;
-    const doc = await likePost(PID,currUser);
-    return res.json({error: false, likes: doc.likes, PID: PID});
+    const doc = await likePost(PID, currUser);
+    return res.json({ error: false, likes: doc.likes, PID: PID });
 });
 
 
 
 // Route to render the logout page
 // Displays the logout confirmation page.
-app.get('/logout', (req,res)=>{
-    return res.render('logout.ejs',{uid:req.session.uid});
+app.get('/logout', (req, res) => {
+    return res.render('logout.ejs', { uid: req.session.uid });
 });
 
 // Route to handle user logout
 // Clears session variables and redirects the user to the login page.
-app.post('/logout', (req,res) => {
-    if(!req.session.loggedIn){
+app.post('/logout', (req, res) => {
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
     if (req.session.username) {
-      req.session.username = null;
-      req.session.loggedIn = false;
-      req.flash('info', 'You are logged out');
-      return res.redirect('/');
+        req.session.username = null;
+        req.session.loggedIn = false;
+        req.flash('info', 'You are logged out');
+        return res.redirect('/');
     } else {
-      req.flash('error', 'You are not logged in - please do so.');
-      return res.redirect('/');
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect('/');
     }
-  });
+});
 
 // Route to render the posting form
 // Displays the animal sighting form with a dynamic list of animals for        
@@ -375,16 +385,18 @@ app.post('/logout', (req,res) => {
 // Requires the user to be logged in to access this page.
 // Returns the rendered posting form if the user is logged in.
 app.get('/posting/', async (req, res) => {
-    if(!req.session.loggedIn){
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
     console.log('get form');
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     var animalList = await db.collection(ANIMALS).find({}).toArray();
-    return res.render('form.ejs', { action: '/posting/', 
-                                  location: '', 
-                                  uid: req.session.uid,animalList });
+    return res.render('form.ejs', {
+        action: '/posting/',
+        location: '',
+        uid: req.session.uid, animalList
+    });
 });
 
 // Route to handle posting an animal sighting
@@ -395,7 +407,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     console.log('uploaded data', req.body);
     console.log('file', req.file);
     console.log('post form');
-    if(!req.session.loggedIn){
+    if (!req.session.loggedIn) {
         req.flash('info', "You are not logged in");
         return res.redirect('/login');
     }
@@ -406,7 +418,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     // const username = req.session.username;
     var postTime = new Date();
     console.log('post time: ', postTime);
-    
+
 
     // change the permissions of the file to be world-readable
     // this can be a relative or absolute pathname. 
@@ -432,7 +444,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
     const PID = newCount;
 
     console.log(req.session);
-    console.log('YOUR POST ID IS ' , PID);
+    console.log('YOUR POST ID IS ', PID);
     const result = await db.collection(POSTS)
         .insertOne({
             PID: PID,
@@ -445,7 +457,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
             caption: req.body.caption,
             likes: 0,
             comments: [],
-            likedBy:[]
+            likedBy: []
         });
     console.log('insertOne result', result);
 
@@ -457,7 +469,7 @@ app.post('/posting/', upload.single('photo'), async (req, res) => {
 // Requires the user to be logged in to access this page.
 // Returns the rendered profile page if the user is logged in.
 app.get('/profile/:userID', async (req, res) => {
-    if(!req.session.loggedIn){
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
@@ -465,11 +477,11 @@ app.get('/profile/:userID', async (req, res) => {
     //check to see if this person exists
     const userID = parseInt(req.params.userID);
     //open the connection to the db critterquest
-    const db = await Connection.open(mongoUri, CRITTERQUEST); 
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
     const people = db.collection(USERS); //go to the Users collection
-    let accessedUserObj = await people.findOne({UID: userID });
+    let accessedUserObj = await people.findOne({ UID: userID });
     // console.log(userID);
-    if(accessedUserObj == null){
+    if (accessedUserObj == null) {
         req.flash('error', "This user doesn't exist! ");
         return res.redirect("/timeline")
     }
@@ -479,25 +491,25 @@ app.get('/profile/:userID', async (req, res) => {
     var isOwnProfile;
     let currUser = req.session.uid;
     let accessUser = accessedUserObj.UID;
-    if (currUser == accessUser){
+    if (currUser == accessUser) {
         isOwnProfile = true;
     }
-    else{
+    else {
         isOwnProfile = false;
     }
 
     //get the user information stored in the DB
     // var person = await people.findOne({ UID: userID }); //find profile
     console.log(accessedUserObj);
-    var allBadges = accessedUserObj.badges || null; 
+    var allBadges = accessedUserObj.badges || null;
     var personDescription = accessedUserObj.aboutme || null;
     var username = accessedUserObj.username;
 
-    console.log('allbages: ',allBadges);
+    console.log('allbages: ', allBadges);
 
     const posts = db.collection(POSTS); //go to the Users collection
     var myPosts = await posts.find({ UID: userID },
-                                   { sort: { PID: -1 } }).toArray();
+        { sort: { PID: -1 } }).toArray();
     console.log(myPosts);
 
     //check for new badges
@@ -505,36 +517,36 @@ app.get('/profile/:userID', async (req, res) => {
         //console.log("checking for post");
         // allBadges += "firstPost.png";
         await db.collection(USERS).updateOne(
-            {UID: currUser},
-            {$push: {badges: "firstPost.png"}}
-        ); 
+            { UID: currUser },
+            { $push: { badges: "firstPost.png" } }
+        );
         //console.log("first: ", first);    
-    } 
+    }
     if (!(allBadges.includes("fivePosts.png")) && myPosts.length >= 5) {
         // allBadges += "fivePosts.png";
         await db.collection(USERS).updateOne(
-            {UID: currUser},
-            {$push: {badges: "fivePosts.png"}}
+            { UID: currUser },
+            { $push: { badges: "fivePosts.png" } }
         );
-    } 
+    }
     if (!(allBadges.includes("tenPosts.png")) && myPosts.length >= 10) {
         // allBadges += "tenPosts.png";
         await db.collection(USERS).updateOne(
-            {UID: currUser},
-            {$push: {badges: "tenPosts.png"}}
+            { UID: currUser },
+            { $push: { badges: "tenPosts.png" } }
         );
     }
-    curr = await db.collection(USERS).findOne({UID:accessUser});
+    curr = await db.collection(USERS).findOne({ UID: accessUser });
     console.log('curr Bages: ', curr.badges);
     return res.render('profile.ejs',
         {
-            uid: userID,  
+            uid: userID,
             UID: req.session.uid, //for nav bar profile access
             badges: curr.badges,
             isOwnProfile: isOwnProfile,
             aboutme: personDescription,
             username: username,
-            myPosts:myPosts
+            myPosts: myPosts
         });
 });
 
@@ -544,7 +556,7 @@ app.get('/profile/:userID', async (req, res) => {
 // Requires the user to be logged in to access this page.
 // Returns the rendered edit profile form.
 app.get("/edit/:userID", async (req, res) => {
-    if(!req.session.loggedIn){
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
@@ -575,49 +587,50 @@ app.get("/edit/:userID", async (req, res) => {
 // in the database.
 // Redirects the user to their updated profile page if successful.
 app.post('/edit/:userID', async (req, res) => {
-    if(!req.session.loggedIn){
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
     const uid = parseInt(req.params.userID);
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const users = db.collection(USERS);
-    const aboutme= req.body.aboutMe;
+    const aboutme = req.body.aboutMe;
 
     // Fetch user details using uid
-    const filter = {UID: uid};  // document to update
-    const update = {$set: {aboutme: aboutme}};   // changes to make
-    const options = {upsert: false}; //don't want to upsert
+    const filter = { UID: uid };  // document to update
+    const update = { $set: { aboutme: aboutme } };   // changes to make
+    const options = { upsert: false }; //don't want to upsert
     await users.updateOne(filter, update, options);
-    
+
     // Redirect to the profile page for the updated profile
     res.redirect(`/profile/${req.session.uid}`);
 });
 
 // Route to render the comment page with a form for a specific post
-// Displays the specific post and form to add a comment to this specific post.
+// Displays the specific post and form to add a comment to this 
+// specific post.
 // Users must be logged in to access this page.
-app.get('/comment/:PID', async (req,res)=>{
-    if(!req.session.loggedIn){
+app.get('/comment/:PID', async (req, res) => {
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
     const pid = parseInt(req.params.PID);
-    console.log('new pid comment: ',pid);
+    console.log('new pid comment: ', pid);
 
     const db = await Connection.open(mongoUri, CRITTERQUEST);
-    const currPost = await db.collection(POSTS).findOne({PID:pid});
-    console.log('currpost:',currPost)
-    res.render("comment.ejs", { uid: req.session.uid, post: currPost});
+    const currPost = await db.collection(POSTS).findOne({ PID: pid });
+    console.log('currpost:', currPost)
+    res.render("comment.ejs", { uid: req.session.uid, post: currPost });
 
 })
 
 // Route to handle posting a comment on a specific post
 // Adds a comment to the specified post in the database.
 // Users must be logged in to access this feature.
-// Returns the rendered post and comment page with the comment section.
-app.post('/comment/:PID', async (req,res)=>{
-    if(!req.session.loggedIn){
+// Renders the post and comment page with the comment section.
+app.post('/comment/:PID', async (req, res) => {
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
@@ -635,29 +648,37 @@ app.post('/comment/:PID', async (req,res)=>{
     console.log('YOUR COMM ID IS ', CID);
 
     let currPost = await db.collection(POSTS)
-                        .findOneAndUpdate(
-                            { PID: pid },
-                            { $push: { 'comments': {
-                                'UID':req.session.uid,
-                                'user': req.session.username,
-                                'time': postTime.toLocaleString(),
-                                'CID': CID,
-                                'comment': comm
-                            } } },
-                            { returnDocument: "after" }
-                        );
+        .findOneAndUpdate(
+            { PID: pid },
+            {
+                $push: {
+                    'comments': {
+                        'UID': req.session.uid,
+                        'user': req.session.username,
+                        'time': postTime.toLocaleString(),
+                        'CID': CID,
+                        'comment': comm
+                    }
+                }
+            },
+            { returnDocument: "after" }
+        );
     console.log(currPost);
-    currPost = await db.collection(POSTS).findOne({PID:pid});
+    currPost = await db.collection(POSTS).findOne({ PID: pid });
     console.log(currPost);
-    res.render("comment.ejs", { uid: req.session.uid, post: currPost});
+    res.render("comment.ejs", { uid: req.session.uid, post: currPost });
 
 })
 
 // Route handler for the '/filter' endpoint, showing the search page
+// Displays the search page with filtering options.
+// Users must be logged in to access this page. Redirects to 
+// the home page if not logged in.
 app.get('/filter', async (req, res) => {
     // Check if the user is not logged in
     if (!req.session.loggedIn) {
-        // If not logged in, set an error message and redirect to the homepage
+        // If not logged in, set an error message and redirect 
+        // to the homepage
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
@@ -666,11 +687,12 @@ app.get('/filter', async (req, res) => {
 });
 
 // Route to handle searching by animals or locations
-// Allows users to search for animals or locations based on the provided 
-// query parameters. Renders posts based on search results, else return 
-// a page warning about no posts found
-app.get('/search/', async(req,res) => {
-    if(!req.session.loggedIn){
+// Allows users to search for animals or locations or users based 
+// on the provided query parameters. 
+// Renders posts based on search results, else return a page 
+// warning about no posts found
+app.get('/search/', async (req, res) => {
+    if (!req.session.loggedIn) {
         req.flash('error', 'You are not logged in - please do so.');
         return res.redirect("/");
     }
@@ -680,72 +702,109 @@ app.get('/search/', async(req,res) => {
     const filter = req.query.filter;
 
     // Open connection to the database
-    const db = await Connection.open(mongoUri,  CRITTERQUEST);
+    const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
     var sortBy;
     // Check if the filter is set to "default"
-    if (filter == "default"){
-        // If so, sort by time in descending order and PID in ascending order
-        sortBy = {time: -1, PID:1};
+    if (filter == "default") {
+        // If so, sort by time in descending order and PID in 
+        // ascending order
+        sortBy = { time: -1, PID: 1 };
     }
     // If the filter is set to "likes"
-    else if (filter == "likes"){
+    else if (filter == "likes") {
         // Sort by likes in descending order and PID in ascending order
-        sortBy = {likes: -1, PID:1};
+        sortBy = { likes: -1, PID: 1 };
     }
     // Perform search based on the kind of search
-    if (kind === "animal"){
+    if (kind === "animal") {
         // Search for animals matching the term
         const result = await posts.find({ animal: new RegExp(term, 'i') })
-                                  .toArray();
-       
+            .toArray();
+
         if (result.length === 0) {
             // If no results found, render 'none.ejs' template 
             // with appropriate message
-            return res.render("none.ejs", { option: kind, 
-                                            uid: req.session.uid, 
-                                            term: term });
+            return res.render("none.ejs", {
+                option: kind,
+                uid: req.session.uid,
+                term: term
+            });
         } else {
-            const animalPosts = await posts.find({ animal: new RegExp(term, 'i')})
-                                           .sort(sortBy).toArray();
+            const animalPosts = await posts.find({ animal: new RegExp(term, 'i') })
+                .sort(sortBy).toArray();
             // Render 'animal.ejs' template with information about the animal 
             // and related posts
-            return res.render("animal.ejs", { option: kind, 
-                                              uid: req.session.uid, 
-                                              animal: result[0], 
-                                              animals: animalPosts, 
-                                              term: term });
+            return res.render("animal.ejs", {
+                option: kind,
+                uid: req.session.uid,
+                animal: result[0],
+                animals: animalPosts,
+                term: term
+            });
         }
     } else if (kind === "location") {
         // Search for posts with the specified location
         const result = await posts.find({ location: new RegExp(term, 'i') })
-                                  .toArray();
-        console.log("result",result);
-        
+            .toArray();
+        console.log("result", result);
+
         if (result.length === 0) {
             // If no results found, render 'none.ejs' template 
             // with appropriate message
-            return res.render("none.ejs", { option: kind, 
-                                            uid: req.session.uid, 
-                                            term: term });
+            return res.render("none.ejs", {
+                option: kind,
+                uid: req.session.uid,
+                term: term
+            });
         } else {
             // Find posts related to the found location
             var condition = new RegExp(term, 'i')
             const locationPosts = await posts.find({ location: condition })
-                                             .sort(sortBy).toArray();
+                .sort(sortBy).toArray();
             // Render 'animal.ejs' template with information about the location 
             // and related posts
-            return res.render("animal.ejs", { option: kind, uid: req.session.uid, 
-                                              animal: result[0], 
-                                              animals: locationPosts, 
-                                              term: term });
+            return res.render("animal.ejs", {
+                option: kind, uid: req.session.uid,
+                animal: result[0],
+                animals: locationPosts,
+                term: term
+            });
+        }
+    } else if (kind === "user") {
+        // Search for posts with the specified user
+        const result = await posts.find({ user: new RegExp(term, 'i') })
+            .toArray();
+        console.log("result", result);
+
+        if (result.length === 0) {
+            // If no results found, render 'none.ejs' template 
+            // with appropriate message
+            return res.render("none.ejs", {
+                option: kind,
+                uid: req.session.uid,
+                term: term
+            });
+        } else {
+            // Find posts related to the found user
+            var condition = new RegExp(term, 'i')
+            const locationPosts = await posts.find({ user: condition })
+                .sort(sortBy).toArray();
+            // Render 'animal.ejs' template with information about the user 
+            // and related posts
+            return res.render("animal.ejs", {
+                option: kind, uid: req.session.uid,
+                animal: result[0],
+                animals: locationPosts,
+                term: term
+            });
         }
     }
 });
 
 // Route handler for deleting a post from the timeline
-// It receives a POST request to delete a post with a specific PID
-app.post("/delete/:PID", async (req,res) => {
+// Deletes a post with a specific PID from the database.
+app.post("/delete/:PID", async (req, res) => {
     // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
     const posts = db.collection(POSTS);
@@ -754,7 +813,7 @@ app.post("/delete/:PID", async (req,res) => {
     let pid = parseInt(req.params.PID);
 
     // Delete the post with the specified PID from the database
-    let deletePost = posts.deleteOne({PID:pid});
+    let deletePost = posts.deleteOne({ PID: pid });
 
     // Set a flash message indicating successful deletion
     req.flash("info", "Your post was deleted successfully.");
@@ -765,8 +824,10 @@ app.post("/delete/:PID", async (req,res) => {
 
 
 // Route handler for deleting a comment from a detailed post page
-// It receives a POST request to delete a comment with a specific 
-// CID from a post with a specific PID
+// Deletes a comment with a specific CID from a post with a 
+// specific PID in the database.
+// Redirects the user back to the detailed post page from which 
+// the comment was deleted.
 app.post("/deleteComment/:PID/:CID", async (req, res) => {
     // Establish a connection to the database
     const db = await Connection.open(mongoUri, CRITTERQUEST);
@@ -779,15 +840,15 @@ app.post("/deleteComment/:PID/:CID", async (req, res) => {
     // Find and update the post with the specified PID to remove the 
     // comment with the specified CID
     let deleteComment = posts.findOneAndUpdate({
-                "PID": pid
-            },
-                {
-                    "$pull": {
-                        "comments": {
-                            "CID": cid
-                        }
-                    }
-                })
+        "PID": pid
+    },
+        {
+            "$pull": {
+                "comments": {
+                    "CID": cid
+                }
+            }
+        })
 
     // Redirect the user back to the detailed post page from which the 
     // comment was deleted
