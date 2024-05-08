@@ -1,7 +1,7 @@
 # CS304_CritterQuest
 
-Team members: Lauren Burgin, Becky Chen, Kaitlyn Tsien, Ada Wang
-Project Name: CritterQuest
+Team members: Lauren Burgin, Becky Chen, Kaitlyn Tsien, Ada Wang\
+Project Name: CritterQuest\
 Title: CritterQuest, a forum for animal lovers
 
 CritterQuest Beta Version: 5/7/24
@@ -20,7 +20,7 @@ New UI designs
 Pass all WAVE check
 Documentation + break up long lines
 
-Completed in past versions:
+Completed in previous versions:
 Most core functions, including posting, timeline, login & logout, like & comment, search
 ```
 
@@ -31,7 +31,7 @@ Directory: beta
 ```
 Our platform is pretty intuitive, but below are some recommended steps to use critterquest!
 
-Directions:
+Directions:\
 You can create a new account or log in with the sample username and password. We suggest that you create your own account.
 Just type in the username and password and click either login or register. 
 
@@ -63,7 +63,7 @@ Image: [Any image of an animal, or you can save this linked image and post it](h
 Caption: I just saw the cute dog outside of sci! Literally the best day ever!!
 
 Sample Post 2 Info:
-Type in "Add new animal": flamingo (leave the “Select Animal” drop-down untouched, unless you are selected an existing animal entry)
+Type in the "Add new animal" box: flamingo (leave the “Select Animal” drop-down untouched, unless you are selected an existing animal entry)
 Location: Lake Waban
 Image: [Any image of a flamingo, or you can save this linked image and post it](https://images.app.goo.gl/E1i7E3w7p2R1dDF69)
 Caption: I saw a flamingo in the lake for the first time. Made my day!
