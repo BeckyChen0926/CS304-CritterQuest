@@ -1,37 +1,39 @@
 # CS304_CritterQuest
 
-Team members: Lauren Burgin, Becky Chen, Kaitlyn Tsien, Ada Wang\
-Project Name: CritterQuest\
-Title: CritterQuest, a forum for animal lovers
+**Team members**: Lauren Burgin, Becky Chen, Kaitlyn Tsien, Ada Wang\
+**Project Name**: CritterQuest\
+**Title**: CritterQuest, a forum for animal lovers
 
-CritterQuest Beta Version: 5/7/24
+**CritterQuest Beta Version: 5/7/24**
 
 Our project is CritterQuest, a site where users can create accounts and post photos to share and document animals they see in their area. Users can see a timeline of others' posts and like and comment on others’ posts as well.
 
-Status
-```
+## Status
+
 Newly completed:
-Debug PID and UID counter
-Implement Ajax for like a post
-Delete posts and comments
-Badge system that awards you cute badges once you have posted your first post, five posts, and ten posts
-Improved the search function
-New UI designs
-Pass all WAVE check
-Documentation + break up long lines
+
+- Debug PID and UID counter
+- Implement Ajax for like a post
+- Delete posts and comments
+- Badge system that awards you cute badges once you have posted your first post, five posts, and ten posts
+- Improved the search function
+- New UI designs
+- Pass all WAVE check
+- Documentation + break up long lines
 
 Completed in previous versions:
-Most core functions, including posting, timeline, login & logout, like & comment, search
-```
 
-Using Critterquest
+- Most core functions, including posting, timeline, login & logout, like & comment, search
+
+## Using Critterquest
 ```
 Account: critterquest
 Directory: beta
 ```
 Our platform is pretty intuitive, but below are some recommended steps to use critterquest!
 
-Directions:\
+**Directions:**
+
 You can create a new account or log in with the sample username and password. We suggest that you create your own account.
 Just type in the username and password and click either login or register. 
 
@@ -82,7 +84,7 @@ Type “ada” into the text box, select “users” in the drop down menu, you 
 
 Finally, the nav bar contains the Logout link which takes you back to the Login/Register page.
 
-Collections we have in the database:
+## Collections we have in the database:
 ```
 animals
 counters
@@ -90,5 +92,5 @@ posts
 users
 ```
 
-Link to our demo video:
+## Link to our demo video:
 https://drive.google.com/file/d/1TRjTJfSgqYKkJd1ntfYQEmVcF1hCElh_/view?usp=drive_link
