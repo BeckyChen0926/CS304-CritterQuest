@@ -98,10 +98,6 @@ app.use((err, req, res, next) => {
 })
 
 // ================================================================
-// custom routes here
-
-const DB = process.env.USER;
-
 // Use these constants and mispellings become errors
 const CRITTERQUEST = "critterquest";
 const POSTS = "posts";
@@ -110,6 +106,7 @@ const COUNTERS = "counters";
 const ANIMALS = 'animals';
 const COMMENTS = 'comments';
 
+// custom routes here
 
 // Route to render the login page
 // Users who are already logged in (this current session) will
@@ -266,7 +263,8 @@ app.get('/timeline/', async (req, res) => {
     });
 });
 
-// classic like (non ajax)
+// classic like (non ajax) 
+// we kept this no-longer-in-use code to show progression
 
 // // Helper function to increment the likes on a post
 // // Takes the post id as an argument and increments the 'likes' 
