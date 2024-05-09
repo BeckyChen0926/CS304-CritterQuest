@@ -27,8 +27,8 @@ Completed in previous versions:
 
 ## Using Critterquest
 ```
-Account: critterquest
-Directory: beta
+Account: critterquest@cs
+Directory: /students/critterquest/CS304_CritterQuest/beta
 ```
 Our platform is pretty intuitive, but below are some recommended steps to use critterquest!
 
