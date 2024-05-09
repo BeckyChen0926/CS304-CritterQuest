@@ -84,6 +84,8 @@ Type “ada” into the text box, select “users” in the drop down menu, you 
 
 Finally, the nav bar contains the Logout link which takes you back to the Login/Register page.
 
+NOTE: One design choice we actively made is that we don't allow users to edit their posts or comments. This decision was made with the intention of promoting accountability and integrity within our platform. Other large social media platforms like Instagram have design choices like this as well. By preventing users from altering their content after it has been published, we aim to maintain a clear and accurate record of interactions. This helps ensure that conversations remain transparent and prevents the possibility of users manipulating content after receiving feedback or responses.
+
 ## Collections we have in the database:
 ```
 animals
